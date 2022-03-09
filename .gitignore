@@ -130,3 +130,6 @@ dmypy.json
 
 # Env
 projEnv/
+
+# Archive
+archive/
