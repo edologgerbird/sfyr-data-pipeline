@@ -1,6 +1,6 @@
-from sgxScraper import SGXStocksExtractor
 import pandas as pd
+import SGXDataExtractor
 
 
-x = SGXStocksExtractor()
-d = x.extractSGXStocks()
+x = SGXDataExtractor.SGXDataExtractor()
+x.get_SGX_data()
