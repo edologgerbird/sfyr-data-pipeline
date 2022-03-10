@@ -130,6 +130,7 @@ dmypy.json
 
 # Env
 projEnv/
+is3107_proj/
 
 # Archive
 archive/
