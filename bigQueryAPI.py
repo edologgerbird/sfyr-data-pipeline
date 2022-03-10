@@ -6,14 +6,17 @@ class gbqInjest:
   def __init__(self):
     with open('serviceAccount.json', 'r') as jsonFile:
       self.cred = json.load(jsonFile)
+    self.dataset_id = self.cred["DATASET_ID"]
     self.datasetTable = self.cred["DATASET_TABLE"]
     self.project_id = self.cred["PROJECT_ID"]
 
   def gbqCreateNewTable(self, data, datasetName, tableName):
-    datasetTable = datasetName+"." + tableName
+    datasetTable = datasetName+ "." + tableName
     try:
       pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id)
       self.cred["TABLE_ID"].append(datasetTable)
+      if (datasetName not in self):
+        self.cred["DATASET_ID"].append(datasetName)
       with open('serviceAccount.json', 'r+') as jsonFile:
         json.dump(self.cred, jsonFile)
       return True
