@@ -2,11 +2,15 @@ from operator import index
 import pandas as pd
 from urllib.request import Request, urlopen
 import json
+import config
 
 
 class SGXDataExtractor:
     def __init__(self):
-        self.url = "https://api.sgx.com/securities/v1.1?params=nc%2Cn%2Ctype%2Cls%2Cm%2Csc%2Cbl%2Csip%2Cex%2Cej%2Cclo%2Ccr%2Ccur%2Cel%2Cr%2Ci%2Ccc%2Cig%2Clf"
+        self.url = config.sgx_api
+        self.url_request = None
+        self.json_data = None
+        self.SGX_data_store = None
 
     def extract_SGX_json_data(self):
         print("Extracting SGX Data from API ...")
@@ -39,7 +43,10 @@ class SGXDataExtractor:
         self.SGX_data_store.to_csv("SGX_data.csv", index=False)
         print("SGX Data successfully saved to CSV")
 
-    def get_SGX_data(self):
+    def load_SGX_data_from_source(self):
         self.extract_SGX_json_data()
         self.populate_SGX_data()
         self.SGX_data_to_csv()
+
+    def get_SGX_data(self):
+        return self.SGX_data_store
