@@ -24,10 +24,10 @@ class gbqInjest:
       raise err    
 
   #datasetTableName is to be in the form of datasetName.TableName
-  def gbqInjestAppend(self, data, datasetTableName):
-    if (datasetTableName in self.datasetTable):
+  def gbqInjestAppend(self, data, datasetTable):
+    if (datasetTable in self.datasetTable):
       try:
-          pandas_gbq.to_gbq(data, datasetTableName, project_id=self.project_id, if_exists="append")
+          pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="append")
           return True
       except Exception as err:
           raise err
@@ -35,10 +35,10 @@ class gbqInjest:
       raise Exception("Table Does not Exist")
 
   #datasetTable is to be in the form of datasetName.TableName
-  def gbqInjestReplace(self, data, datasetTableName):
-    if (datasetTableName in self.datasetTable):
+  def gbqInjestReplace(self, data, datasetTable):
+    if (datasetTable in self.datasetTable):
       try:
-          pandas_gbq.to_gbq(data, datasetTableName, project_id=self.project_id, if_exists="replace")
+          pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="replace")
           return True
       except Exception as err:
           raise err
@@ -74,6 +74,7 @@ class gbqQuery:
     sql = ""+queryString+""
     return self.gbdQueryAPI(sql)
 
+  
   def getDataFields(self,datasetTable, *fields):
     fieldString = ""
     
