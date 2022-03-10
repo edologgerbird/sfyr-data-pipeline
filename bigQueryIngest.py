@@ -17,7 +17,7 @@ class gbdAPI:
         json.dump(self.cred, jsonFile)
       return True
     except Exception as err:
-      return err    
+      raise err    
 
   #datasetTable is to be in the form of datasetName.TableName
   def gbqInjestAppend(self, data, datasetTable):
@@ -26,9 +26,9 @@ class gbdAPI:
           pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="append")
           return True
       except Exception as err:
-          return err
+          raise err
     else: 
-      return Exception("Table Does not Exist")
+      raise Exception("Table Does not Exist")
 
   #datasetTable is to be in the form of datasetName.TableName
   def gbqInjestReplace(self, data, datasetTable):
@@ -37,9 +37,9 @@ class gbdAPI:
           pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="replace")
           return True
       except Exception as err:
-          return err
+          raise err
     else: 
-      return Exception("Table Does not Exist")
+      raise Exception("Table Does not Exist")
 
   
   # Returns all datasetName.tableName as a list
