@@ -1,4 +1,3 @@
-from google.cloud import bigquery
 import pandas
 import pandas_gbq
 import json
