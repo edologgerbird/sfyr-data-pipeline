@@ -45,10 +45,15 @@ class gbqInjest:
     else: 
       raise Exception("Table Does not Exist")
   
+  # Returns all datasetName as a list
+  def getDataset(self):
+    return self.dataset_id
+
   # Returns all datasetName.tableName as a list
   def getTables(self):
-    return self.table_id
+    return self.datasetTable
 
+  
 
 class gbqQuery:
   def __init__(self):
