@@ -51,10 +51,10 @@ class SBRExtractor:
     def extract_SBR_data(self):
         print("Extracting SBR Data ...")
         articles_df = pd.DataFrame(columns = ['Title', 'Text', 'Link', 'Date'])
-        #noOfPages = self.noOfPages()
-        noOfPages = 0
+        noOfPages = self.noOfPages()
+
         for page in range(0,int(noOfPages)+1):
-            print('Processing page : ' + str(page) + ' out of ' + str(noOfPages))
+            print('Processing page : ' + str(page+1) + ' out of ' + str(noOfPages+1))
 
             url_page = self.url + '?page=' + str(page)
             print(url_page)
@@ -70,7 +70,6 @@ class SBRExtractor:
             for j in links:
                 link = j.find("h2",attrs={'class':'item__title size-24'}).find('a')['href'].strip()
                 output_dict = self.scrapeURL(link)
-                print('Scraped')
                 articles_df = articles_df.append({'Link' : link, 'Title': output_dict['title'], 'Text': output_dict['text'], 'Date': output_dict['date']}, ignore_index = True)
         
         self.SBR_data_store = articles_df
