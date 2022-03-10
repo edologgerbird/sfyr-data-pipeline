@@ -128,15 +128,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-
-
 # Config file for API keys etc
 config.py
 
 # Env
 projEnv/
+is3107_proj/
 
 # Archive
 archive/
-
-is3107_proj/
