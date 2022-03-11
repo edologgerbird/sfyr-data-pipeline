@@ -1,4 +1,4 @@
-import pandas
+import pandas as pd
 import pandas_gbq
 import json
 
@@ -12,36 +12,45 @@ class gbqInjest:
 
   def gbqCreateNewTable(self, data, datasetName, tableName):
     datasetTable = datasetName+ "." + tableName
-    try:
-      pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id)
-      self.cred["TABLE_ID"].append(datasetTable)
-      if (datasetName not in self):
-        self.cred["DATASET_ID"].append(datasetName)
-      with open('serviceAccount.json', 'r+') as jsonFile:
-        json.dump(self.cred, jsonFile)
-      return True
-    except Exception as err:
-      raise err    
+    if isinstance(data, pd.DataFrame):
+      try:
+        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id)
+        self.cred["TABLE_ID"].append(datasetTable)
+        if (datasetName not in self):
+          self.cred["DATASET_ID"].append(datasetName)
+        with open('serviceAccount.json', 'r+') as jsonFile:
+          json.dump(self.cred, jsonFile)
+        return True
+      except Exception as err:
+        raise err    
+    else: 
+      raise Exception("Data File not Dataframe")
 
   #datasetTableName is to be in the form of datasetName.TableName
   def gbqInjestAppend(self, data, datasetTable):
     if (datasetTable in self.datasetTable):
-      try:
-          pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="append")
-          return True
-      except Exception as err:
-          raise err
+      if isinstance(data, pd.DataFrame):
+        try:
+            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="append")
+            return True
+        except Exception as err:
+            raise err
+      else: 
+        raise Exception("Data File not Dataframe")
     else: 
       raise Exception("Table Does not Exist")
 
   #datasetTable is to be in the form of datasetName.TableName
   def gbqInjestReplace(self, data, datasetTable):
     if (datasetTable in self.datasetTable):
-      try:
-          pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="replace")
-          return True
-      except Exception as err:
-          raise err
+      if isinstance(data, pd.DataFrame):
+        try:
+            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="replace")
+            return True
+        except Exception as err:
+            raise err
+      else: 
+        raise Exception("Data File not Dataframe")
     else: 
       raise Exception("Table Does not Exist")
   
@@ -74,7 +83,7 @@ class gbqQuery:
     sql = ""+queryString+""
     return self.gbdQueryAPI(sql)
 
-  
+
   def getDataFields(self,datasetTable, *fields):
     fieldString = ""
     
