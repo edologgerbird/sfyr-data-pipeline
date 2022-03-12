@@ -1,12 +1,15 @@
-import config
+#import self.cred['telegramConfig']
 import pandas as pd
 from telethon.sync import TelegramClient
+import json
 
 class TelegramExtractor:
     async def extract_telegram_messages(self):
-        name = config.teleNumber 
-        api_id = config.api_id
-        api_hash = config.api_hash 
+        with open('serviceAccount.json', 'r') as jsonFile:
+            self.cred = json.load(jsonFile)
+        name = self.cred['telegramConfig']["teleNumber"] 
+        api_id = self.cred['telegramConfig']["api_id"]
+        api_hash = self.cred['telegramConfig']["api_hash"] 
         chat = 'https://t.me/sgxinvest'
 
         data = []
