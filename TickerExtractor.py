@@ -1,6 +1,7 @@
 from cgitb import text
 import pandas as pd
 import re
+import config
 
 
 class TickerExtractor:
@@ -10,31 +11,27 @@ class TickerExtractor:
         print("Querying SGX Data...")
         # Will need to replace with GBQ database query
         self.SGX_data = pd.read_csv("SGX_data.csv")
-        print("Successfully retrieved SGX Data...")
+        print("Successfully retrieved SGX Data")
         print("Initialising Mappers...")
         self.SGX_ticker_map = {x: y for x, y in zip(
             self.SGX_data["company_name"], self.SGX_data["company_code"])}
+
         # Handling individual special case stocks
-        self.word_mapper = {"Intl": "Int", "intl": "int",
-                            "YZJ Shipbldg SGD": "Yangzijiang Shipbuilding",
-                            " SPAC": "", "Reit": "REIT", "Singtel": "Singapore Telecommunications",
-                            "SIA": "Singapore Airlines", "CityDev": "City Developments", "STI": "Straits Time Index",
-                            "OCBC Bank": "OCBC", "CapitaLandInvest": "CapitaLand Invest", "AEM SGD": "AEM", "DairyFarm USD": "Dairy Farm"}
 
         extended_dict = dict()
 
         for company_name, company_code in self.SGX_ticker_map.items():
-            for map_in, map_out in self.word_mapper.items():
+            for map_in, map_out in config.word_mapper.items():
                 if map_in in company_name:
                     new_name = company_name.replace(map_in, map_out)
                     extended_dict[new_name] = company_code
             # Handling stocks in camel casing
             company_name_split = " ".join(re.findall(
-                r'[A-Z](?:[a-z0-9]+|[A-Z]*(?=[A-Z]|$))', company_name))
+                r'[A-Z0-9](?:[a-z]+|[A-Z]*(?=[A-Z]|$)*)', company_name))
             if "  " not in company_name_split and len(company_name_split) > 1:
                 extended_dict[company_name_split] = company_code
         self.SGX_ticker_map = {**self.SGX_ticker_map, **extended_dict}
-        print("Successfully Initialised Mappers...")
+        print("Successfully Initialised Mappers")
 
     def load_text_series(self, text_series):
         if isinstance(text_series, pd.core.series.Series):
@@ -65,5 +62,5 @@ class TickerExtractor:
     def populate_ticker_occurences(self, text_series):
         self.load_text_series(text_series)
         self.extract_tickers_from_text_series()
-        print("Tickers successfully extracted and populated...")
+        print("Tickers successfully extracted and populated")
         return self.results_df
