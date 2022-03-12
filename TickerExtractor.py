@@ -27,7 +27,7 @@ class TickerExtractor:
                     extended_dict[new_name] = company_code
             # Handling stocks in camel casing
             company_name_split = " ".join(re.findall(
-                r'[A-Z0-9](?:[a-z]+|[A-Z]*(?=[A-Z]|$)*)', company_name))
+                r'[A-Z0-9](?:[a-z&]*|[A-Z]*(?=[A-Z]|$)*)', company_name))
             if "  " not in company_name_split and len(company_name_split) > 1:
                 extended_dict[company_name_split] = company_code
         self.SGX_ticker_map = {**self.SGX_ticker_map, **extended_dict}
