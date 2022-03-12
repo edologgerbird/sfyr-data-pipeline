@@ -11,7 +11,8 @@ class TickerExtractor:
         self.SGX_ticker_map = {x: y for x, y in zip(
             self.SGX_data["company_name"], self.SGX_data["company_code"])}
 
-        self.word_mapper = {"Intl": "Int", "intl": "int", "YZJ": "Yangzijiang"}
+        self.word_mapper = {"Intl": "Int", "intl": "int",
+                            "YZJ Shipbldg SGD": "Yangzijiang Shipbuilding"}
 
         extended_dict = dict()
 
@@ -21,7 +22,7 @@ class TickerExtractor:
                     new_name = company_name.replace(map_in, map_out)
                     print(new_name)
                     extended_dict[new_name] = company_code
-        # print(extended_dict)
+        print(extended_dict)
 
         self.SGX_ticker_map = {**self.SGX_ticker_map, **extended_dict}
         # print(self.SGX_ticker_map)
@@ -43,7 +44,7 @@ class TickerExtractor:
                 re.escape(company_code))
             #print(re.escape(company_code), re.escape(company_name))
             if regexp_searcher_name.search(text) or regexp_searcher_code.search(text):
-                print(f"Match found for {company_name} {company_code}")
+                #print(f"Match found for {company_name} {company_code}")
                 company_code_container[company_code] = company_name
         return company_code_container
 
