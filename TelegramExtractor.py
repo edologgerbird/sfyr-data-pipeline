@@ -1,4 +1,4 @@
-#import self.cred['telegramConfig']
+#import config
 import pandas as pd
 from telethon.sync import TelegramClient
 import json
