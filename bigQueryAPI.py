@@ -6,9 +6,9 @@ class gbqInjest:
   def __init__(self):
     with open('serviceAccount.json', 'r') as jsonFile:
       self.cred = json.load(jsonFile)
-    self.dataset_id = self.cred["DATASET_ID"]
-    self.datasetTable = self.cred["DATASET_TABLE"]
-    self.project_id = self.cred["PROJECT_ID"]
+    self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
+    self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]
+    self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
 
   def gbqCreateNewTable(self, data, datasetName, tableName):
     datasetTable = datasetName+ "." + tableName
@@ -68,8 +68,9 @@ class gbqQuery:
   def __init__(self):
     with open('serviceAccount.json', 'r') as jsonFile:
       self.cred = json.load(jsonFile)
-    self.datasetTable = self.cred["DATASET_TABLE"]
-    self.project_id = self.cred["PROJECT_ID"]
+    self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
+    self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]
+    self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
 
   def gbdQueryAPI(self, query):
     try: 
