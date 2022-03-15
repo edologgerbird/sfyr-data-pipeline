@@ -13,7 +13,7 @@ word_mapper = {"Intl": "Int", "intl": "int",
                "Nomura Yen1k": "Nomura", " USD": "", " SGD": "", " US$": "", " SG$": ""}
 
 exclusion = ["Singapore", "Sing", "United", "Invest",
-             "Energy", "Investing", "SG", "US", "SGD", "USD", "Top", "Union", "Second", "World", "Asia", "Europe", "America", "Africa", "China", "Korea"]
+             "Energy", "Investing", "SG", "US", "SGD", "USD", "Top", "Union", "Second", "World", "Asia", "Europe", "America", "Africa", "China", "Korea", "Straits"]
 
 
 #  r'[A-Z0-9](?:[a-z&]*|[A-Z]*(?=[A-Z]|$)*)'
