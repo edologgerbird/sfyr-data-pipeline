@@ -18,14 +18,15 @@ class TickerExtractor:
             self.SGX_data["company_code"], self.SGX_data["company_name"])}
         self.SGX_ticker_map = {x: set([y]) for x, y in zip(
             self.SGX_data["company_code"], self.SGX_data["company_name"])}
-        # print(self.SGX_ticker_map)
         for company_code, company_name_list in self.SGX_ticker_map.items():
             for company_name in company_name_list:
                 new_name_cont = set()
+                # Handles Camel Casing
                 company_name_camel_split = " ".join(re.findall(
                     r'[A-Z0-9](?:[a-z]*|[A-Z]*(?=[A-Z]|$)*)', company_name))
                 if len(company_name_camel_split) > 1 and self.check_single_tokens(company_name_camel_split):
                     new_name_cont.add(company_name_camel_split)
+                # Handles special mapping cases
                 for map_in, map_out in config.word_mapper.items():
                     if map_in in company_name:
                         new_name = company_name.replace(map_in, map_out)
@@ -37,8 +38,6 @@ class TickerExtractor:
 
             company_name_list = company_name_list | new_name_cont
             self.SGX_ticker_map[company_code] = list(company_name_list)
-
-        print(self.SGX_ticker_map)
 
     def remove_last_word(self, text):
         text_split = text.split()
@@ -91,7 +90,6 @@ class TickerExtractor:
 
     def populate_ticker_occurences(self, text_series):
         self.load_text_series(text_series)
-        # print(self.text_series)
         self.extract_tickers_from_text_series()
         print("Tickers successfully extracted and populated")
         return self.results_df
