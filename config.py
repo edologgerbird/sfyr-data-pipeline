@@ -1,14 +1,19 @@
-# '''
-# Telegram Scraper API
-# Input login detail below.
-# '''
 
-# teleNumber = None
-# api_id = None
-# api_hash = None
+'''
+TickerExtractor
+'''
 
-# '''
-# SGX Data Scraper API
-# '''
+word_mapper = {"Intl": "Int", "intl": "int",
+               "YZJ Shipbldg SGD": "Yangzijiang Shipbuilding", "YZJ": "Yangzijiang", " SPAC": "",
+               "Reit": "REIT", "Singtel": "Singapore Telecommunications ",
+               "SIA": "Singapore Airlines", "STI": "Straits Time Index",
+               "OCBC Bank": "OCBC", "CapitaLandInvest": "CapitaLand Invest",
+               "JMH": "Jardine Matheson", "Tianjin ZX": "Tianjin Zhongxin",
+               "SingPost": "Singapore Post", "SingtelMBeCW220915": "Singtel",
+               "Nomura Yen1k": "Nomura", " USD": "", " SGD": "", " US$": "", " SG$": ""}
 
-# sgx_api = "https://api.sgx.com/securities/v1.1?params=nc%2Cn%2Ctype%2Cls%2Cm%2Csc%2Cbl%2Csip%2Cex%2Cej%2Cclo%2Ccr%2Ccur%2Cel%2Cr%2Ci%2Ccc%2Cig%2Clf"
+exclusion = ["Singapore", "Sing", "United", "Invest",
+             "Energy", "Investing", "SG", "US", "SGD", "USD", "Top", "Union", "Second", "World", "Asia", "Europe", "America", "Africa", "China", "Korea", "Straits"]
+
+
+#  r'[A-Z0-9](?:[a-z&]*|[A-Z]*(?=[A-Z]|$)*)'

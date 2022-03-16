@@ -134,3 +134,7 @@ is3107_proj/
 
 # Archive
 archive/
+
+# ipynb
+*.ipynb
+*.ipynb_checkpoints
