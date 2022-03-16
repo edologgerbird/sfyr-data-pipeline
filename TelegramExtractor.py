@@ -3,13 +3,14 @@ import pandas as pd
 from telethon.sync import TelegramClient
 import json
 
+
 class TelegramExtractor:
     async def extract_telegram_messages(self):
         with open('serviceAccount.json', 'r') as jsonFile:
             self.cred = json.load(jsonFile)
-        name = self.cred['telegramConfig']["teleNumber"] 
+        name = self.cred['telegramConfig']["teleNumber"]
         api_id = self.cred['telegramConfig']["api_id"]
-        api_hash = self.cred['telegramConfig']["api_hash"] 
+        api_hash = self.cred['telegramConfig']["api_hash"]
 
         data = []
         client = TelegramClient(name, api_id, api_hash)
@@ -19,7 +20,7 @@ class TelegramExtractor:
         except:
             print('Failed to connect: ')
 
-        try: 
+        try:
             if not await client.is_user_authorized():
                 await client.send_code_request(name)
                 me = await client.sign_in(name, input('Enter code: '))
@@ -33,12 +34,15 @@ class TelegramExtractor:
 
             try:
                 async for message in client.iter_messages(chat):
-                    data.append([chat, message.date, message.sender_id, message.text])
+                    data.append(
+                        [chat, message.date, message.sender_id, message.text])
             except:
                 print('unknown error while scraping')
-                
-        print('saved telegram messages to dataframe')
-        df = pd.DataFrame(data, columns=['CHANNEL','DATE', 'SENDER', 'MESSAGE']) # creates a new dataframe
 
-        df.to_csv('tele_data.csv', encoding='utf-8') # save to a CSV file
+        print('saved telegram messages to dataframe')
+        # creates a new dataframe
+        df = pd.DataFrame(
+            data, columns=['CHANNEL', 'DATE', 'SENDER', 'MESSAGE'])
+
+        df.to_csv('tele_data.csv', encoding='utf-8')  # save to a CSV file
         print('exported to csv')
