@@ -3,8 +3,7 @@ from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import requests
 import pandas as pd
-import json
-!pip install cchardet 
+import json 
 import cchardet 
 
 class SBRExtractor:
@@ -25,7 +24,7 @@ class SBRExtractor:
         self.req = Request(url , headers={'User-Agent': 'Mozilla/5.0'})
         webpage = urlopen(self.req).read()
 
-        time.sleep(2)  
+        time.sleep(1)  
 
         soup = BeautifulSoup(webpage, "lxml")
         metadata = soup.find('article')
@@ -61,7 +60,7 @@ class SBRExtractor:
             self.req = Request(url_page , headers={'User-Agent': 'Mozilla/5.0'})
             webpage = urlopen(self.req).read()
             
-            time.sleep(2)
+            time.sleep(1)
             
             soup = BeautifulSoup(webpage, "lxml")
             soup = soup.find('main',attrs={'class':'main-content'})
