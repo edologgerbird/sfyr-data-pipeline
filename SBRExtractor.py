@@ -54,7 +54,7 @@ class SBRExtractor:
         articles_df = pd.DataFrame(columns = ['Title', 'Text', 'Link', 'Date'])
         noOfPages = self.noOfPages()
 
-        for page in range(0,int(2)+1):
+        for page in range(0,int(noOfPages)+1):
         #for page in range(0,int(noOfPages)):
             print('Processing page : ' + str(page+1) + ' out of ' + str(int(noOfPages)+1))
 
