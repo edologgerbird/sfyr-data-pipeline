@@ -1,9 +1,11 @@
-import urllib.request,sys,time
+import time
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
-import requests
 import pandas as pd
 import json 
+
+from TickerExtractor import TickerExtractor
+from STIMovementExtractor import STIMovementExtractor
 
 class SBRExtractor:
     def __init__(self):
@@ -16,14 +18,14 @@ class SBRExtractor:
         webpage = urlopen(self.req).read()
         soup = BeautifulSoup(webpage, "lxml")
         noOfPages = soup.find('a',attrs={'title':'Go to last page'})['href'][6:]
-        print('Total number of pages to scrape: ' + noOfPages)
+        print('Total number of pages to scrape: ' + str(int(noOfPages)+1))
         return noOfPages
     
     def scrapeURL(self, url):
         self.req = Request(url , headers={'User-Agent': 'Mozilla/5.0'})
         webpage = urlopen(self.req).read()
 
-        time.sleep(1)  
+        time.sleep(0.5)  
 
         soup = BeautifulSoup(webpage, "lxml")
         metadata = soup.find('article')
@@ -35,8 +37,9 @@ class SBRExtractor:
         output_dict['title'] = title
         
         #Text
-        text = metadata.find('div',attrs={'class': 'nf__description'}).text.strip()
-        output_dict['text'] = text
+        text = metadata.find('div',attrs={'class': 'nf__description'}).get_text(strip=True)
+        clean_text = text.replace(u'\xa0', u' ')
+        output_dict['text'] = clean_text
         
         #Date
         script = soup.find('script',attrs={'type': 'application/ld+json'}).text
@@ -51,15 +54,15 @@ class SBRExtractor:
         articles_df = pd.DataFrame(columns = ['Title', 'Text', 'Link', 'Date'])
         noOfPages = self.noOfPages()
 
-        for page in range(0,int(noOfPages)+1):
-            print('Processing page : ' + str(page+1) + ' out of ' + str(noOfPages+1))
+        for page in range(0,int(2)+1):
+        #for page in range(0,int(noOfPages)):
+            print('Processing page : ' + str(page+1) + ' out of ' + str(int(noOfPages)+1))
 
             url_page = self.url + '?page=' + str(page)
-            print(url_page)
             self.req = Request(url_page , headers={'User-Agent': 'Mozilla/5.0'})
             webpage = urlopen(self.req).read()
             
-            time.sleep(1)
+            time.sleep(0.5)
             
             soup = BeautifulSoup(webpage, "lxml")
             soup = soup.find('main',attrs={'class':'main-content'})
@@ -73,10 +76,24 @@ class SBRExtractor:
         self.SBR_data_store = articles_df
         print("SBR Data successfully extracted and populated")
 
+    def SBR_data_postprocessing(self):
+        print('Post processing of SBR data extracted...')
+        te = TickerExtractor()
+        ticker = te.populate_ticker_occurences(self.SBR_data_store.Text) #Tickers
+
+        sme = STIMovementExtractor()
+        sti_movement = sme.populate_sti_movement(self.SBR_data_store.Title) #Direction and percentage
+
+        new_df = pd.concat([self.SBR_data_store, ticker, sti_movement],axis=1)
+        new_df = new_df.loc[:,~new_df.columns.duplicated()]
+        self.SBR_data_store = new_df
+        print('Post processing of SBR data completed')
+        
     def SBR_data_to_csv(self):
         self.SBR_data_store.to_csv('SBR_data_stocks.csv', index=False)
         print("SBR Data successfully saved to CSV")
-    
+        
     def load_SBR_data_from_source(self):
         self.extract_SBR_data()
+        self.SBR_data_postprocessing()
         self.SBR_data_to_csv()
