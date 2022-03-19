@@ -19,3 +19,13 @@ Rootdir
 └── data_load
 
     ├── bigQueryAPI.py
+
+└── utils
+
+    ├── serviceAccount.json
+
+└── csv_store
+
+    ├── *.csv    
+
+main.py
