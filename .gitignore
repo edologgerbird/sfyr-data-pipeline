@@ -141,4 +141,4 @@ misc/
 *.ipynb_checkpoints
 
 # Misc
-test.py
+test/
