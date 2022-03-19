@@ -128,13 +128,17 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Env
+# Project Env
 projEnv/
 is3107_proj/
 
-# Archive
+# folders
 archive/
+misc/ 
 
 # ipynb
 *.ipynb
 *.ipynb_checkpoints
+
+# Misc
+test.py
