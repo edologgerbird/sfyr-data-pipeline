@@ -4,12 +4,14 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import json 
 
-from TickerExtractor import TickerExtractor
-from STIMovementExtractor import STIMovementExtractor
+from data_transform.TickerExtractor import TickerExtractor
+from data_transform.STIMovementExtractor import STIMovementExtractor
 
 class SBRExtractor:
     def __init__(self):
-        self.url = 'https://sbr.com.sg/stocks'
+        with open('utils/serviceAccount.json', 'r') as jsonFile:
+            self.cred = json.load(jsonFile)
+        self.url = self.cred["dataSources"]["sbr_url"]
         self.req = None
         self.SBR_data_store = None
 
@@ -90,7 +92,7 @@ class SBRExtractor:
         print('Post processing of SBR data completed')
         
     def SBR_data_to_csv(self):
-        self.SBR_data_store.to_csv('SBR_data_stocks.csv', index=False)
+        self.SBR_data_store.to_csv('csv_store/SBR_data_stocks.csv', index=False)
         print("SBR Data successfully saved to CSV")
         
     def load_SBR_data_from_source(self):

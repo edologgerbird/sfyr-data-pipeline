@@ -1,4 +1,3 @@
-#import config
 import pandas as pd
 from telethon.sync import TelegramClient
 import json
@@ -6,7 +5,7 @@ import json
 
 class TelegramExtractor:
     async def extract_telegram_messages(self):
-        with open('serviceAccount.json', 'r') as jsonFile:
+        with open('utils/serviceAccount.json', 'r') as jsonFile:
             self.cred = json.load(jsonFile)
         name = self.cred['telegramConfig']["teleNumber"]
         api_id = self.cred['telegramConfig']["api_id"]
