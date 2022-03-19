@@ -128,13 +128,31 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Env
+# Project Env
 projEnv/
 is3107_proj/
 
-# Archive
+# folders
 archive/
+misc/ 
 
 # ipynb
 *.ipynb
 *.ipynb_checkpoints
+
+### VisualStudioCode ###
+.vscode/*      # Maybe .vscode/**/* instead - see comments
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+**/.history
+
+# End of https://www.gitignore.io/api/visualstudiocode
+
+# Misc
+test/
+

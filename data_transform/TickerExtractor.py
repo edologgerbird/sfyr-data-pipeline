@@ -1,17 +1,18 @@
-from cgitb import text
 import pandas as pd
 import re
-import config
+import json
 
 
 class TickerExtractor:
     def __init__(self):
         print("Initialising Ticker Extractor...")
+        with open('utils/serviceAccount.json', 'r') as jsonFile:
+            self.config = json.load(jsonFile)["tickerExtractor"]
         self.text_series = None
         self.text_series_reduced = None
         print("Querying SGX Data...")
         # Will need to replace with GBQ database query
-        self.SGX_data = pd.read_csv("SGX_data.csv")
+        self.SGX_data = pd.read_csv("csv_store/SGX_data.csv")
         print("Successfully retrieved SGX Data")
         print("Initialising Mappers...")
         self.SGX_ticker_map_clean = {x: y for x, y in zip(
@@ -27,13 +28,13 @@ class TickerExtractor:
                 if len(company_name_camel_split) > 1 and self.check_single_tokens(company_name_camel_split):
                     new_name_cont.add(company_name_camel_split)
                 # Handles special mapping cases
-                for map_in, map_out in config.word_mapper.items():
+                for map_in, map_out in self.config["word_mapper"].items():
                     if map_in in company_name:
                         new_name = company_name.replace(map_in, map_out)
                         new_name_cont.add(new_name)
-                        if len(self.remove_last_word(new_name)) > 1 and self.remove_last_word(new_name) not in config.exclusion:
+                        if len(self.remove_last_word(new_name)) > 1 and self.remove_last_word(new_name) not in self.config["exclusion"]:
                             new_name_cont.add(self.remove_last_word(new_name))
-                if len(self.remove_last_word(company_name)) > 1 and self.remove_last_word(company_name) not in config.exclusion:
+                if len(self.remove_last_word(company_name)) > 1 and self.remove_last_word(company_name) not in self.config["exclusion"]:
                     new_name_cont.add(self.remove_last_word(company_name))
 
             company_name_list = company_name_list | new_name_cont

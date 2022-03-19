@@ -1,13 +1,11 @@
-from operator import index
 import pandas as pd
 from urllib.request import Request, urlopen
 import json
-# import config
 
 
 class SGXDataExtractor:
     def __init__(self):
-        with open('serviceAccount.json', 'r') as jsonFile:
+        with open('utils/serviceAccount.json', 'r') as jsonFile:
             self.cred = json.load(jsonFile)
         self.url = self.cred["dataSources"]["sgx_api"]
         self.url_request = None

@@ -4,7 +4,7 @@ import json
 
 class gbqInjest:
   def __init__(self):
-    with open('serviceAccount.json', 'r') as jsonFile:
+    with open('utils/serviceAccount.json', 'r') as jsonFile:
       self.cred = json.load(jsonFile)
     self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
     self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]
