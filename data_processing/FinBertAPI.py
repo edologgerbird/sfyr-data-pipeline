@@ -3,6 +3,8 @@ import numpy as np
 import tokenizers
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
+import gc
+import time 
 
 class FinBERT:
     def __init__(self):
@@ -40,21 +42,32 @@ class FinBERT:
          "Neutral":neutral}
       
         df = pd.DataFrame(table, columns = ["Text", "Positive", "Negative", "Neutral"])
-        print("Prediction exported as CSV")
+        
         return df
 
     def FinBert_pipeline(self, text_series):
-        text_list = self.load_text_data(text_series)
-        tokenized = self.tokenize_text(text_list)
-        predictions = self.predict_sentiments(text_list, tokenized)
-        predictions.to_csv("predictions.csv")
+        predictions_mega = pd.DataFrame()
+        chunks = np.array_split(text_series, len(text_series)/100)
+        chunk_counter = 1
+        total_chunks = len(chunks)
+        for chunk in chunks:
+            print(f"==== Chunk {chunk_counter} / {total_chunks}")
+            text_list = self.load_text_data(chunk)
+            tokenized = self.tokenize_text(text_list)
+            predictions = self.predict_sentiments(text_list, tokenized)
+            predictions_mega = pd.concat([predictions_mega, predictions])
+            gc.collect()
+            chunk_counter += 1
+        predictions_mega.to_csv("predictions.csv", index=False)
+        print("Prediction exported as CSV")
         return predictions
         
 
 
 ## Test
-
-# data = pd.read_csv("csv_store/sbr_articles_stocks.csv").head(15)
+# start_time = time.time()
+# data = pd.read_csv("csv_store/sbr_articles_stocks.csv")
 # data["Title_Text"] = data["Title"] + " " + data["Text"]
 # FinBERT_layer = FinBERT()
 # FinBERT_layer.FinBert_pipeline(data["Title_Text"])
+# print("--- %s seconds ---" % (time.time() - start_time))
