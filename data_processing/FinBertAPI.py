@@ -54,7 +54,7 @@ class FinBERT:
 
 ## Test
 
-data = pd.read_csv("csv_store/sbr_articles_stocks.csv").head(15)
-data["Title_Text"] = data["Title"] + " " + data["Text"]
-FinBERT_layer = FinBERT()
-FinBERT_layer.FinBert_pipeline(data["Title_Text"])
+# data = pd.read_csv("csv_store/sbr_articles_stocks.csv").head(15)
+# data["Title_Text"] = data["Title"] + " " + data["Text"]
+# FinBERT_layer = FinBERT()
+# FinBERT_layer.FinBert_pipeline(data["Title_Text"])
