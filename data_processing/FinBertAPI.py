@@ -11,6 +11,7 @@ class FinBERT:
         print("Initialising FinBERT model...")
         self.tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
         self.model = AutoModelForSequenceClassification.from_pretrained("ProsusAI/finbert")
+        self.batch_size = 70
         print("FinBERT model initialised")
 
     def load_text_data(self, text_series):
@@ -47,10 +48,11 @@ class FinBERT:
 
     def FinBert_pipeline(self, text_series):
         predictions_mega = pd.DataFrame()
-        chunks = np.array_split(text_series, len(text_series)/100)
+        chunks = np.array_split(text_series, len(text_series)/self.batch_size)
         chunk_counter = 1
         total_chunks = len(chunks)
         for chunk in chunks:
+            print("--- %s seconds ---" % (time.time() - start_time))
             print(f"==== Chunk {chunk_counter} / {total_chunks}")
             text_list = self.load_text_data(chunk)
             tokenized = self.tokenize_text(text_list)
@@ -65,9 +67,9 @@ class FinBERT:
 
 
 ## Test
-# start_time = time.time()
-# data = pd.read_csv("csv_store/sbr_articles_stocks.csv")
-# data["Title_Text"] = data["Title"] + " " + data["Text"]
-# FinBERT_layer = FinBERT()
-# FinBERT_layer.FinBert_pipeline(data["Title_Text"])
-# print("--- %s seconds ---" % (time.time() - start_time))
+start_time = time.time()
+data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
+data["Title_Text"] = data["Title"] + " " + data["Text"]
+FinBERT_layer = FinBERT()
+FinBERT_layer.FinBert_pipeline(data["Title_Text"])
+print("--- %s seconds ---" % (time.time() - start_time))
