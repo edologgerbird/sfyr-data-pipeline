@@ -12,12 +12,15 @@ class FinBERT:
         print("FinBERT model initialised")
 
     def load_text_data(self, text_series):
-        print("Loading text data...")
-        text_array = np.array(text_series)
-        np.random.shuffle(text_array)
-        text_list = list(text_array)
-        print("Text data loaded.")
-        return text_list
+        if not isinstance(text_series, pd.core.series.Series):
+            raise Exception("Input text not in Series!")
+        else:
+            print("Loading text data...")
+            text_array = np.array(text_series)
+            np.random.shuffle(text_array)
+            text_list = list(text_array)
+            print("Text data loaded.")
+            return text_list
 
     def tokenize_text(self, text_list):
         print("Tokenizing Text...")
@@ -51,7 +54,7 @@ class FinBERT:
 
 ## Test
 
-# data = pd.read_csv("csv_store/sbr_articles_stocks.csv").head(15)
-# data["Title_Text"] = data["Title"] + " " + data["Text"]
-# FinBERT_layer = FinBERT()
-# FinBERT_layer.FinBert_pipeline(data["Title_Text"])
+data = pd.read_csv("csv_store/sbr_articles_stocks.csv").head(15)
+data["Title_Text"] = data["Title"] + " " + data["Text"]
+FinBERT_layer = FinBERT()
+FinBERT_layer.FinBert_pipeline(data["Title_Text"])
