@@ -10,16 +10,20 @@ from firebase_admin import firestore
 
 class firestoreDB:
     def __init__(self):
+        self.db = None
         if not firebase_admin._apps:
             cred = credentials.Certificate(
                 "utils/is3107-group-7-firebase-adminsdk-x2qta-d9cfd2898b.json"
             )
             firebase_admin.initialize_app(cred)
             self.db = firestore.client()
+        if self.db is None:
+            raise Exception("firestore DB failed to initialise.")
 
     # Adds a document to a specified collection.
     def fsAddDocument(self, collection, data):
         self.db.collection(collection).add(data)
+        return True
 
     # Sets a document in a specified collection, merge=False for overwriting.
     def fsSetDocument(self, collection, document, data, merge=True): 
@@ -35,6 +39,8 @@ class firestoreDB:
 
     # Updates multiple fields within a specified doument
     def fsUpdateMultiFields(self, collection, document, update):
+        if not isinstance(update, dict):
+            raise Exception("Update not in dictionary format")
         self.db.collection(collection).document(document).update(update)
         return True
 
@@ -55,7 +61,7 @@ class firestoreDB:
     # Increases a numeric field in a specified field
     def fsIncreaseNumeric(self, collection, document, field, increment):
         self.db.collection(collection).document(document).update(
-            {field : firestore.Increment(50)}
+            {field : firestore.Increment(increment)}
         )
         return True
 
@@ -77,7 +83,7 @@ class firestoreDB:
         if doc.exists:
             return doc.to_dict()
         else:
-            return None
+            raise Exception("Document does not exist!")
 
     # Gets a specified collection
     def fsGetCollection(self, collection):
