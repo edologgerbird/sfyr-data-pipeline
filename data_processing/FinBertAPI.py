@@ -67,9 +67,9 @@ class FinBERT:
 
 
 ## Test
-start_time = time.time()
-data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
-data["Title_Text"] = data["Title"] + " " + data["Text"]
-FinBERT_layer = FinBERT()
-FinBERT_layer.FinBert_pipeline(data["Title_Text"])
-print("--- %s seconds ---" % (time.time() - start_time))
+# start_time = time.time()
+# data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
+# data["Title_Text"] = data["Title"] + " " + data["Text"]
+# FinBERT_layer = FinBERT()
+# FinBERT_layer.FinBert_pipeline(data["Title_Text"])
+# print("--- %s seconds ---" % (time.time() - start_time))
