@@ -1,26 +1,7 @@
 '''
 API for Google Cloud Firestore
-Functionalities:
--- Write
-1. Create or overwrite document
-2. Create without overwriting document
-3. Update a field
-4. Update nested field
-5. Add elements in array
-6. Remove elements in array
-7. Increase a numeric value
-8. Delete document
-9. Delete field
-
--- Read
-1. Get a document
-2. Get multiple documents from a collection
-3. Get all documents from a collection
-4. List subcollections of a document
-
 '''
 
-from numpy import NaN
 import pandas as pd
 import firebase_admin
 from firebase_admin import credentials
@@ -111,28 +92,24 @@ class firestoreDB:
         
 
 
-# Testing 
+# # Testing 
 
-test_data = {
-    "text_headline" : "HEADLINES HERE 2134",
-    "text_body": "lorem ipsum si dollar amet 1234",
-    "date": "24/12/21",
-    "companies": {
-        "S69": "Wilmar",
-        "DF3": "ComfortDelgro",
-        "GDF": "GoodDay Friday"
-    },
-    "STI_movement" : {
-        "direction" : "positive",
-        "percentage" : "15%"
-    }
+# test_data = {
+#     "text_headline" : "HEADLINES HERE 2134",
+#     "text_body": "lorem ipsum si dollar amet 1234",
+#     "date": "24/12/21",
+#     "company_codes" : ["S69", "DF3"],
+#     "STI_movement" : {
+#         "direction" : "positive",
+#         "percentage" : "15%"
+#     }
 
-}
+# }
 
-db = firestoreDB()
-db.fsAddDocument("test_collection", test_data)
-#print(db.fsGetCollection("test_collection"))
-print(db.fsQueryDocuments("test_collection", ("companies.S69", "!=", 0)))
+# db = firestoreDB()
+# db.fsAddDocument("test_collection", test_data)
+# #print(db.fsGetCollection("test_collection"))
+# print(db.fsQueryDocuments("test_collection", ("company_codes", "array_contains", "S69")))
 
 
     
