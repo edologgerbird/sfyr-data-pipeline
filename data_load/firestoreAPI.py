@@ -51,7 +51,7 @@ class firestoreDB:
         )
         return True
 
-    # Returns elements into an array in a specified field
+    # Removes elements in an array in a specified field
     def fsRemoveArrayElement(self, collection, document, field, remove):
         self.db.collection(collection).document(document).update(
             {field : firestore.ArrayRemove([remove])}
@@ -65,9 +65,10 @@ class firestoreDB:
         )
         return True
 
-    # Deletes a specified document
-    def fsDeleteDocument(self, collection, document):
-        self.db.collection(collection).document(document).delete()
+    # Deletes specified documents
+    def fsDeleteDocument(self, collection, documents):
+        for document in documents:
+            self.db.collection(collection).document(document).delete()
         return True
 
     # Deletes a specified field
