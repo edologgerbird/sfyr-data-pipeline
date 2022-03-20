@@ -81,7 +81,7 @@ class firestoreDB:
 
     # Gets a specified collection
     def fsGetCollection(self, collection):
-        return list(doc.to_dict() for doc in self.db.collection(collection).stream())
+        return [doc.to_dict() for doc in self.db.collection(collection).stream()]
 
     # Queries a specified document. Query format 
     def fsQueryDocuments(self, collection, *queries):
@@ -101,7 +101,7 @@ class firestoreDB:
 #     "company_codes" : ["S69", "DF3"],
 #     "STI_movement" : {
 #         "direction" : "positive",
-#         "percentage" : "15%"
+#         "percentage_change" : 15
 #     }
 
 # }
