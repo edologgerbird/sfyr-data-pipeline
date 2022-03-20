@@ -110,24 +110,3 @@ class firestoreDB:
 # db.fsAddDocument("test_collection", test_data)
 # #print(db.fsGetCollection("test_collection"))
 # print(db.fsQueryDocuments("test_collection", ("company_codes", "array_contains", "S69")))
-
-
-    
-        
-    
-
-
-
-
-
-
-
-
-# doc_ref = self.db.collection(u'users').document(u'alovelace')
-# doc_ref.set({
-#     u'first': u'Ada',
-#     u'last': u'Lovelace',
-#     u'born': 1815
-# })
-
-
