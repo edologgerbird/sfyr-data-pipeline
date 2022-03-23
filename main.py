@@ -17,13 +17,13 @@ if __name__ == '__main__':
     print("--- %s seconds ---" % (time.time() - start_time))
     start_time = time.time()
 
-    tele_data_extractor_layer = TelegramExtractor.TelegramExtractor()
+    tele_data_extractor_layer = TelegramExtractor()
     # Extracts all data
     # tele_data_extractor_layer.extract_telegram_messages()
 
     # Extracts from start date to end date
-    tele_data_extractor_layer.extract_telegram_messages(start_date="20-02-2022", end_date="01-01-2022")
+    # tele_data_extractor_layer.extract_telegram_messages(start_date="20-02-2022", end_date="01-01-2022")
 
     # Extracts from latest data until end date
-    # tele_data_extractor_layer.extract_telegram_messages(end_date="01-01-2022")
+    tele_data_extractor_layer.extract_telegram_messages(end_date="01-03-2022")
     print("--- %s seconds ---" % (time.time() - start_time))

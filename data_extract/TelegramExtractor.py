@@ -8,14 +8,14 @@ import json
 
 class TelegramExtractor:
     def __init__(self):
-        with open('serviceAccount.json', 'r') as jsonFile:
+        with open('utils/serviceAccount.json', 'r') as jsonFile:
             self.cred = json.load(jsonFile)
-        name = self.cred['telegramConfig']["teleNumber"]
-        api_id = self.cred['telegramConfig']["api_id"]
-        api_hash = self.cred['telegramConfig']["api_hash"]
+        self.name = self.cred['telegramConfig']["teleNumber"]
+        self.api_id = self.cred['telegramConfig']["api_id"]
+        self.api_hash = self.cred['telegramConfig']["api_hash"]
 
         self.tele_data = []
-        self.client = TelegramClient(name, api_id, api_hash)
+        self.client = TelegramClient(self.name, self.api_id, self.api_hash)
 
     def extract_telegram_messages(self, start_date=None, end_date=None):
         self.start_date = parse(start_date) if (start_date is not None) else datetime.now()
@@ -36,7 +36,7 @@ class TelegramExtractor:
         try:
             await self.client.connect()
         except:
-            print('Failed to connect: ')
+            raise Exception('Failed to connect to Telegram Server')
 
         try:
             if not await self.client.is_user_authorized():
@@ -45,7 +45,7 @@ class TelegramExtractor:
 
                 print('connected to telegram')
         except:
-            print('Failed to login')
+            raise Exception('Failed to login')
 
     async def populate_tele_data(self):
         print('Total no. channels to scrape: ', len(self.cred['telegram_channels']))
