@@ -1,8 +1,7 @@
-import asyncio
-from data_extract.TelegramExtractor import TelegramExtractor
-from data_extract.SGXDataExtractor import SGXDataExtractor
-from data_extract.SBRExtractor import SBRExtractor
 import time
+from data_extract.SBRExtractor import SBRExtractor
+from data_extract.SGXDataExtractor import SGXDataExtractor
+from data_extract.TelegramExtractor import TelegramExtractor
 
 if __name__ == '__main__':
     start_time = time.time()
@@ -18,10 +17,13 @@ if __name__ == '__main__':
     print("--- %s seconds ---" % (time.time() - start_time))
     start_time = time.time()
 
-    tele_data_extractor_layer = TelegramExtractor()
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(tele_data_extractor_layer.extract_telegram_messages())
+    tele_data_extractor_layer = TelegramExtractor.TelegramExtractor()
+    # Extracts all data
+    # tele_data_extractor_layer.extract_telegram_messages()
 
+    # Extracts from start date to end date
+    tele_data_extractor_layer.extract_telegram_messages(start_date="20-02-2022", end_date="01-01-2022")
+
+    # Extracts from latest data until end date
+    # tele_data_extractor_layer.extract_telegram_messages(end_date="01-01-2022")
     print("--- %s seconds ---" % (time.time() - start_time))
-
-
