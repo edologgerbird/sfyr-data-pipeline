@@ -13,7 +13,7 @@ if __name__ == '__main__':
     start_time = time.time()
 
     sbr_data_extraction_layer = SBRExtractor()
-    sbr_data_extraction_layer.load_SBR_data_from_source()
+    sbr_data_extraction_layer.load_SBR_data_from_source('2022-02-30', '2022-03-10')  #Input start and end date here
 
     print("--- %s seconds ---" % (time.time() - start_time))
     start_time = time.time()
