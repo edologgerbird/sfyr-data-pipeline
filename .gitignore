@@ -135,6 +135,7 @@ is3107_proj/
 # folders
 archive/
 misc/ 
+csv_store/
 
 # ipynb
 *.ipynb
