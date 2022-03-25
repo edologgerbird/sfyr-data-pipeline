@@ -17,15 +17,17 @@ class TelegramExtractor:
         self.tele_data = []
         self.client = TelegramClient(self.name, self.api_id, self.api_hash)
 
-    def extract_telegram_messages(self, start_date=None, end_date=None):
-        self.start_date = parse(start_date) if (
-            start_date is not None) else datetime.now()
-        self.end_date = parse(end_date) if (end_date is not None) else None
+    def extract_telegram_messages(self, start_date=None, end_date=datetime.now()):
 
-        if (self.end_date is not None and self.start_date is not None and self.end_date > self.start_date):
-            raise Exception('End date input must be before start date input')
+        # +- 1 day is to include the date itself in scraping of messages
+        self.start_date = parse(start_date, dayfirst=True) + timedelta(days=-1) if (start_date is not None) else None
+        self.end_date = parse(end_date, dayfirst=True) + timedelta(days=1)
 
-        print('extracting from:', self.start_date, 'to:', self.end_date)
+        if (self.start_date is not None and self.end_date is not None and self.start_date > self.end_date):
+            raise Exception('Start date input must be before end date input')
+
+        print('Extracting from:', self.start_date + timedelta(days=1),
+              'to:', self.end_date + timedelta(days=-1), '(inclusive)')
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.connect_to_telegram_server())
@@ -55,9 +57,9 @@ class TelegramExtractor:
         for chat in self.cred['telegram_channels']:
             print('Scraping ', chat)
             try:
-                async for message in self.client.iter_messages(chat):
-                    if (self.end_date is not None and message.date.replace(tzinfo=None) < self.end_date):
-                        print('End_date reached, stopping scrape')
+                async for message in self.client.iter_messages(chat, offset_date=self.end_date):
+                    if (self.start_date is not None and message.date.replace(tzinfo=None) < self.start_date + timedelta(days=+1)):
+                        print('start_date reached, stopping scrape')
                         break
 
                     if (self.check_date_params(message.date.replace(tzinfo=None))):
@@ -74,23 +76,17 @@ class TelegramExtractor:
               len(self.tele_data))
 
     def check_date_params(self, messageDate):
-        if (self.start_date is None and self.end_date is None):
-            # no check needed if date is none
-            return True
-        elif (self.start_date is not None and self.end_date is not None):
-            # with both dates, store only from start date to end date
-            return messageDate < self.start_date and messageDate > self.end_date
-        elif (self.start_date is not None and self.end_date is None):
-            # if only start date given, ensure only messages from the start_date backwards are taken
-            return messageDate < self.start_date
+        if (self.start_date is not None and self.end_date is not None):
+            # takes messages from start_date to end_date
+            return messageDate < self.end_date and messageDate > self.start_date
         elif (self.start_date is None and self.end_date is not None):
-            # if only end_date is given, ensure start date is latest and ensure messageDate is until end_date (going backwards)
-            return messageDate > self.end_date
+            # takes messages from start of chat history until end_date
+            return messageDate < self.end_date
         else:
             return False
 
     def tele_data_to_csv(self):
-        dateString = self.start_date.strftime("%d-%m-%Y")
+        dateString = (self.end_date + timedelta(days=-1)).strftime("%d-%m-%Y")
         # save to a CSV file
         fileName = f'tele_data_{dateString}.csv'
         self.tele_data.to_csv(fileName, encoding='utf-8')
