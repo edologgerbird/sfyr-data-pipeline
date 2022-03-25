@@ -18,7 +18,8 @@ class TelegramExtractor:
         self.client = TelegramClient(self.name, self.api_id, self.api_hash)
 
     def extract_telegram_messages(self, start_date=None, end_date=None):
-        self.start_date = parse(start_date) if (start_date is not None) else datetime.now()
+        self.start_date = parse(start_date) if (
+            start_date is not None) else datetime.now()
         self.end_date = parse(end_date) if (end_date is not None) else None
 
         if (self.end_date is not None and self.start_date is not None and self.end_date > self.start_date):
@@ -48,7 +49,8 @@ class TelegramExtractor:
             raise Exception('Failed to login')
 
     async def populate_tele_data(self):
-        print('Total no. channels to scrape: ', len(self.cred['telegram_channels']))
+        print('Total no. channels to scrape: ',
+              len(self.cred['telegram_channels']))
 
         for chat in self.cred['telegram_channels']:
             print('Scraping ', chat)
@@ -68,10 +70,24 @@ class TelegramExtractor:
         self.tele_data = pd.DataFrame(
             self.tele_data, columns=['CHANNEL', 'DATE', 'SENDER', 'MESSAGE'])
 
-        print('Saved telegram messages to dataframe, no. rows = ', len(self.tele_data))
+        print('Saved telegram messages to dataframe, no. rows = ',
+              len(self.tele_data))
 
     def check_date_params(self, messageDate):
-        return (self.start_date is None and self.end_date is None) or (self.start_date is not None and self.end_date is not None and messageDate < self.start_date and messageDate > self.end_date) or (self.start_date is not None and self.end_date is None and messageDate < self.start_date) or (self.start_date is None and self.end_date is not None and messageDate > self.end_date)
+        if (self.start_date is None and self.end_date is None):
+            # no check needed if date is none
+            return True
+        elif (self.start_date is not None and self.end_date is not None):
+            # with both dates, store only from start date to end date
+            return messageDate < self.start_date and messageDate > self.end_date
+        elif (self.start_date is not None and self.end_date is None):
+            # if only start date given, ensure only messages from the start_date backwards are taken
+            return messageDate < self.start_date
+        elif (self.start_date is None and self.end_date is not None):
+            # if only end_date is given, ensure start date is latest and ensure messageDate is until end_date (going backwards)
+            return messageDate > self.end_date
+        else:
+            return False
 
     def tele_data_to_csv(self):
         dateString = self.start_date.strftime("%d-%m-%Y")
