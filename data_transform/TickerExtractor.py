@@ -8,8 +8,10 @@ class TickerExtractor:
         print("Initialising Ticker Extractor...")
         with open('utils/serviceAccount.json', 'r') as jsonFile:
             self.config = json.load(jsonFile)["tickerExtractor"]
+
         self.text_series = None
         self.text_series_reduced = None
+
         print("Querying SGX Data...")
         # Will need to replace with GBQ database query
         self.SGX_data = pd.read_csv("csv_store/SGX_data.csv")
@@ -19,6 +21,7 @@ class TickerExtractor:
             self.SGX_data["company_code"], self.SGX_data["company_name"])}
         self.SGX_ticker_map = {x: set([y]) for x, y in zip(
             self.SGX_data["company_code"], self.SGX_data["company_name"])}
+
         for company_code, company_name_list in self.SGX_ticker_map.items():
             for company_name in company_name_list:
                 new_name_cont = set()

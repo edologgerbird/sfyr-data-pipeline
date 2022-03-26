@@ -25,6 +25,12 @@ class firestoreDB:
         self.db.collection(collection).add(data)
         return True
 
+    # Adds multiple documents to a specified collection.
+    def fsAddListofDocuments(self, collection, data_list):
+        for data in data_list:
+            self.fsAddDocument(collection, data)
+        return True
+
     # Sets a document in a specified collection, merge=False for overwriting.
     def fsSetDocument(self, collection, document, data, merge=True):
         self.db.collection(collection).document(document).set(data, merge)
@@ -111,8 +117,8 @@ test_data = {
 
 }
 
-db = firestoreDB()
-db.fsAddDocument("test_collection", test_data)
-# print(db.fsGetCollection("test_collection"))
-print(db.fsQueryDocuments("test_collection",
-      ("company_codes", "array_contains", "S69")))
+# db = firestoreDB()
+# db.fsAddDocument("test_collection", test_data)
+# # print(db.fsGetCollection("test_collection"))
+# print(db.fsQueryDocuments("test_collection",
+#       ("company_codes", "array_contains", "S69")))

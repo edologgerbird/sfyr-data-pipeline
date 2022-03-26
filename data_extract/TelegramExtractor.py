@@ -72,7 +72,7 @@ class TelegramExtractor:
 
         # creates a new dataframe
         self.tele_data = pd.DataFrame(
-            self.tele_data, columns=['CHANNEL', 'DATE', 'SENDER', 'MESSAGE'])
+            self.tele_data, columns=['channel', 'date', 'sender', 'message'])
 
         print('Saved telegram messages to dataframe, no. rows = ',
               len(self.tele_data))
