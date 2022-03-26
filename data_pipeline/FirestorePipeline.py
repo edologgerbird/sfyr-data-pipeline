@@ -121,8 +121,4 @@ class FirestorePipeline:
     # Utility Functions
 
     def splitter(self, df):
-        cols = list(df.columns)
-        output = []
-        for col in cols:
-            output.append(df[col])
-        return output
+        return [df[col] for col in list(df.columns)]
