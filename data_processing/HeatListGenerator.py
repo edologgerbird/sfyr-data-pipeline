@@ -38,7 +38,6 @@ class HeatListGenerator:
         return df
 
     def normaliseColumn(self, col):
-        # output = (col-col.min())/(col.max()-col.min())
         output = (col-col.mean())/col.std()
         return output
 
