@@ -4,13 +4,15 @@ import tokenizers
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import gc
-import time 
+import time
+
 
 class FinBERT:
     def __init__(self):
         print("Initialising FinBERT model...")
         self.tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
-        self.model = AutoModelForSequenceClassification.from_pretrained("ProsusAI/finbert")
+        self.model = AutoModelForSequenceClassification.from_pretrained(
+            "ProsusAI/finbert")
         self.batch_size = 70
         print("FinBERT model initialised")
 
@@ -37,13 +39,14 @@ class FinBERT:
         positive = predictions[:, 0].tolist()
         negative = predictions[:, 1].tolist()
         neutral = predictions[:, 2].tolist()
-        table = {'Text':text_list,
-         "Positive":positive,
-         "Negative":negative, 
-         "Neutral":neutral}
-      
-        df = pd.DataFrame(table, columns = ["Text", "Positive", "Negative", "Neutral"])
-        
+        table = {'Text': text_list,
+                 "Positive": positive,
+                 "Negative": negative,
+                 "Neutral": neutral}
+
+        df = pd.DataFrame(
+            table, columns=["Text", "Positive", "Negative", "Neutral"])
+
         return df
 
     def FinBert_pipeline(self, text_series):
@@ -62,11 +65,10 @@ class FinBERT:
             chunk_counter += 1
         predictions_mega.to_csv("predictions.csv", index=False)
         print("Prediction exported as CSV")
-        return predictions
-        
+        return predictions_mega
 
 
-## Test
+# Test
 # start_time = time.time()
 # data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
 # data["Title_Text"] = data["Title"] + " " + data["Text"]
