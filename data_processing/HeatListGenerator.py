@@ -94,8 +94,8 @@ class HeatListGenerator:
 
 
 # Test
-test_csv = pd.read_csv("csv_store/TickerHeatlistInput.csv")
-HeatListGenerator_Layer = HeatListGenerator(test_csv)
-ticker_heat_list, industry_heat_list = HeatListGenerator_Layer.generateHeatList()
-ticker_heat_list.to_csv("csv_store/ticker_heat_list.csv")
-industry_heat_list.to_csv("csv_store/industry_heat_list.csv")
+# test_csv = pd.read_csv("csv_store/TickerHeatlistInput.csv")
+# HeatListGenerator_Layer = HeatListGenerator(test_csv)
+# ticker_heat_list, industry_heat_list = HeatListGenerator_Layer.generateHeatList()
+# ticker_heat_list.to_csv("csv_store/ticker_heat_list.csv")
+# industry_heat_list.to_csv("csv_store/industry_heat_list.csv")
