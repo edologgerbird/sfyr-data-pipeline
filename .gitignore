@@ -155,6 +155,7 @@ misc/
 
 # Misc
 test/
+history.csv
 
 # Creds for firestore
 is3107-group-7-firebase-adminsdk-x2qta-d9cfd2898b.json
