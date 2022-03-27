@@ -7,12 +7,12 @@ import json
 class gbqInjest:
   def __init__(self):
     # Set-up Credentials and Project
-    self.credentials = service_account.Credentials.from_service_account_file('../utils/is3107-group-7-008534a376ad.json',)
+    self.credentials = service_account.Credentials.from_service_account_file('utils/is3107-group-7-008534a376ad.json',)
     self.client = bigquery.Client(credentials=self.credentials)
     self.project = self.client.project
 
     # Set-up Local Config
-    self.credUrl = "../utils/serviceAccount.json"
+    self.credUrl = "utils/serviceAccount.json"
     with open(self.credUrl, 'r') as jsonFile:
       self.cred = json.load(jsonFile)
     self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
@@ -72,12 +72,12 @@ class gbqInjest:
 class gbqQuery:
   def __init__(self):
     # Set-up Credentials and Project
-    self.credentials = service_account.Credentials.from_service_account_file('../utils/is3107-group-7-008534a376ad.json',)
+    self.credentials = service_account.Credentials.from_service_account_file('utils/is3107-group-7-008534a376ad.json',)
     self.client = bigquery.Client(credentials=self.credentials)
     self.project = self.client.project
 
     # Set-up Local Config
-    self.credUrl = "../utils/serviceAccount.json"
+    self.credUrl = "utils/serviceAccount.json"
     with open(self.credUrl, 'r') as jsonFile:
       self.cred = json.load(jsonFile)
     self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
@@ -173,7 +173,7 @@ class gbqQuery:
 
 # print(gbqInjest().gbqInjestReplace(df,"test.test02"))
 # print(gbqInjest().getDataset())
-# print(gbqInjest().getTables())
+print(gbqQuery().getTables())
 
 
 
