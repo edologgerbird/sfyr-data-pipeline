@@ -1,8 +1,7 @@
 import pandas as pd
 from urllib.request import Request, urlopen
 import json
-
-
+from data_load.bigQueryAPI import gbqInjest
 class SGXDataExtractor:
     def __init__(self):
         with open('utils/serviceAccount.json', 'r') as jsonFile:
@@ -43,10 +42,17 @@ class SGXDataExtractor:
         self.SGX_data_store.to_csv("SGX_data.csv", index=False)
         print("SGX Data successfully saved to CSV")
 
+    def SGX_data_to_bg(self):
+        if gbqInjest().gbqCheckTableExist("SGX.Tickers"):
+            return gbqInjest().gbqInjestReplace(self.SGX_data_store, "SGX.Tickers")
+        else: 
+            return gbqInjest().gbqCreateNewTable(self.SGX_data_store, "SGX", "Tickers")
+
     def load_SGX_data_from_source(self):
         self.extract_SGX_json_data()
         self.populate_SGX_data()
-        self.SGX_data_to_csv()
+        self.SGX_data_to_bg()
+        # self.SGX_data_to_csv() # Depreciated 
 
     def get_SGX_data(self):
         return self.SGX_data_store

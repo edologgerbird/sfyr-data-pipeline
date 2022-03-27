@@ -7,12 +7,12 @@ import json
 class gbqInjest:
   def __init__(self):
     # Set-up Credentials and Project
-    self.credentials = service_account.Credentials.from_service_account_file('../utils/is3107-group-7-008534a376ad.json',)
+    self.credentials = service_account.Credentials.from_service_account_file('utils/is3107-group-7-008534a376ad.json',)
     self.client = bigquery.Client(credentials=self.credentials)
     self.project = self.client.project
 
     # Set-up Local Config
-    self.credUrl = "../utils/serviceAccount.json"
+    self.credUrl = "utils/serviceAccount.json"
     with open(self.credUrl, 'r') as jsonFile:
       self.cred = json.load(jsonFile)
     self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
@@ -24,7 +24,7 @@ class gbqInjest:
     if isinstance(data, pd.DataFrame):
       try:
         pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id)
-        self.syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
+        gbqQuery().syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
         return True
       except Exception as err:
         raise err    
@@ -33,7 +33,7 @@ class gbqInjest:
 
   #datasetTableName is to be in the form of datasetName.TableName
   def gbqInjestAppend(self, data, datasetTable):
-    self.syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
+    gbqQuery().syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
     if (datasetTable in self.datasetTable):
       if isinstance(data, pd.DataFrame):
         try:
@@ -48,7 +48,7 @@ class gbqInjest:
 
   #datasetTable is to be in the form of datasetName.TableName
   def gbqInjestReplace(self, data, datasetTable):
-    self.syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
+    gbqQuery().syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
     if (datasetTable in self.datasetTable):
       if isinstance(data, pd.DataFrame):
         try:
@@ -61,6 +61,55 @@ class gbqInjest:
     else: 
       raise Exception("Table Does not Exist")
   
+  def gbqCheckDatasetExist(self,datasetName):
+    gbqDatasets = gbqQuery().getDataset()
+    return datasetName in gbqDatasets
+
+  def gbqCheckTableExist(self, datasetTable):
+    gbqTables = gbqQuery().getTables()
+    return datasetTable in gbqTables
+
+class gbqQuery:
+  def __init__(self):
+    # Set-up Credentials and Project
+    self.credentials = service_account.Credentials.from_service_account_file('utils/is3107-group-7-008534a376ad.json',)
+    self.client = bigquery.Client(credentials=self.credentials)
+    self.project = self.client.project
+
+    # Set-up Local Config
+    self.credUrl = "utils/serviceAccount.json"
+    with open(self.credUrl, 'r') as jsonFile:
+      self.cred = json.load(jsonFile)
+    self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
+    self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
+    self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]    
+    
+  def gbdQueryAPI(self, query):
+    try: 
+      df = pandas_gbq.read_gbq(query, project_id=self.project_id)
+      return df
+    except Exception as err: 
+      raise err
+
+  # queryString takes in SQL Queries
+  def getDataQuery(self, queryString):
+    sql = ""+queryString+""
+    return self.gbdQueryAPI(sql)
+
+  def getDataFields(self,datasetTable, *fields):
+    fieldString = ""
+    
+    for field in fields:
+      fieldString = fieldString + field + ", "
+    fieldString = fieldString[:len(fieldString)-2]
+
+    queryString = "SELECT " + fieldString + " FROM " + datasetTable
+    print(queryString)
+
+    sql = "" + queryString + ""
+
+    return self.gbdQueryAPI(sql)
+
   # Returns all datasetName as a list
   def getDataset(self):
     return self.syncDataset()
@@ -106,48 +155,6 @@ class gbqInjest:
 
     return updatedTableList
 
-class gbqQuery:
-  def __init__(self):
-    # Set-up Credentials and Project
-    self.credentials = service_account.Credentials.from_service_account_file('../utils/is3107-group-7-008534a376ad.json',)
-    self.client = bigquery.Client(credentials=self.credentials)
-    self.project = self.client.project
-
-    # Set-up Local Config
-    self.credUrl = "../utils/serviceAccount.json"
-    with open(self.credUrl, 'r') as jsonFile:
-      self.cred = json.load(jsonFile)
-    self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
-    self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
-    self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]    
-    
-  def gbdQueryAPI(self, query):
-    try: 
-      df = pandas_gbq.read_gbq(query, project_id=self.project_id)
-      return df
-    except Exception as err: 
-      raise err
-
-  # queryString takes in SQL Queries
-  def getDataQuery(self, queryString):
-    sql = ""+queryString+""
-    return self.gbdQueryAPI(sql)
-
-
-  def getDataFields(self,datasetTable, *fields):
-    fieldString = ""
-    
-    for field in fields:
-      fieldString = fieldString + field + ", "
-    fieldString = fieldString[:len(fieldString)-2]
-
-    queryString = "SELECT " + fieldString + " FROM " + datasetTable
-    print(queryString)
-
-    sql = "" + queryString + ""
-
-    return self.gbdQueryAPI(sql)
-
 
 #------- Unit Test Codes -----------#
 
@@ -166,7 +173,7 @@ class gbqQuery:
 
 # print(gbqInjest().gbqInjestReplace(df,"test.test02"))
 # print(gbqInjest().getDataset())
-# print(gbqInjest().getTables())
+print(gbqQuery().getTables())
 
 
 
