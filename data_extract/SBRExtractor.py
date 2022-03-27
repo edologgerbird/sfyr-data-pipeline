@@ -73,7 +73,7 @@ class SBRExtractor:
             soup = soup.find('main',attrs={'class':'main-content'})
             links = soup.find_all('div',attrs={'class':'item with-border-bottom'})
 
-            breaker = False #To break out of nested loop if end date reached already
+            done = False #To break out of nested loop if end date reached already
             for j in links:
                 link = j.find("h2",attrs={'class':'item__title size-24'}).find('a')['href'].strip()
                 output_dict = self.scrapeURL(link)
