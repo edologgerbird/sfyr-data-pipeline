@@ -104,6 +104,7 @@ class gbqQuery:
     fieldString = fieldString[:len(fieldString)-2]
 
     queryString = "SELECT " + fieldString + " FROM " + datasetTable
+    print(queryString)
 
     sql = "" + queryString + ""
 
@@ -119,7 +120,9 @@ class gbqQuery:
     updatedDatasetList = []
 
     if datasets:
+      print("Datasets in project {}:".format(self.project))
       for dataset in datasets:
+        print("\t{}".format(dataset.dataset_id))
         updatedDatasetList.append(dataset.dataset_id)
     
       self.cred["bigQueryConfig"]["DATASET_ID"] = updatedDatasetList   # Updating serviceAccount.json
@@ -141,7 +144,9 @@ class gbqQuery:
     self.syncDataset()
     for dataset in self.dataset_id:
       tables = self.client.list_tables(dataset)  # Make an API request
+      print("Tables contained in '{}':".format(dataset))
       for table in tables:
+        print("{}.{}.{}".format(table.project, table.dataset_id, table.table_id))
         updatedTableList.append(table.dataset_id +"."+ table.table_id)
     
     self.cred["bigQueryConfig"]["DATASET_TABLE"] = updatedTableList   # Updating serviceAccount.json
@@ -168,7 +173,7 @@ class gbqQuery:
 
 # print(gbqInjest().gbqInjestReplace(df,"test.test02"))
 # print(gbqInjest().getDataset())
-print(gbqQuery().getTables())
+# print(gbqQuery().getTables())
 
 
 
