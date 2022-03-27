@@ -60,6 +60,14 @@ class gbqInjest:
         raise Exception("Data File not Dataframe")
     else: 
       raise Exception("Table Does not Exist")
+  
+  def gbqCheckDatasetExist(self,datasetName):
+    gbqDatasets = gbqQuery().getDataset()
+    return datasetName in gbqDatasets
+
+  def gbqCheckTableExist(self, datasetTable):
+    gbqTables = gbqQuery().getTables()
+    return datasetTable in gbqTables
 
 class gbqQuery:
   def __init__(self):
