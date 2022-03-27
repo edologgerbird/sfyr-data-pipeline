@@ -159,5 +159,8 @@ csv_store/
 test/
 csv_store/
 
-# Creds for firestore
+### Creds ###
+# Firestore ServiceAccount
 is3107-group-7-firebase-adminsdk-x2qta-d9cfd2898b.json
+# BigQuery ServiceAccount
+is3107-group-7-008534a376ad.json
