@@ -4,6 +4,8 @@ import pandas as pd
 import json 
 import sys
 import cchardet  #To make scrapping faster
+from datetime import datetime
+from dateutil import parser
 
 class SBRExtractor:
     def __init__(self):
@@ -20,8 +22,7 @@ class SBRExtractor:
         webpage = urlopen(self.req).read()
         soup = BeautifulSoup(webpage, "lxml")
         noOfPages = soup.find('a',attrs={'title':'Go to last page'})['href'][6:]
-        #print('Total number of webpages: ' + str(int(noOfPages)+1))
-        return noOfPages
+        return int(noOfPages)
     
     def scrapeURL(self, url):
         self.req = Request(url , headers={'User-Agent': 'Mozilla/5.0'})
@@ -45,23 +46,23 @@ class SBRExtractor:
         script = soup.find('script',attrs={'type': 'application/ld+json'}).text
         dictionary = json.loads(script)
         date = dictionary['@graph'][0]['datePublished']
-        output_dict['date'] = date
+        output_dict['date'] = parser.parse(date)
         
         return output_dict
     
-    def extract_SBR_data(self, start_date, end_date):
+    def extract_SBR_data(self, start_date=None, end_date=datetime.now()):
         print("Extracting SBR Data ...")
 
-        self.start_date = start_date
+        #If start date is None, then temporarily sets start date as 2001-01-01 as SBR was founded in 2001
+        self.start_date = parser.parse(start_date) if (start_date is not None) else datetime(2001, 1, 1)  
         self.end_date = end_date
-        
-        #If start date is later than end date, an exception will be raised
-        if self.start_date > self.end_date:
-            raise Exception("Start date is later than end date. Please enter a valid date range.")
+
+        if (self.start_date is not None and self.end_date is not None and self.start_date > self.end_date):
+            raise Exception('Start date input must be before end date input')
 
         noOfPages = self.noOfPages()
 
-        for page in range(0,int(noOfPages)+1):
+        for page in range(0, noOfPages+1):
             
             url_page = self.url + '?page=' + str(page)
             self.req = Request(url_page , headers={'User-Agent': 'Mozilla/5.0'})
@@ -76,13 +77,13 @@ class SBRExtractor:
                 link = j.find("h2",attrs={'class':'item__title size-24'}).find('a')['href'].strip()
                 output_dict = self.scrapeURL(link)
                 
-                if output_dict['date'] >= self.end_date:
+                article_date = output_dict['date'].replace(tzinfo=None)
+                if article_date >= self.end_date:
                     continue
                     
-                if output_dict['date'] >= self.start_date:
-                    sys.stdout.write("Currently scrapping article of datetime: %s \r" % (output_dict['date']) )
+                if article_date >= self.start_date:
+                    sys.stdout.write("Currently scrapping article of datetime: %s \r" % (article_date) )
                     sys.stdout.flush()
-                    #print('Added: ' + output_dict['title'] + ' Date: ' + output_dict['date'])
                     self.SBR_data_store = self.SBR_data_store.append({'Link' : link, 'Title': output_dict['title'], 'Text': output_dict['text'], 'Date': output_dict['date']}, ignore_index = True)
                 else:
                     breaker = True
@@ -98,6 +99,9 @@ class SBRExtractor:
         self.SBR_data_store.to_csv('./csv_store/SBR_data_stocks.csv', index=False ,encoding='utf-8-sig')
         print("SBR Data successfully saved to CSV")
         
-    def load_SBR_data_from_source(self, start_date, end_date):
-        self.extract_SBR_data(start_date, end_date)
+    def load_SBR_data_from_source(self, start_date=None):
+        if start_date:
+            self.extract_SBR_data(start_date)
+        else: 
+            self.extract_SBR_data()
         self.SBR_data_to_csv()
