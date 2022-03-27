@@ -1,11 +1,14 @@
-import time
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import pandas as pd
 import json 
 import sys
+<<<<<<< HEAD
 from datetime import datetime
 from dateutil import parser
+=======
+import cchardet  #To make scrapping faster
+>>>>>>> 6baeef7 (Update SBRExtractor.py)
 
 class SBRExtractor:
     def __init__(self):
@@ -56,6 +59,7 @@ class SBRExtractor:
         #If start date is None, then temporarily sets start date as 2001-01-01 as SBR was founded in 2001 (All articles will be scrapped)
         self.start_date = parser.parse(start_date, dayfirst=True) if (start_date is not None) else datetime(2001, 1, 1)  
         
+<<<<<<< HEAD
         #If end date is None, then end date will be current datetime
         self.end_date = parser.parse(end_date, dayfirst=True) if (end_date is not None) else datetime.now()
 
@@ -65,6 +69,15 @@ class SBRExtractor:
         noOfPages = self.noOfPages()
 
         for page in range(0, noOfPages+1):
+=======
+        #If start date is later than end date, an exception will be raised
+        if self.start_date > self.end_date:
+            raise Exception("Start date is later than end date. Please enter a valid date range.")
+
+        noOfPages = self.noOfPages()
+
+        for page in range(0,int(noOfPages)+1):
+>>>>>>> 6baeef7 (Update SBRExtractor.py)
             
             url_page = self.url + '?page=' + str(page)
             self.req = Request(url_page , headers={'User-Agent': 'Mozilla/5.0'})
@@ -103,4 +116,8 @@ class SBRExtractor:
         
     def load_SBR_data_from_source(self, start_date=None, end_date=None):    
         self.extract_SBR_data(start_date, end_date)
+<<<<<<< HEAD
         self.SBR_data_to_csv()
+=======
+        self.SBR_data_to_csv()
+>>>>>>> 6baeef7 (Update SBRExtractor.py)
