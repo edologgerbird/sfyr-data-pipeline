@@ -87,11 +87,11 @@ class SBRExtractor:
                     sys.stdout.flush()
                     self.SBR_data_store = self.SBR_data_store.append({'Link' : link, 'Title': output_dict['title'], 'Text': output_dict['text'], 'Date': output_dict['date']}, ignore_index = True)
                 else:
-                    breaker = True
+                    done = True
                     print('\nAll articles until end date has been scraped')
                     break
 
-            if breaker:
+            if done:
                 break
 
         print("SBR Data successfully extracted and populated")
