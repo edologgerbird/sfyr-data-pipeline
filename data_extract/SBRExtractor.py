@@ -73,7 +73,6 @@ class SBRExtractor:
             soup = soup.find('main',attrs={'class':'main-content'})
             links = soup.find_all('div',attrs={'class':'item with-border-bottom'})
 
-            done = False #To break out of nested loop if end date reached already
             for j in links:
                 link = j.find("h2",attrs={'class':'item__title size-24'}).find('a')['href'].strip()
                 output_dict = self.scrapeURL(link)
@@ -87,14 +86,9 @@ class SBRExtractor:
                     sys.stdout.flush()
                     self.SBR_data_store = self.SBR_data_store.append({'Link' : link, 'Title': output_dict['title'], 'Text': output_dict['text'], 'Date': output_dict['date']}, ignore_index = True)
                 else:
-                    done = True
                     print('\nAll articles until end date has been scraped')
-                    break
-
-            if done:
-                break
-
-        print("SBR Data successfully extracted and populated")
+                    print("SBR Data successfully extracted and populated")
+                    return True
         
     def SBR_data_to_csv(self):
         #self.SBR_data_store.to_csv('.\csv_store\SBR_data_stocks.csv', index=False ,encoding='utf-8-sig')
