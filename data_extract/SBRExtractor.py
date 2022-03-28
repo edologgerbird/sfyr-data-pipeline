@@ -91,9 +91,10 @@ class SBRExtractor:
                     return True
         
     def SBR_data_to_csv(self):
-        #self.SBR_data_store.to_csv('.\csv_store\SBR_data_stocks.csv', index=False ,encoding='utf-8-sig')
+        self.SBR_data_store.to_csv('.\csv_store\SBR_data_stocks.csv', index=False ,encoding='utf-8-sig')
         print("SBR Data successfully saved to CSV")
         
     def load_SBR_data_from_source(self, start_date=None, end_date=None):    
         self.extract_SBR_data(start_date, end_date)
         self.SBR_data_to_csv()
+        return self.SBR_data_store
