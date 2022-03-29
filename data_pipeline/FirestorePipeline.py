@@ -100,7 +100,7 @@ class FirestorePipeline:
             {"text_headline": headline,
              "text_body": body,
              "link": link,
-             "date": date,  # self.string_to_date(date, "T"),
+             "date": date,
              "tickers": [ticker for ticker in tickers.keys()],
              "sti_movement": {"direction": direction, "amount": amount},
              "sentiments": list(sentiments.values())[0]}
@@ -114,7 +114,7 @@ class FirestorePipeline:
         # Telegram Data
         self.tele_data_to_upload = [
             {"channel": channel,
-             "date": date,  # self.string_to_date(date, " "),
+             "date": date,
              "sender": sender,
              "message": message,
              "tickers": [ticker for ticker in tickers.keys()],
