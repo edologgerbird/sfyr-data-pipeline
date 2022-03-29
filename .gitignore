@@ -159,6 +159,7 @@ csv_store/
 test/
 csv_store/
 *.csv
+*.session
 
 ### Creds ###
 # Firestore ServiceAccount
