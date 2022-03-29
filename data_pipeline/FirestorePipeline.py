@@ -14,6 +14,7 @@ from datetime import datetime as dt
 from data_load.firestoreAPI import firestoreDB
 from data_processing.FinBertAPI import FinBERT
 from data_transform.TickerExtractor import TickerExtractor
+from data_transform.STIMovementExtractor import STIMovementExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.SBRExtractor import SBRExtractor
 # Data Transforming
@@ -24,8 +25,10 @@ class FirestorePipeline:
     def __init__(self):
         print("Initialising Firestore Pipeline...")
         # self.tele_data_extractor_layer = TelegramExtractor()
-        self.sbre_data_extractor_layer = SBRExtractor()
+        self.SBR_data_extractor_layer = SBRExtractor()
+        self.tele_data_extractor_layer = TelegramExtractor()
         self.ticker_extractor_layer = TickerExtractor()
+        self.STI_movement_extractor_layer = STIMovementExtractor()
         self.FinBERT_layer = FinBERT()
         self.firestoreDB_layer = firestoreDB()
 
@@ -39,22 +42,27 @@ class FirestorePipeline:
         self.SBR_data_to_upload = None
         print("Firestore Pipeline Initialised")
 
+    # date format: "dd-mm-yyyy"
     def extract_data_from_source(self, start_date, end_date):
         # Extract from SBR
-        self.SBR_data_raw = pd.read_csv(
-            "csv_store/SBR_data_stocks.csv").head(10)
+        self.SBR_data_raw = self.SBR_data_extractor_layer.load_SBR_data_from_source(
+            start_date=start_date, end_date=end_date)
         # Extract from Telegram
-        # self.tele_data_raw = self.tele_data_extractor_layer.extract_telegram_messages(
-        #     start_date=start_date, end_date=end_date)
-        self.tele_data_raw = pd.read_csv("csv_store/tele_data.csv").head(10)
+        self.tele_data_raw = self.tele_data_extractor_layer.extract_telegram_messages(
+            start_date=start_date, end_date=end_date)
 
     def transform_and_process_data(self):
         # Ticker Extraction for SBR Data
         SBR_data_with_tickers = self.ticker_extractor_layer.populate_ticker_occurences(
             self.SBR_data_raw["Title"] + " " + self.SBR_data_raw["Text"])
-        # Ticker Extraction for Tele data
+
+        # Ticker Extraction for Tele Data
         tele_data_with_tickers = self.ticker_extractor_layer.populate_ticker_occurences(
             self.tele_data_raw["message"])
+
+        # STI Movement Extraction for SBR Data
+        SBR_data_with_tickers[['STI_direction', 'STI_movement']] = self.STI_movement_extractor_layer.populate_sti_movement(
+            self.SBR_data_raw['Text'])[['Direction of STI Movement', 'Percentage of STI Movement']]
 
         # NLP for SBR Data sentiments
         SBR_data_with_sentiments = self.FinBERT_layer.FinBert_pipeline(
@@ -78,8 +86,8 @@ class FirestorePipeline:
 
         # self.SBR_data_processed = SBR_data_with_tickers
         self.SBR_data_processed = SBR_data_with_tickers
-        self.SBR_data_processed[["Date", "Title", "Text", "Link", "STI_direction", "STI_movement"]
-                                ] = self.SBR_data_raw[["Date", "Title", "Text", "Link", "Direction of STI Movement", "Percentage of STI Movement"]]
+        self.SBR_data_processed[["Date", "Title", "Text", "Link"]
+                                ] = self.SBR_data_raw[["Date", "Title", "Text", "Link"]]
 
         self.tele_data_processed = tele_data_with_tickers
         self.tele_data_processed[["channel", "date", "sender"]
@@ -92,7 +100,7 @@ class FirestorePipeline:
             {"text_headline": headline,
              "text_body": body,
              "link": link,
-             "date": self.string_to_date(date, "T"),
+             "date": date,  # self.string_to_date(date, "T"),
              "tickers": [ticker for ticker in tickers.keys()],
              "sti_movement": {"direction": direction, "amount": amount},
              "sentiments": list(sentiments.values())[0]}
@@ -106,7 +114,7 @@ class FirestorePipeline:
         # Telegram Data
         self.tele_data_to_upload = [
             {"channel": channel,
-             "date": self.string_to_date(date, " "),
+             "date": date,  # self.string_to_date(date, " "),
              "sender": sender,
              "message": message,
              "tickers": [ticker for ticker in tickers.keys()],

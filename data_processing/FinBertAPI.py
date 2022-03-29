@@ -14,7 +14,7 @@ class FinBERT:
         self.tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
         self.model = AutoModelForSequenceClassification.from_pretrained(
             "ProsusAI/finbert")
-        self.batch_size = 50
+        self.batch_size = 10
         print("FinBERT model initialised")
 
     def load_text_data(self, text_series):
@@ -51,9 +51,12 @@ class FinBERT:
         return df
 
     def FinBert_pipeline(self, text_series):
-        predictions_mega = pd.DataFrame()
+        predictions_mega = pd.DataFrame(
+            columns=["Text", "Positive", "Negative", "Neutral"])
+        if len(text_series) == 0:
+            return predictions_mega
         if len(text_series) < self.batch_size:
-            self.batch_size = len(text_series)
+            self.batch_size = max(len(text_series), 1)
         chunks = np.array_split(text_series, len(text_series)/self.batch_size)
         chunk_counter = 1
         total_chunks = len(chunks)
@@ -61,13 +64,8 @@ class FinBERT:
             print(f"==== Chunk {chunk_counter} / {total_chunks}")
             text_list = self.load_text_data(chunk)
             tokenized = self.tokenize_text(text_list)
-            try:
-                predictions = self.predict_sentiments(text_list, tokenized)
-            except:
-                if self.batch_size <= 0:
-                    raise Exception("Failed to predict sentiments")
-                self.batch_size -= 10
-                self.FinBert_pipeline(text_series)
+            predictions = self.predict_sentiments(text_list, tokenized)
+
             predictions_mega = pd.concat([predictions_mega, predictions])
             gc.collect()
             chunk_counter += 1
