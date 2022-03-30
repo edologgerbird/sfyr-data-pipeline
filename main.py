@@ -2,7 +2,7 @@ import time
 from data_extract.SBRExtractor import SBRExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
-from data_load.bigQueryAPI import gbqInjest, gbqQuery
+from data_load.bigQueryAPI import bigQueryDB
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
 from data_pipeline.FirestorePipeline import FirestorePipeline
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
 
     # ---- Test YahooFinNews Extraction and Pipeline ---- #
-    tickerNews = yahooFinNewsExtractor().getSGXTickerNews()
+    # tickerNews = yahooFinNewsExtractor().getSGXTickerNews()
 
     # yahoo_fin_pipeline_layer = yahooFinNewsPipeline()
     # formattedData = yahoo_fin_pipeline_layer.tickerNewsFormat(tickerNews)
@@ -38,5 +38,9 @@ if __name__ == '__main__':
     # FireStore_layer = FirestorePipeline()
     # FireStore_layer.execute_pipeline(
     #     start_date="15-02-2022", end_date="15-02-2022")
+
+    # ---- Test FireStore Pipeline ---- #
+    # print(bigQueryDB().gbqDeleteTable("test.test"))
+
 
     # #print("--- %s seconds ---" % (time.time() - start_time))
