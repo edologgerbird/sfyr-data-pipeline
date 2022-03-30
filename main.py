@@ -43,4 +43,4 @@ if __name__ == '__main__':
     # print(bigQueryDB().gbqDeleteTable("test.test"))
 
 
-    # #print("--- %s seconds ---" % (time.time() - start_time))
+    print("--- %s seconds ---" % (time.time() - start_time))
