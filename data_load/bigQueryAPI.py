@@ -173,7 +173,7 @@ class gbqQuery:
 
 # print(gbqInjest().gbqInjestReplace(df,"test.test02"))
 # print(gbqInjest().getDataset())
-print(gbqQuery().getTables())
+# print(gbqQuery().getTables())
 
 
 

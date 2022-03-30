@@ -1,0 +1,30 @@
+[
+  {
+    "summary": "'The Australian unit of telecom firm Singapore Telecommunications said on Friday it had appointed Gladys Berejiklian, the former premier of New South Wales (NSW) state, to its executive team.  Berejiklian, who served as NSW premier between 2017 and 2021, will take up the newly created role of managing director, enterprise, business and institutional, Optus said, as the wireless carrier looks to gain market share in the country.",
+    "summary_detail": {
+      "type": "text/html",
+      "lang": "None",
+      "base": "base Query URL",
+      "value": "'The Australian unit of telecom firm Singapore Telecommunications said on Friday it had appointed Gladys Berejiklian, the former premier of New South Wales (NSW) state, to its executive team.  Berejiklian, who served as NSW premier between 2017 and 2021, will take up the newly created role of managing director, enterprise, business and institutional, Optus said, as the wireless carrier looks to gain market share in the country."
+    },
+    "id": "17a69fb2-84dd-35e2-a4b7-3477cba2377c",
+    "guidislink": false,
+    "links": [
+      {
+        "rel": "alternate",
+        "type": "text/html",
+        "href": "url_article"
+      }
+    ],
+    "link": "url_article",
+    "published": "Fri, 11 Feb 2022 00:34:05 +0000",
+    "published_parsed": "time.struct_time(tm_year=2022, tm_mon=2, tm_mday=11, tm_hour=0, tm_min=34, tm_sec=5, tm_wday=4, tm_yday=42, tm_isdst=0)",
+    "title": "'Optus appoints ex-NSW premier Gladys Berejiklian to executive team",
+    "title_detail": {
+      "type": "text/plain",
+      "language": "None",
+      "base": "https://feeds.finance.yahoo.com/rss/2.0/headline?s=Z74.SI&region=US&lang=en-US",
+      "value": "Optus appoints ex-NSW premier Gladys Berejiklian to executive team"
+    }
+  }
+]
