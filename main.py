@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
 
     # ---- Test YahooFinNews Extraction and Pipeline ---- #
-    tickerNews = yahooFinNewsExtractor().getSGXTickerNews()
+    # tickerNews = yahooFinNewsExtractor().getSGXTickerNews()
 
     # yahoo_fin_pipeline_layer = yahooFinNewsPipeline()
     # formattedData = yahoo_fin_pipeline_layer.tickerNewsFormat(tickerNews)
