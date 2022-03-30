@@ -9,6 +9,8 @@ Rootdir
     ├── SGXDataExtractor.py
 
     ├── TelegramExtractor.py
+    
+    ├── YahooFinNewsExtractor.py
 
 └── data_transform
 
@@ -19,6 +21,28 @@ Rootdir
 └── data_load
 
     ├── bigQueryAPI.py
+    
+    ├── firestoreAPI.py
+    
+└── data_pipeline
+
+    ├── FirestorePipeline.py
+    
+    ├── HeatListPipeline.py
+    
+    ├── yahooFinNewsPipeline.py
+    
+└── data_processing
+
+    ├── FinBertAPI.py
+    
+    ├── HeatListGenerator.py
+    
+└── data_transform
+
+    ├── STIMovementExtractor.py
+    
+    ├── TickerExtractor.py
 
 └── utils
 
@@ -29,3 +53,5 @@ Rootdir
     ├── *.csv    
 
 main.py
+sampleDAG.py
+requirements.txt
