@@ -1,7 +1,7 @@
 from yahoo_fin import news
 from tqdm import tqdm
 import pandas as pd
-from data_load.bigQueryAPI import gbqQuery
+from data_load.bigQueryAPI import bigQueryDB
 
 class yahooFinNewsExtractor:
     def __init__(self):
@@ -22,7 +22,7 @@ class yahooFinNewsExtractor:
         return output
     
     def getSGXTickerNews(self):
-        gbqQueryOutput = gbqQuery().getDataFields(self.datasetTable,"company_code")
+        gbqQueryOutput = bigQueryDB.getDataFields(self.datasetTable,"company_code")
         sgxTickers = gbqQueryOutput.loc[:,"company_code"].tolist()
         return self.getTickerNews(sgxTickers, True)
 
