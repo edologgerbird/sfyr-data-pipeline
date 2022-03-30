@@ -43,10 +43,10 @@ class SGXDataExtractor:
         print("SGX Data successfully saved to CSV")
 
     def SGX_data_to_bg(self):
-        if bigQueryDB.gbqCheckTableExist("SGX.Tickers"):
-            return bigQueryDB.gbqInjestReplace(self.SGX_data_store, "SGX.Tickers")
+        if bigQueryDB().gbqCheckTableExist("SGX.Tickers"):
+            return bigQueryDB().gbqInjestReplace(self.SGX_data_store, "SGX.Tickers")
         else: 
-            return bigQueryDB.gbqCreateNewTable(self.SGX_data_store, "SGX", "Tickers")
+            return bigQueryDB().gbqCreateNewTable(self.SGX_data_store, "SGX", "Tickers")
 
     def load_SGX_data_from_source(self):
         self.extract_SGX_json_data()
