@@ -20,7 +20,8 @@ class TelegramExtractor:
     def extract_telegram_messages(self, start_date=None, end_date=datetime.now()):
 
         # +- 1 day is to include the date itself in scraping of messages
-        self.start_date = parse(start_date, dayfirst=True) + timedelta(days=-1) if (start_date is not None) else None
+        self.start_date = parse(start_date, dayfirst=True) + \
+            timedelta(days=-1) if (start_date is not None) else None
         self.end_date = parse(end_date, dayfirst=True) + timedelta(days=1)
 
         if (self.start_date is not None and self.end_date is not None and self.start_date > self.end_date):
@@ -32,7 +33,8 @@ class TelegramExtractor:
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.connect_to_telegram_server())
         loop.run_until_complete(self.populate_tele_data())
-        self.tele_data_to_csv()
+        # self.tele_data_to_csv()
+        return self.tele_data
 
     async def connect_to_telegram_server(self):
         print('Connecting to Telegram servers...')
@@ -70,7 +72,7 @@ class TelegramExtractor:
 
         # creates a new dataframe
         self.tele_data = pd.DataFrame(
-            self.tele_data, columns=['CHANNEL', 'DATE', 'SENDER', 'MESSAGE'])
+            self.tele_data, columns=['channel', 'date', 'sender', 'message'])
 
         print('Saved telegram messages to dataframe, no. rows = ',
               len(self.tele_data))
