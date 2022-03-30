@@ -33,7 +33,7 @@ class TelegramExtractor:
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.connect_to_telegram_server())
         loop.run_until_complete(self.populate_tele_data())
-        self.tele_data_to_csv()
+        # self.tele_data_to_csv()
         return self.tele_data
 
     async def connect_to_telegram_server(self):

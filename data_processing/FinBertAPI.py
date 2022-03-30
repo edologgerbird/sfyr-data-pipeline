@@ -69,8 +69,6 @@ class FinBERT:
             predictions_mega = pd.concat([predictions_mega, predictions])
             gc.collect()
             chunk_counter += 1
-        predictions_mega.to_csv("predictions.csv", index=False)
-        print("Prediction exported as CSV")
         return predictions_mega
 
 
