@@ -1,6 +1,5 @@
 from yahoo_fin import news
 from tqdm import tqdm
-
 import pandas as pd
 from data_load.bigQueryAPI import gbqQuery
 
