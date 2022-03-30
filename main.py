@@ -6,6 +6,9 @@ from data_load.bigQueryAPI import gbqInjest, gbqQuery
 from data_extract.yahooFinNews import yahooFinNews
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
 
+
+from data_pipeline.FirestorePipeline import FirestorePipeline
+
 if __name__ == '__main__':
     start_time = time.time()
     # sgx_data_extractor_layer = SGXDataExtractor()
@@ -15,16 +18,23 @@ if __name__ == '__main__':
     # start_time = time.time()
 
     # sbr_data_extraction_layer = SBRExtractor()
-    # sbr_data_extraction_layer.load_SBR_data_from_source()
+    # sbr_data_extraction_layer.load_SBR_data_from_source(start_date="01-02-2022", end_date="10-03-2022")
 
     # print("--- %s seconds ---" % (time.time() - start_time))
     # start_time = time.time()
 
+    #tele_data_extractor_layer = TelegramExtractor()
+
     # tele_data_extractor_layer = TelegramExtractor()
+
     # Extracts all data
     # tele_data_extractor_layer.extract_telegram_messages()
 
     # Extracts from start date to end date
+
+    #tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
+    # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
+
     # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
 
     # Test YahooFinNews Extraction
@@ -35,3 +45,8 @@ if __name__ == '__main__':
     print(yahooFinNewsPipeline().tickerNewsFormat(tickerNews))
     print("--- %s seconds ---" % (time.time() - start_time))
 
+    # FireStore_layer = FirestorePipeline()
+    # FireStore_layer.execute_pipeline(
+    #     start_date="15-02-2022", end_date="15-02-2022")
+
+    #print("--- %s seconds ---" % (time.time() - start_time))
