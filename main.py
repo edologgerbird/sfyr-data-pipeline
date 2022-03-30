@@ -39,8 +39,8 @@ if __name__ == '__main__':
     # FireStore_layer.execute_pipeline(
     #     start_date="15-02-2022", end_date="15-02-2022")
 
-    # ---- Test FireStore Pipeline ---- #
-    # print(bigQueryDB().gbqDeleteTable("test.test"))
 
+    # ---- Test BigQuery Pipeline ---- #
+    # print(bigQueryDB().gbqDeleteTable("test.test"))
 
     print("--- %s seconds ---" % (time.time() - start_time))
