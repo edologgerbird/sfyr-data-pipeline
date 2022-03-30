@@ -6,6 +6,7 @@ import json
 
 class gbqInjest:
   def __init__(self):
+    print("Initialising GBQ Pipeline...")
     # Set-up Credentials and Project
     self.credentials = service_account.Credentials.from_service_account_file('utils/is3107-group-7-008534a376ad.json',)
     self.client = bigquery.Client(credentials=self.credentials)
@@ -18,6 +19,7 @@ class gbqInjest:
     self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
     self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
     self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]    
+    print("GBQ Pipeline Initialised")
 
   def gbqCreateNewTable(self, data, datasetName, tableName):
     datasetTable = datasetName+ "." + tableName
@@ -71,6 +73,7 @@ class gbqInjest:
 
 class gbqQuery:
   def __init__(self):
+    print("Initialising GBQ Pipeline...")
     # Set-up Credentials and Project
     self.credentials = service_account.Credentials.from_service_account_file('utils/is3107-group-7-008534a376ad.json',)
     self.client = bigquery.Client(credentials=self.credentials)
@@ -83,11 +86,13 @@ class gbqQuery:
     self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
     self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
     self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]    
+    print("GBQ Pipeline Initialised")
     
   def gbdQueryAPI(self, query):
     try: 
       df = pandas_gbq.read_gbq(query, project_id=self.project_id)
       return df
+    
     except Exception as err: 
       raise err
 
@@ -101,13 +106,10 @@ class gbqQuery:
     
     for field in fields:
       fieldString = fieldString + field + ", "
+    
     fieldString = fieldString[:len(fieldString)-2]
-
     queryString = "SELECT " + fieldString + " FROM " + datasetTable
-    print(queryString)
-
     sql = "" + queryString + ""
-
     return self.gbdQueryAPI(sql)
 
   # Returns all datasetName as a list
@@ -120,12 +122,10 @@ class gbqQuery:
     updatedDatasetList = []
 
     if datasets:
-      print("Datasets in project {}:".format(self.project))
       for dataset in datasets:
-        print("\t{}".format(dataset.dataset_id))
         updatedDatasetList.append(dataset.dataset_id)
-    
       self.cred["bigQueryConfig"]["DATASET_ID"] = updatedDatasetList   # Updating serviceAccount.json
+      
       with open(self.credUrl, 'w') as jsonFile:
         json.dump(self.cred, jsonFile)
       return updatedDatasetList
@@ -142,14 +142,13 @@ class gbqQuery:
   def syncTables(self):
     updatedTableList = []
     self.syncDataset()
+
     for dataset in self.dataset_id:
       tables = self.client.list_tables(dataset)  # Make an API request
-      print("Tables contained in '{}':".format(dataset))
       for table in tables:
-        print("{}.{}.{}".format(table.project, table.dataset_id, table.table_id))
         updatedTableList.append(table.dataset_id +"."+ table.table_id)
-    
     self.cred["bigQueryConfig"]["DATASET_TABLE"] = updatedTableList   # Updating serviceAccount.json
+    
     with open(self.credUrl, 'w') as jsonFile:
       json.dump(self.cred, jsonFile)
 
