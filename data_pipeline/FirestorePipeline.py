@@ -5,7 +5,7 @@ Firestore Data Pipeline
 3. Applies FinBERT to extract sentiments
 4. Upload to Firestore
 '''
-# Data Extraction
+
 import numpy as np
 import pandas as pd
 import json
@@ -17,14 +17,11 @@ from data_transform.TickerExtractor import TickerExtractor
 from data_transform.STIMovementExtractor import STIMovementExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.SBRExtractor import SBRExtractor
-# Data Transforming
-# Data Loading
 
 
 class FirestorePipeline:
     def __init__(self):
         print("Initialising Firestore Pipeline...")
-        # self.tele_data_extractor_layer = TelegramExtractor()
         self.SBR_data_extractor_layer = SBRExtractor()
         self.tele_data_extractor_layer = TelegramExtractor()
         self.ticker_extractor_layer = TickerExtractor()
