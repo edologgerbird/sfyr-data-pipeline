@@ -30,13 +30,13 @@ if __name__ == '__main__':
 
     # Extracts from start date to end date
 
-    #tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
+    # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
     # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
 
     # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
 
-    FireStore_layer = FirestorePipeline()
-    FireStore_layer.execute_pipeline(
-        start_date="15-02-2022", end_date="15-02-2022")
+    # FireStore_layer = FirestorePipeline()
+    # FireStore_layer.execute_pipeline(
+    #     start_date="15-02-2022", end_date="15-02-2022")
 
-    #print("--- %s seconds ---" % (time.time() - start_time))
+    # #print("--- %s seconds ---" % (time.time() - start_time))
