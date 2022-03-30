@@ -62,6 +62,14 @@ class gbqInjest:
         raise Exception("Data File not Dataframe")
     else: 
       raise Exception("Table Does not Exist")
+
+  def gbqDeleteTable(self, datasetTable):
+    try:
+      self.client.delete_table(datasetTable)
+      gbqQuery().syncTables()
+      return True 
+    except Exception as err:
+      raise err
   
   def gbqCheckDatasetExist(self,datasetName):
     gbqDatasets = gbqQuery().getDataset()
