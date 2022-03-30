@@ -160,6 +160,7 @@ test/
 csv_store/
 *.csv
 *.session
+None.session
 
 ### Creds ###
 # Firestore ServiceAccount
