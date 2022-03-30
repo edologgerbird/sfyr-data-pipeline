@@ -63,6 +63,14 @@ class bigQueryDB:
     else: 
       raise Exception("Table Does not Exist")
 
+  def gbqDeleteDataset(self, dataset):
+    try:
+      self.client.delete_table(dataset, delete_contents=True)
+      self.syncDataset()
+      return True 
+    except Exception as err:
+      raise err
+  
   def gbqDeleteTable(self, datasetTable):
     try:
       self.client.delete_table(datasetTable)
