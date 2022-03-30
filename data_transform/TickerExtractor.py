@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 import json
+from data_load.bigQueryAPI import gbqQuery
 
 
 class TickerExtractor:
@@ -11,10 +12,11 @@ class TickerExtractor:
 
         self.text_series = None
         self.text_series_reduced = None
+        self.datasetTable = "SGX.Tickers"
 
         print("Querying SGX Data...")
-        # Will need to replace with GBQ database query
-        self.SGX_data = pd.read_csv("csv_store/SGX_data.csv")
+        self.SGX_data = gbqQuery().getDataFields(self.datasetTable)
+        # self.SGX_data = pd.read_csv("csv_store/SGX_data.csv")  # Depreciated
         print("Successfully retrieved SGX Data")
         print("Initialising Mappers...")
         self.SGX_ticker_map_clean = {x: y for x, y in zip(
