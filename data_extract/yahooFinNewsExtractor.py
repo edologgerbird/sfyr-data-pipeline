@@ -22,7 +22,7 @@ class yahooFinNewsExtractor:
         return output
     
     def getSGXTickerNews(self):
-        gbqQueryOutput = bigQueryDB.getDataFields(self.datasetTable,"company_code")
+        gbqQueryOutput = bigQueryDB().getDataFields(self.datasetTable,"company_code")
         sgxTickers = gbqQueryOutput.loc[:,"company_code"].tolist()
         return self.getTickerNews(sgxTickers, True)
 
