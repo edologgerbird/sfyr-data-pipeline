@@ -17,7 +17,7 @@ class yahooFinNewsPipeline:
             tickerNews = news.at[i,"News"]
             for article in tickerNews:
                 articleFormatted = {
-                    "date": article["published"],
+                    "date": datetime.fromtimestamp(mktime(article["published_parsed"])),
                     "link": article["link"],
                     "title": article["title"],
                     "article": article["summary"],
