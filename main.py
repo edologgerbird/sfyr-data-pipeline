@@ -3,7 +3,7 @@ from data_extract.SBRExtractor import SBRExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_load.bigQueryAPI import gbqInjest, gbqQuery
-from data_extract.yahooFinNews import yahooFinNews
+from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
 from data_pipeline.FirestorePipeline import FirestorePipeline
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
 
     # ---- Test YahooFinNews Extraction and Pipeline ---- #
-    # tickerNews = yahooFinNews().getSGXTickerNews()
+    tickerNews = yahooFinNewsExtractor().getSGXTickerNews()
 
     # yahoo_fin_pipeline_layer = yahooFinNewsPipeline()
     # formattedData = yahoo_fin_pipeline_layer.tickerNewsFormat(tickerNews)

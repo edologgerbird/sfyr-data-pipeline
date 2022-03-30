@@ -3,7 +3,7 @@ from tqdm import tqdm
 import pandas as pd
 from data_load.bigQueryAPI import gbqQuery
 
-class yahooFinNews:
+class yahooFinNewsExtractor:
     def __init__(self):
         self.datasetTable = "SGX.Tickers"
 
@@ -15,7 +15,7 @@ class yahooFinNews:
             if sgFlag:
                 ticker = ticker + ".SI"
             tickerNews = news.get_yf_rss(ticker)
-            if tickerNews != []:
+            if not tickerNews:
                 output.append([ticker, tickerNews])
         output = pd.DataFrame(output)
         output.columns = ["Ticker", "News"]
