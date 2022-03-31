@@ -2,7 +2,7 @@ import time
 from data_extract.SBRExtractor import SBRExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
-from data_load.bigQueryAPI import gbqInjest, gbqQuery
+from data_load.bigQueryAPI import bigQueryDB
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
 from data_pipeline.FirestorePipeline import FirestorePipeline
@@ -41,5 +41,6 @@ if __name__ == '__main__':
 
     # ---- Test GBQ Pipeline ---- #
     # print(gbqQuery().getDataFields("SGX.Tickers"))
+
 
     print("--- %s seconds ---" % (time.time() - start_time))
