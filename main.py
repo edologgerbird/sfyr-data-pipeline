@@ -6,7 +6,7 @@ from data_load.bigQueryAPI import gbqInjest, gbqQuery
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
 from data_pipeline.FirestorePipeline import FirestorePipeline
-
+from data_pipeline.HeatListPipeline import HeatListPipeline
 if __name__ == '__main__':
     start_time = time.time()
 
@@ -38,5 +38,11 @@ if __name__ == '__main__':
     # FireStore_layer = FirestorePipeline()
     # FireStore_layer.execute_pipeline(
     #     start_date="15-02-2022", end_date="15-02-2022")
+
+    # ---- Test Heatlist Pipeline ---- #
+    HeatListPipeline_layer = HeatListPipeline()
+    res = HeatListPipeline_layer.query_pipeline('16-02-2022')
+    print(res)
+    print(len(res))
 
     print("--- %s seconds ---" % (time.time() - start_time))
