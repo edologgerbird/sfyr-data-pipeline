@@ -7,6 +7,7 @@ Pipeline for Heatlist
 '''
 from tracemalloc import start
 from data_load.firestoreAPI import firestoreDB
+from data_processing.HeatListGenerator import HeatListGenerator
 
 import json
 import numpy as np
@@ -18,12 +19,16 @@ from dateutil.parser import parse
 class HeatListPipeline:
     def __init__(self):
         self.firestoreDB_layer = firestoreDB()
+        self.HeatListGenerator_layer = HeatListGenerator()
         self.documents_container = list()
 
         self.start_date = None
         self.end_date = None
 
         self.collections = ['SBR_data', 'Telegram_data', "Yahoo-Fin-News"]
+
+        self.ticker_heatlist = None
+        self.industry_heatlist = None
 
     def get_look_back_period(self, end_date, no_look_back_days):
         end_date = parse(end_date, dayfirst=True)
@@ -54,8 +59,26 @@ class HeatListPipeline:
 
         return self.documents_container
 
+    def get_heatlist_data_from_query(self, query_res):
+        heatlist_fields = ["tickers", "sentiments"]
+        subset = {k: query_res[k] for k in heatlist_fields}
+        return subset
+
     def query_pipeline(self, date):
         start_date, end_date = self.get_look_back_period(date, 7)
         self.set_dates(start_date=start_date, end_date=end_date)
         query_results = self.query_documents_by_date()
-        return query_results[0]
+        output = [self.get_heatlist_data_from_query(
+            query_result) for query_result in query_results]
+        return output
+
+    def generate_heatlist(self, query_results):
+        ticker_heatlist, industry_heatlist = self.HeatListGenerator_layer.generateHeatList(
+            query_results)
+        return ticker_heatlist, industry_heatlist
+
+    def HeatlistPipeline_execute(self, date):
+        query_results = self.query_pipeline(date)
+        self.ticker_heatlist, self.industry_heatlist = self.generate_heatlist(
+            query_results)
+        return self.ticker_heatlist, self.industry_heatlist

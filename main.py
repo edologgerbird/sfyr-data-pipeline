@@ -41,8 +41,9 @@ if __name__ == '__main__':
 
     # ---- Test Heatlist Pipeline ---- #
     HeatListPipeline_layer = HeatListPipeline()
-    res = HeatListPipeline_layer.query_pipeline('16-02-2022')
-    print(res)
-    print(len(res))
+    ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(
+        '16-02-2022')
+    print(ticker_heatlist)
+    print(industry_heatlist)
 
     print("--- %s seconds ---" % (time.time() - start_time))
