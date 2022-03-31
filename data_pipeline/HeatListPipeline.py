@@ -17,6 +17,9 @@ from dateutil.parser import parse
 
 class HeatListPipeline:
     def __init__(self):
+        with open('utils/serviceAccount.json', 'r') as jsonFile:
+            self.config = json.load(jsonFile)
+
         self.firestoreDB_layer = firestoreDB()
         self.HeatListGenerator_layer = HeatListGenerator()
         self.documents_container = list()
@@ -24,7 +27,7 @@ class HeatListPipeline:
         self.start_date = None
         self.end_date = None
 
-        self.collections = ['SBR_data', 'Telegram_data', "Yahoo-Fin-News"]
+        self.collections = self.config["firestoreSettings"]["collections"]
 
         self.ticker_heatlist = None
         self.industry_heatlist = None

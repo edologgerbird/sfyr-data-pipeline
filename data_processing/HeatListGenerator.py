@@ -76,7 +76,6 @@ class HeatListGenerator:
                     self.tickers_present[company_code] = self.sgx_data_mapper[company_code]
                 else:
                     self.tickers_present[company_code] = None
-                    print(company_code)
             else:
                 self.ticker_heat_list[company_code] += (
                     dict_res["sentiments"]["positive"] - dict_res["sentiments"]["negative"])
