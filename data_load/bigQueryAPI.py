@@ -4,7 +4,7 @@ from google.cloud import bigquery
 from google.oauth2 import service_account
 import json
 
-class gbqInjest:
+class bigQueryDB:
   def __init__(self):
     print("Initialising GBQ Pipeline...")
     # Set-up Credentials and Project
@@ -26,7 +26,7 @@ class gbqInjest:
     if isinstance(data, pd.DataFrame):
       try:
         pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id)
-        gbqQuery().syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
+        self.syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
         return True
       except Exception as err:
         raise err    
@@ -34,8 +34,8 @@ class gbqInjest:
       raise Exception("Data File not Dataframe")
 
   #datasetTableName is to be in the form of datasetName.TableName
-  def gbqInjestAppend(self, data, datasetTable):
-    gbqQuery().syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
+  def bigQueryDBIAppend(self, data, datasetTable):
+    self.syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
     if (datasetTable in self.datasetTable):
       if isinstance(data, pd.DataFrame):
         try:
@@ -49,8 +49,8 @@ class gbqInjest:
       raise Exception("Table Does not Exist")
 
   #datasetTable is to be in the form of datasetName.TableName
-  def gbqInjestReplace(self, data, datasetTable):
-    gbqQuery().syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
+  def bigQueryDBIReplace(self, data, datasetTable):
+    self.syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
     if (datasetTable in self.datasetTable):
       if isinstance(data, pd.DataFrame):
         try:
@@ -62,31 +62,30 @@ class gbqInjest:
         raise Exception("Data File not Dataframe")
     else: 
       raise Exception("Table Does not Exist")
+
+  def gbqDeleteDataset(self, dataset):
+    try:
+      self.client.delete_table(dataset, delete_contents=True)
+      self.syncDataset()
+      return True 
+    except Exception as err:
+      raise err
+  
+  def gbqDeleteTable(self, datasetTable):
+    try:
+      self.client.delete_table(datasetTable)
+      self.syncTables()
+      return True 
+    except Exception as err:
+      raise err
   
   def gbqCheckDatasetExist(self,datasetName):
-    gbqDatasets = gbqQuery().getDataset()
+    gbqDatasets = self.getDataset()
     return datasetName in gbqDatasets
 
   def gbqCheckTableExist(self, datasetTable):
-    gbqTables = gbqQuery().getTables()
+    gbqTables = self.getTables()
     return datasetTable in gbqTables
-
-class gbqQuery:
-  def __init__(self):
-    print("Initialising GBQ Pipeline...")
-    # Set-up Credentials and Project
-    self.credentials = service_account.Credentials.from_service_account_file('utils/is3107-group-7-008534a376ad.json',)
-    self.client = bigquery.Client(credentials=self.credentials)
-    self.project = self.client.project
-
-    # Set-up Local Config
-    self.credUrl = "utils/serviceAccount.json"
-    with open(self.credUrl, 'r') as jsonFile:
-      self.cred = json.load(jsonFile)
-    self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
-    self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
-    self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]    
-    print("GBQ Pipeline Initialised")
     
   def gbdQueryAPI(self, query):
     try: 
@@ -172,13 +171,8 @@ class gbqQuery:
 #     }
 # )
 
-# print(gbqInjest().gbqInjestReplace(df,"test.test02"))
-# print(gbqInjest().getDataset())
-# print(gbqQuery().getTables())
-
-
 
 # Test Query Using SQL
-# print(gbqQuery().getDataQuery("SELECT my_string FROM test.test02"))
+# print(self.getDataQuery("SELECT my_string FROM test.test02"))
 # Test Query Using FieldName
-# print(gbqQuery().getDataFields("test.test02","my_string","my_float64"))
+# print(self.getDataFields("test.test02","my_string","my_float64"))
