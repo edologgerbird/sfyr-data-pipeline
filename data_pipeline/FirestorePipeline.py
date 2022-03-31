@@ -72,12 +72,12 @@ class FirestorePipeline:
 
         # # Combining Dataframes
         SBR_data_with_tickers["sentiment"] = [{"sentiment": {
-            "postive": x, "negative": y, "neutral": z}}for x, y, z in zip(
+            "positive": x, "negative": y, "neutral": z}}for x, y, z in zip(
             *self.splitter(SBR_data_with_sentiments[["Positive", "Negative", "Neutral"]])
         )]
 
         tele_data_with_tickers["sentiment"] = [{"sentiment": {
-            "postive": x, "negative": y, "neutral": z}} for x, y, z in zip(
+            "positive": x, "negative": y, "neutral": z}} for x, y, z in zip(
             *self.splitter(tele_data_with_sentiments[["Positive", "Negative", "Neutral"]])
         )]
 
