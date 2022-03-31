@@ -15,8 +15,8 @@ class TickerExtractor:
         self.datasetTable = "SGX.Tickers"
 
         print("Querying SGX Data...")
-        self.SGX_data = gbqQuery().getDataFields(self.datasetTable)
-        # self.SGX_data = pd.read_csv("csv_store/SGX_data.csv")  # Depreciated
+        #self.SGX_data = gbqQuery().getDataFields(self.datasetTable)
+        self.SGX_data = pd.read_csv("csv_store/SGX_data.csv")  # Depreciated
         print("Successfully retrieved SGX Data")
         print("Initialising Mappers...")
         self.SGX_ticker_map_clean = {x: y for x, y in zip(

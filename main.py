@@ -35,15 +35,15 @@ if __name__ == '__main__':
     # yahoo_fin_pipeline_layer.newsToFirestore()
 
     # ---- Test FireStore Pipeline ---- #
-    # FireStore_layer = FirestorePipeline()
-    # FireStore_layer.execute_pipeline(
-    #     start_date="15-02-2022", end_date="15-02-2022")
+    FireStore_layer = FirestorePipeline()
+    FireStore_layer.execute_pipeline(
+        start_date="01-02-2022", end_date="15-02-2022")
 
     # ---- Test Heatlist Pipeline ---- #
-    HeatListPipeline_layer = HeatListPipeline()
-    ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(
-        '16-02-2022')
-    print(ticker_heatlist)
-    print(industry_heatlist)
+    # HeatListPipeline_layer = HeatListPipeline()
+    # ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(
+    #     '16-02-2022')
+    # print(ticker_heatlist)
+    # print(industry_heatlist)
 
     print("--- %s seconds ---" % (time.time() - start_time))

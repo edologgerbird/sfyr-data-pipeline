@@ -81,4 +81,5 @@ class HeatListPipeline:
         query_results = self.query_pipeline(date)
         self.ticker_heatlist, self.industry_heatlist = self.generate_heatlist(
             query_results)
+        # upload to GBQ here
         return self.ticker_heatlist, self.industry_heatlist
