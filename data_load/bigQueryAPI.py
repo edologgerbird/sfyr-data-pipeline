@@ -102,14 +102,16 @@ class bigQueryDB:
 
   def getDataFields(self,datasetTable, *fields):
     fieldString = ""
-    
-    for field in fields:
-      fieldString = fieldString + field + ", "
-    
-    fieldString = fieldString[:len(fieldString)-2]
+    if fields:
+      for field in fields:
+        fieldString = fieldString + field + ", "
+      fieldString = fieldString[:len(fieldString)-2]
+    else:
+      fieldString = "*"
     queryString = "SELECT " + fieldString + " FROM " + datasetTable
     sql = "" + queryString + ""
     return self.gbdQueryAPI(sql)
+  
 
   # Returns all datasetName as a list
   def getDataset(self):
