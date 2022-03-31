@@ -44,10 +44,10 @@ if __name__ == '__main__':
     # ---- Test GBQ Pipeline ---- #
     # print(gbqQuery().getDataFields("SGX.Tickers"))
 
-    HeatListPipeline_layer = HeatListPipeline()
-    ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(
-        '16-02-2022')
-    print(ticker_heatlist)
-    print(industry_heatlist)
+    # HeatListPipeline_layer = HeatListPipeline()
+    # ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(
+    #     '16-02-2022')
+    # print(ticker_heatlist)
+    # print(industry_heatlist)
 
     print("--- %s seconds ---" % (time.time() - start_time))
