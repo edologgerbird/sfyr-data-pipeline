@@ -96,12 +96,16 @@ class firestoreDB:
     def fsGetCollection(self, collection):
         return [doc.to_dict() for doc in self.db.collection(collection).stream()]
 
-    # Queries a specified document. Query format
+    # Queries a specified document. Query format ('field', 'operator', 'criteria')
     def fsQueryDocuments(self, collection, *queries):
+        query_result = list()
         collection_ref = self.db.collection(collection)
         for query in queries:
             query_result = collection_ref.where(query[0], query[1], query[2])
-        return [x.to_dict() for x in query_result.stream()]
+        if query_result:
+            return [x.to_dict() for x in query_result.stream()]
+        else:
+            return query_result
 
 
 # # Testing
