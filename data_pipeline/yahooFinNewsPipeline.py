@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime
+from datetime import datetime as dt
 from time import mktime
 from data_load.firestoreAPI import firestoreDB
 
@@ -17,7 +17,7 @@ class yahooFinNewsPipeline:
             tickerNews = news.at[i,"News"]
             for article in tickerNews:
                 articleFormatted = {
-                    "date": datetime.fromtimestamp(mktime(article["published_parsed"])),
+                    "date": dt.fromtimestamp(mktime(article["published_parsed"])),
                     "link": article["link"],
                     "title": article["title"],
                     "article": article["summary"],
