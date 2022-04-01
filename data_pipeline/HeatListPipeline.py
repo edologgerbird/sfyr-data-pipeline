@@ -3,7 +3,6 @@ Pipeline for Heatlist
 - Query from firebase
 - Input into HeatListGenerator
 - Output to BigQuery
-
 '''
 from tracemalloc import start
 from data_load.firestoreAPI import firestoreDB
@@ -18,6 +17,9 @@ from dateutil.parser import parse
 
 class HeatListPipeline:
     def __init__(self):
+        with open('utils/serviceAccount.json', 'r') as jsonFile:
+            self.config = json.load(jsonFile)
+
         self.firestoreDB_layer = firestoreDB()
         self.HeatListGenerator_layer = HeatListGenerator()
         self.documents_container = list()
@@ -25,7 +27,7 @@ class HeatListPipeline:
         self.start_date = None
         self.end_date = None
 
-        self.collections = ['SBR_data', 'Telegram_data', "Yahoo-Fin-News"]
+        self.collections = self.config["firestoreSettings"]["collections"]
 
         self.ticker_heatlist = None
         self.industry_heatlist = None
@@ -81,4 +83,5 @@ class HeatListPipeline:
         query_results = self.query_pipeline(date)
         self.ticker_heatlist, self.industry_heatlist = self.generate_heatlist(
             query_results)
+        # upload to GBQ here
         return self.ticker_heatlist, self.industry_heatlist
