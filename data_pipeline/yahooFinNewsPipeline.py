@@ -22,7 +22,7 @@ class yahooFinNewsPipeline:
                     "title": article["title"],
                     "article": article["summary"],
                     "basequery": article["summary_detail"]["base"],
-                    "ticker": ticker
+                    "tickers": [ticker]
                 }
                 newsFormatted.append(articleFormatted)
         self.data_pending_upload = newsFormatted
