@@ -1,4 +1,6 @@
 import time
+
+from matplotlib import ticker
 from data_extract.SBRExtractor import SBRExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
@@ -28,11 +30,10 @@ if __name__ == '__main__':
     # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
 
     # ---- Test YahooFinNews Extraction and Pipeline ---- #
-    # tickerNews = yahooFinNewsExtractor().getSGXTickerNews()
-
-    # yahoo_fin_pipeline_layer = yahooFinNewsPipeline()
-    # formattedData = yahoo_fin_pipeline_layer.tickerNewsFormat(tickerNews)
-    # yahoo_fin_pipeline_layer.newsToFirestore()
+    tickerNews = yahooFinNewsExtractor().getSGXTickerNews()
+    yahoo_fin_pipeline_layer = yahooFinNewsPipeline()
+    formattedData = yahoo_fin_pipeline_layer.tickerNewsFormat(tickerNews)
+    yahoo_fin_pipeline_layer.newsToFirestore()
 
     # ---- Test FireStore Pipeline ---- #
     # FireStore_layer = FirestorePipeline()

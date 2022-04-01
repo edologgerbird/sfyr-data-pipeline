@@ -12,10 +12,12 @@ class yahooFinNewsExtractor:
         print("Yahoo_fin: Extracting Ticker News")
         for i in tqdm(range(len(tickers))):
             ticker = tickers[i]
+            tickerNews = None
             if sgFlag:
-                ticker = ticker + ".SI"
-            tickerNews = news.get_yf_rss(ticker)
-            if not tickerNews:
+                tickerNews = news.get_yf_rss(ticker + ".SI")
+            else:
+                tickerNews = news.get_yf_rss(ticker)
+            if tickerNews:
                 output.append([ticker, tickerNews])
         output = pd.DataFrame(output)
         output.columns = ["Ticker", "News"]
