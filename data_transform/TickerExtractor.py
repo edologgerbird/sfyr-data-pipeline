@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 import json
-from data_load.bigQueryAPI import gbqQuery
+from data_load.bigQueryAPI import bigQueryDB
 
 
 class TickerExtractor:
@@ -15,7 +15,7 @@ class TickerExtractor:
         self.datasetTable = "SGX.Tickers"
 
         print("Querying SGX Data...")
-        self.SGX_data = gbqQuery().getDataFields(self.datasetTable)
+        self.SGX_data = bigQueryDB().getDataFields(self.datasetTable)
         # self.SGX_data = pd.read_csv("csv_store/SGX_data.csv")  # Depreciated
         print("Successfully retrieved SGX Data")
         print("Initialising Mappers...")

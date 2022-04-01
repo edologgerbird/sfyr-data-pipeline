@@ -2,27 +2,20 @@
 '''
 ETL for SBR Data, from Source to Firestore
 '''
-
-import numpy as np
-import pandas as pd
-import json
-from datetime import datetime as dt
-
-from data_load.firestoreAPI import firestoreDB
-from data_processing.FinBertAPI import FinBERT
-from data_transform.TickerExtractor import TickerExtractor
 from data_transform.STIMovementExtractor import STIMovementExtractor
 from data_extract.SBRExtractor import SBRExtractor
+from utils.utils import splitter
+from datetime import datetime as dt
 
 
-class FirestorePipeline:
-    def __init__(self):
-        print("Initialising Firestore Pipeline...")
+class SBRNewsPipeline:
+    def __init__(self, firestoreDB, tickerExtractor, FinBERT):
+        print("Initialising SBR Pipeline...")
         self.SBR_data_extractor_layer = SBRExtractor()
-        self.ticker_extractor_layer = TickerExtractor()
+        self.ticker_extractor_layer = tickerExtractor
         self.STI_movement_extractor_layer = STIMovementExtractor()
-        self.FinBERT_layer = FinBERT()
-        self.firestoreDB_layer = firestoreDB()
+        self.FinBERT_layer = FinBERT
+        self.firestoreDB_layer = firestoreDB
 
         self.SBR_data_raw = None
 
@@ -53,7 +46,7 @@ class FirestorePipeline:
         # # Combining Dataframes
         SBR_data_with_tickers["sentiment"] = [{"sentiment": {
             "positive": x, "negative": y, "neutral": z}}for x, y, z in zip(
-            *self.splitter(SBR_data_with_sentiments[["Positive", "Negative", "Neutral"]])
+            *splitter(SBR_data_with_sentiments[["Positive", "Negative", "Neutral"]])
         )]
 
         # self.SBR_data_processed = SBR_data_with_tickers
@@ -73,7 +66,7 @@ class FirestorePipeline:
              "sti_movement": {"direction": direction, "amount": amount},
              "sentiments": list(sentiments.values())[0]}
             for headline, body, link, date, tickers, direction, amount, sentiments in zip(
-                *self.splitter(self.SBR_data_processed[[
+                *splitter(self.SBR_data_processed[[
                     "Title", "Text", "Link", "Date", "Tickers_found", "STI_direction", "STI_movement", "sentiment"
                 ]])
             )
@@ -88,11 +81,3 @@ class FirestorePipeline:
         self.extract_data_from_source(start_date, end_date)
         self.transform_and_process_data()
         self.upload_to_firestore()
-
-    # Utility Functions
-
-    def splitter(self, df):
-        return [df[col] for col in list(df.columns)]
-
-    def string_to_date(self, date, delimiter):
-        return dt.strptime(date.split(delimiter)[0], "%Y-%m-%d")
