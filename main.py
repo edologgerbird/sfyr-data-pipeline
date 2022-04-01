@@ -7,6 +7,8 @@ from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
 from data_pipeline.FirestorePipeline import FirestorePipeline
 from data_pipeline.HeatListPipeline import HeatListPipeline
+
+
 if __name__ == '__main__':
     start_time = time.time()
 
@@ -34,10 +36,11 @@ if __name__ == '__main__':
     # formattedData = yahoo_fin_pipeline_layer.tickerNewsFormat(tickerNews)
     # yahoo_fin_pipeline_layer.newsToFirestore()
 
-    # ---- Test FireStore Pipeline ---- #
+    # ---- Test FireStore Pipeline - ---
     # FireStore_layer = FirestorePipeline()
     # FireStore_layer.execute_pipeline(
     #     start_date="20-02-2022", end_date="22-02-2022")
+
 
     # ---- Test GBQ Pipeline ---- #
     # print(gbqQuery().getDataFields("SGX.Tickers"))
