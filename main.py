@@ -39,7 +39,8 @@ if __name__ == '__main__':
     # ---- Test FireStore Pipeline - ---
     # FireStore_layer = FirestorePipeline()
     # FireStore_layer.execute_pipeline(
-    #     start_date="15-02-2022", end_date="15-02-2022")
+    #     start_date="20-02-2022", end_date="22-02-2022")
+
 
     # ---- Test GBQ Pipeline ---- #
     # print(gbqQuery().getDataFields("SGX.Tickers"))
