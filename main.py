@@ -37,15 +37,10 @@ if __name__ == '__main__':
     formattedData = yahoo_fin_pipeline_layer.tickerNewsFormat(tickerNews)
     yahoo_fin_pipeline_layer.newsToFirestore()
 
-<<<<<<< HEAD
-    # ---- Test FireStore Pipeline - ---
-=======
     # ---- Test FireStore Pipeline ---- #
->>>>>>> 5861328a67f4c06c00ea95359a7ad81b0ab69479
     # FireStore_layer = FirestorePipeline()
     # FireStore_layer.execute_pipeline(
     #     start_date="20-02-2022", end_date="22-02-2022")
-
 
     # ---- Test GBQ Pipeline ---- #
     # print(gbqQuery().getDataFields("SGX.Tickers"))
