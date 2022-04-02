@@ -23,7 +23,6 @@ class FinBERT:
         else:
             print("Loading text data...")
             text_array = np.array(text_series)
-            np.random.shuffle(text_array)
             text_list = list(text_array)
             print("Text data loaded.")
             return text_list
