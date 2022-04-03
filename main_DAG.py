@@ -105,14 +105,6 @@ def transform_YahooFin_news_data():
     >> Transform to NoSQL Format
     >> return dictionary: YahooFin_news_data_transformed
 
-def transform_Tiingo_news_data():
-    >> xcom.pull(DataFrame: Tiingo_news_data)
-    >> TickerExtractor(DataFrame: Tiingo_news)
-        >> xcom.pull(DataFrame: SGX Data)
-    >> FinBERT(DataFrame: Tiingo_news)
-    >> Transform to NoSQL Format
-    >> return dictionary: Tiingo_news_data_transformed
-
 ## Does yFinance data need transformating?
 
 
@@ -130,10 +122,6 @@ def load_Tele_news_data():
 
 def load_YahooFin_news_data():
     >> xcomm.pull(dictionary: YahooFin_news_data_transformed)
-    >> upload to Firestore Database
-
-def load_Tiingo_news_data():
-    >> xcomm.pull(dictionary: Tiingo_news_data_transformed)
     >> upload to Firestore Database
 
 def load_yFinance_data():
@@ -156,10 +144,6 @@ def query_Tele_news_data():
 def query_YahooFin_news_data():
     >> query YahooFin_news_data from Firestore Database
     >> return dictionary: YahooFin_news_Query_Results
-
-def query_Tiingo_news_data():
-    >> query Tiingo_news_data from Firestore Database
-    >> return dictionary: Tiingo_news_Query_Results
 
 def generateHeatlists():
     >> xcom.pull(
