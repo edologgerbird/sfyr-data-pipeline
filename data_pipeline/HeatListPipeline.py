@@ -6,7 +6,7 @@ Pipeline for Heatlist
 '''
 from tracemalloc import start
 from data_load.firestoreAPI import firestoreDB
-from data_processing.HeatListGenerator import HeatListGenerator
+from data_processing.HeatListGeneratorAPI import HeatListGenerator
 
 import json
 import numpy as np

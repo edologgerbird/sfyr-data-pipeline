@@ -40,4 +40,17 @@ class HeatListQuery:
 
         return self.documents_container
 
+    def get_heatlist_data_from_query(self, query_res):
+        heatlist_fields = ["tickers", "sentiments"]
+        subset = {k: query_res[k] for k in heatlist_fields}
+        return subset
+
+    def query_pipeline(self, date):
+        start_date, end_date = self.get_look_back_period(date, 7)
+        self.set_dates(start_date=start_date, end_date=end_date)
+        query_results = self.query_documents_by_date()
+        output = [self.get_heatlist_data_from_query(
+            query_result) for query_result in query_results]
+        return output
+
 
