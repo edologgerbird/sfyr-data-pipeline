@@ -16,7 +16,7 @@ from data_processing.HeatListGenerator import HeatListGenerator
 
 # Load Modules
 from data_load.firestoreAPI import firestoreDB
-from data_load.gbdQueryAPI import bigQueryDB
+from data_load.bigQueryAPI import bigQueryDB
 # will need loading modules for each source
 
 # General utility Modules
