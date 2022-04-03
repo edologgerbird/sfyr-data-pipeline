@@ -68,10 +68,6 @@ def extract_YahooFin_news_data(**kwargs):
     >> extracts YahooFin_data
     >> return DataFrame: YahooFin_data
 
-def extract_Tiingo_news_data(**kwargs):
-    >> extracts Tiingo_data
-    >> return DataFrame: Tiingo_data
-
 def extract_yFinance_data(**kwargs):
     >> extract YahooFin_data
     >> return dictionary of DataFrames: YahooFin_data
@@ -149,8 +145,7 @@ def generateHeatlists(**kwargs):
     >> xcom.pull(
         dictionary: SBR_news_Query_Results, 
         dictionary: Tele_news_Query_Results,
-        dictionary: YahooFin_news_Query_Results,
-        dictionary: Tiingo_news_Query_Results
+        dictionary: YahooFin_news_Query_Results
         )
     >> Generate Ticker and Industry Heatlists
     >> return DataFrame: Ticker Heatlist, DataFrame: Industry Heatlist
