@@ -52,27 +52,27 @@ FinBERTLayer = FinBERT: FinBERTLayer
 # 1A. Data Extraction Modules
 ##############################
 
-def extract_SGX_data():
+def extract_SGX_data(**kwargs):
     >> extracts SGX_data
     >> return DataFrame: SGX_data
 
-def extract_SBR_news_data():
+def extract_SBR_news_data(**kwargs):
     >> extracts SBR_data
     >> return DataFrame: SBR_data
 
-def extract_Tele_news_data():
+def extract_Tele_news_data(**kwargs):
     >> extracts Tele_data
     >> return DataFrame: Tele_data
 
-def extract_YahooFin_news_data():
+def extract_YahooFin_news_data(**kwargs):
     >> extracts YahooFin_data
     >> return DataFrame: YahooFin_data
 
-def extract_Tiingo_news_data():
+def extract_Tiingo_news_data(**kwargs):
     >> extracts Tiingo_data
     >> return DataFrame: Tiingo_data
 
-def extract_yFinance_data():
+def extract_yFinance_data(**kwargs):
     >> extract YahooFin_data
     >> return dictionary of DataFrames: YahooFin_data
 
@@ -80,7 +80,7 @@ def extract_yFinance_data():
 # 1B. Data Transformation Modules (1)
 ########################################
 
-def transform_SBR_news_data():
+def transform_SBR_news_data(**kwargs):
     >> xcom.pull(DataFrame: SBR_news_data)
     >> TickerExtractor(DataFrame: SBR_news)
         >> xcom.pull(DataFrame: SGX Data)
@@ -89,7 +89,7 @@ def transform_SBR_news_data():
     >> Transform to NoSQL Format
     >> return dictionary: SBR_news_data_transformed
 
-def transform_Tele_news_data():
+def transform_Tele_news_data(**kwargs):
     >> xcom.pull(DataFrame: Tele_news_data)
     >> TickerExtractor(DataFrame: Tele_news)
         >> xcom.pull(DataFrame: SGX Data)
@@ -97,7 +97,7 @@ def transform_Tele_news_data():
     >> Transform to NoSQL Format
     >> return dictionary: Tele_news_data_transformed
 
-def transform_YahooFin_news_data():
+def transform_YahooFin_news_data(**kwargs):
     >> xcom.pull(DataFrame: YahooFin_news_data)
     >> TickerExtractor(DataFrame: YahooFin_news)
         >> xcom.pull(DataFrame: SGX Data)
@@ -112,19 +112,19 @@ def transform_YahooFin_news_data():
 # 1C. Data Loading Modules (1)
 ###################################
 
-def load_SBR_news_data():
+def load_SBR_news_data(**kwargs):
     >> xcomm.pull(dictionary: SBR_news_data_transformed)
     >> upload to Firestore Database
 
-def load_Tele_news_data():
+def load_Tele_news_data(**kwargs):
     >> xcomm.pull(dictionary: Tele_news_data_transformed)
     >> upload to Firestore Database
 
-def load_YahooFin_news_data():
+def load_YahooFin_news_data(**kwargs):
     >> xcomm.pull(dictionary: YahooFin_news_data_transformed)
     >> upload to Firestore Database
 
-def load_yFinance_data():
+def load_yFinance_data(**kwargs):
     >> xcomm.pull(dictionary of DataFrames: yFinance_data)
     >> upload to Google BigQuery
 
@@ -133,19 +133,19 @@ def load_yFinance_data():
 # 1D. Data Transformation Modules (2)
 ########################################
 
-def query_SBR_news_data():
+def query_SBR_news_data(**kwargs):
     >> query SBR_news_data from Firestore Database
     >> return dictionary: SBR_news_Query_Results
 
-def query_Tele_news_data():
+def query_Tele_news_data(**kwargs):
     >> query Tele_news_data from Firestore Database
     >> return dictionary: Tele_news_Query_Results
 
-def query_YahooFin_news_data():
+def query_YahooFin_news_data(**kwargs):
     >> query YahooFin_news_data from Firestore Database
     >> return dictionary: YahooFin_news_Query_Results
 
-def generateHeatlists():
+def generateHeatlists(**kwargs):
     >> xcom.pull(
         dictionary: SBR_news_Query_Results, 
         dictionary: Tele_news_Query_Results,
@@ -159,7 +159,7 @@ def generateHeatlists():
 # 1E. Data Load Modules (2)
 ########################################
 
-def load_heatlists():
+def load_heatlists(**kwargs):
     >> xcom.pull(
         DataFrame: Ticker Heatlist, 
         DataFrame: Industry Heatlist
