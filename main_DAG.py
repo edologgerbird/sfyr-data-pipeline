@@ -257,7 +257,7 @@ transform_YahooFin_data_task = PythonOperator(task_id = 'transform_YahooFin_data
                                         python_callable = transform_YahooFin_news_data, 
                                         provide_context=True, dag = dag)
 
-## Does yFinance data need transformating?
+## Does yFinance data need transforming?
 
 ##############################
 # 3C. Data Loading Tasks (1)
