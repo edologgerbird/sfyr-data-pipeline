@@ -21,7 +21,7 @@ from data_load.bigQueryAPI import bigQueryDB
 
 # General utility Modules
 from datetime import datetime, timedelta
-improt datetime as dt
+import datetime as dt
 import pandas as pd
 
 
@@ -30,7 +30,6 @@ import pandas as pd
 ####################################################
 
 '''
-
 start_date = datetime: start_date
 end_date = datetime: end_date
 
@@ -39,8 +38,8 @@ bigQueryDBLayer = bigQueryDB: bigQueryDBLayer
 
 tickerExtractionLayer = TickerExtractor: tickerExtractionLayer
 FinBERTLayer = FinBERT: FinBERTLayer
-
 '''
+
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
@@ -167,7 +166,7 @@ def load_heatlists(**kwargs):
 #2. DEFINE AIRFLOW DAG (SETTINGS + SCHEDULE)
 ############################################
 
-'''
+
 default_args = {
      'owner': 'is3107_g7',
      'depends_on_past': False,
@@ -185,19 +184,19 @@ dag = DAG( 'ETL_for_SGX_Stocks_Data',
             schedule_interval = '0 0 * * *'  # runs daily
           )  
 
-'''
+
 
 
 ##########################################
 #3. DEFINE AIRFLOW OPERATORS
 ##########################################
 
-'''
+
 
 ##############################
 # 3A. Data Extraction Tasks
 ##############################
-
+'''
 extract_SGX_data_task = PythonOperator(task_id = 'extract_SGX_data_task', 
                                         python_callable = extract_SGX_data, 
                                         provide_context=True, dag = dag)
@@ -299,5 +298,6 @@ transform_SBR_data_task >> transform_Tele_data_task >> transform_YahooFin_data_t
 load_SBR_data_task >> load_Tele_data_task >> load_YahooFin_data_task >> \
 load_yFinance_data_task >> query_SBR_data_task >> query_Tele_data_task >> \
 query_YahooFin_data_task >> generate_heatlists_task >> load_heatlists_task
+
 
 '''
