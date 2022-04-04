@@ -8,16 +8,16 @@ Output: Frequency distribution of Tickers
 import pandas as pd
 import json
 import numpy as np
+from data_load.bigQueryAPI import bigQueryDB
 
 
 class HeatListGenerator:
     def __init__(self):
         # self.df = df.rename(columns={df.columns[0]: "text", df.columns[1]: "tickers",
         #                     df.columns[2]: "positive", df.columns[3]: "negative", df.columns[4]: "neutral"})
-
-        self.sgx_data = pd.read_csv(
-            "csv_store/SGX_data.csv"
-        )
+        self.datasetTable = "SGX.Tickers"
+        print("Querying SGX Data...")
+        self.sgx_data = bigQueryDB().getDataFields(self.datasetTable)
         self.sgx_data_mapper = {x: y for x, y in zip(
             self.sgx_data["company_code"], self.sgx_data["company_name"])}
 
@@ -47,7 +47,7 @@ class HeatListGenerator:
         return df
 
     def normaliseColumn(self, col):
-        output = (col-col.mean())/col.std()
+        output = abs((col-col.mean())/col.std())
         return output
 
     def getHeatListNormalised(self):
@@ -69,22 +69,25 @@ class HeatListGenerator:
                                               for x in self.dict_query] for ticker in sublist]
         for company_code in ticker_list:
             if company_code not in self.ticker_heat_list:
-                self.ticker_heat_list[company_code] = dict_res["sentiments"]["postive"] - \
+                self.ticker_heat_list[company_code] = dict_res["sentiments"]["positive"] - \
                     dict_res["sentiments"]["negative"]
                 self.frequency_counter[company_code] = 1
-                self.tickers_present[company_code] = self.sgx_data_mapper[company_code]
+                if company_code in self.sgx_data_mapper:
+                    self.tickers_present[company_code] = self.sgx_data_mapper[company_code]
+                else:
+                    self.tickers_present[company_code] = None
             else:
                 self.ticker_heat_list[company_code] += (
-                    dict_res["sentiments"]["postive"] - dict_res["sentiments"]["negative"])
+                    dict_res["sentiments"]["positive"] - dict_res["sentiments"]["negative"])
                 self.frequency_counter[company_code] += 1
 
             if company_code in self.industry_mapper and self.industry_mapper[company_code] is not np.NaN:
                 industry = self.industry_mapper[company_code]
                 if self.industry_mapper[company_code] not in self.industry_heat_list:
-                    self.industry_heat_list[industry] = dict_res["sentiments"]["postive"] - \
+                    self.industry_heat_list[industry] = dict_res["sentiments"]["positive"] - \
                         dict_res["sentiments"]["negative"]
                 else:
-                    self.industry_heat_list[industry] += dict_res["sentiments"]["postive"] - \
+                    self.industry_heat_list[industry] += dict_res["sentiments"]["positive"] - \
                         dict_res["sentiments"]["negative"]
 
     def generateHeatList(self, dict_query):
