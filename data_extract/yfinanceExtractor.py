@@ -415,21 +415,17 @@ class yFinanceExtractor:
             dict['Delisted'] = delisted
 
             # Getting listed tickers history data
-            historicalData = yFinanceExtractor().getHistoricalData(listed)
-            dict['Historical Data'] = historicalData
+            dict['Historical Data'] = yFinanceExtractor().getHistoricalData(listed)
 
             tickers = [yf.Ticker(ticker) for ticker in listed]
             # Getting Financial Statement
-            fs = yFinanceExtractor().getFinancialStatement(tickers)
-            dict['Financial Statement'] = fs
+            dict['Financial Statement'] = yFinanceExtractor().getFinancialStatement(tickers)
 
             # Getting Quarterly Financial Statement
-            qfs = yFinanceExtractor().getQuarterlyFinancialStatement(tickers)
-            dict['Quarterly Financial Statement'] = qfs
+            dict['Quarterly Financial Statement'] = yFinanceExtractor().getQuarterlyFinancialStatement(tickers)
 
             # Getting ISIN code (International Securities Identification Number)
-            isin = yFinanceExtractor().getISINcode(tickers)
-            dict['isin'] = isin
+            dict['isin'] = yFinanceExtractor().getISINcode(tickers)
 
             #Getting tickers revenues and earnings
             revenues, earnings = yFinanceExtractor().getEarningsandRevenue(tickers)
@@ -442,49 +438,38 @@ class yFinanceExtractor:
             dict['quarterly earnings'] = qearnings
 
             # Getting tickers major holders
-            majorHolders = yFinanceExtractor().getMajorHolders(tickers)
-            dict['Major Holders'] = majorHolders
+            dict['Major Holders'] = yFinanceExtractor().getMajorHolders(tickers)
             
             # Getting tickers basic shares
-            shares = yFinanceExtractor().getBasicShares(tickers)
-            dict['Basic Shares'] = shares
+            dict['Basic Shares'] =  yFinanceExtractor().getBasicShares(tickers)
 
             # Getting tickers stock information
-            info = yFinanceExtractor().getStockInfo(tickers)
-            dict['Stock Information'] = info
+            dict['Stock Information'] = yFinanceExtractor().getStockInfo(tickers)
 
             # Getting Tickers options expirations
-            optionsExpiration = yFinanceExtractor().getOptionsExpirations(tickers)
-            dict['Options Expiration'] = optionsExpiration
+            dict['Options Expiration'] = yFinanceExtractor().getOptionsExpirations(tickers)
 
             # Getting tickers sustainability
-            sustainability  = yFinanceExtractor().getSustainability(tickers)
-            dict['sustainability'] = sustainability
+            dict['sustainability'] = yFinanceExtractor().getSustainability(tickers)
 
             # Getting tickers calendar - next events
-            calendar = yFinanceExtractor().getCalendar(tickers)
-            dict['calendar'] =calendar
+            dict['calendar'] =yFinanceExtractor().getCalendar(tickers)
 
             # Getting tickers recommendations
-            reco = yFinanceExtractor().getRecommendations(tickers)
-            dict['recommendations'] = reco
+            dict['recommendations'] = yFinanceExtractor().getRecommendations(tickers)
 
             # Getting tickers analysis
-            analysis = yFinanceExtractor().getAnalysis(tickers)
-            dict['analysis'] = analysis
+            dict['analysis'] = yFinanceExtractor().getAnalysis(tickers)
 
             # Getting tickers news
-            # NOT WORKING
-            news = yFinanceExtractor().getNews(tickers)
-            dict['news'] = news
+            # NOT WORKING - AM FIXING IT
+            dict['news'] = yFinanceExtractor().getNews(tickers)
 
             # Getting tickers Mutual Fund Holders
-            mutalFundHolders = yFinanceExtractor().getMutualFundHolders(tickers)
-            dict['Mutal Fund Holders'] = mutalFundHolders
+            dict['Mutal Fund Holders'] =  yFinanceExtractor().getMutualFundHolders(tickers)
             
             # Getting tickers Institutional Holders
-            institutionalHolders = yFinanceExtractor().getInstitutionalHolders(tickers)
-            dict['Institutional Holders'] = institutionalHolders
+            dict['Institutional Holders'] = yFinanceExtractor().getInstitutionalHolders(tickers)
             return dict
 def main():
 main()
