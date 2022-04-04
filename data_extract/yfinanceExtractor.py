@@ -411,66 +411,66 @@ class yFinanceExtractor:
             dict = {}
 
             # Getting listed and delisted tickers
-            listed, delisted = yFinanceExtractor().checkTickers(companyCode)
+            listed, delisted = self.checkTickers(companyCode)
             dict['Listed'] = listed
             dict['Delisted'] = delisted
 
             # Getting listed tickers history data
-            dict['Historical Data'] = yFinanceExtractor().getHistoricalData(listed)
+            dict['Historical Data'] = self.getHistoricalData(listed)
 
             tickers = [yf.Ticker(ticker) for ticker in listed]
             # Getting Financial Statement
-            dict['Financial Statement'] = yFinanceExtractor().getFinancialStatement(tickers)
+            dict['Financial Statement'] = self.getFinancialStatement(tickers)
 
             # Getting Quarterly Financial Statement
-            dict['Quarterly Financial Statement'] = yFinanceExtractor().getQuarterlyFinancialStatement(tickers)
+            dict['Quarterly Financial Statement'] = self.getQuarterlyFinancialStatement(tickers)
 
             # Getting ISIN code (International Securities Identification Number)
-            dict['isin'] = yFinanceExtractor().getISINcode(tickers)
+            dict['isin'] = self.getISINcode(tickers)
 
             #Getting tickers revenues and earnings
-            revenues, earnings = yFinanceExtractor().getEarningsandRevenue(tickers)
+            revenues, earnings = self.getEarningsandRevenue(tickers)
             dict['revenues'] = revenues
             dict['earnings'] = earnings
 
             #Getting tickers quarterly revenues and earnings
-            qrevenues, qearnings = yFinanceExtractor().getQuarterlyEarningsandRevenue(tickers)
+            qrevenues, qearnings = self.getQuarterlyEarningsandRevenue(tickers)
             dict['quarterly revenues'] = qrevenues
             dict['quarterly earnings'] = qearnings
 
             # Getting tickers major holders
-            dict['Major Holders'] = yFinanceExtractor().getMajorHolders(tickers)
+            dict['Major Holders'] = self.getMajorHolders(tickers)
             
             # Getting tickers basic shares
-            dict['Basic Shares'] =  yFinanceExtractor().getBasicShares(tickers)
+            dict['Basic Shares'] =  self.getBasicShares(tickers)
 
             # Getting tickers stock information
-            dict['Stock Information'] = yFinanceExtractor().getStockInfo(tickers)
+            dict['Stock Information'] = self.getStockInfo(tickers)
 
             # Getting Tickers options expirations
-            dict['Options Expiration'] = yFinanceExtractor().getOptionsExpirations(tickers)
+            dict['Options Expiration'] = self.getOptionsExpirations(tickers)
 
             # Getting tickers sustainability
-            dict['sustainability'] = yFinanceExtractor().getSustainability(tickers)
+            dict['sustainability'] = self.getSustainability(tickers)
 
             # Getting tickers calendar - next events
-            dict['calendar'] =yFinanceExtractor().getCalendar(tickers)
+            dict['calendar'] = self.getCalendar(tickers)
 
             # Getting tickers recommendations
-            dict['recommendations'] = yFinanceExtractor().getRecommendations(tickers)
+            dict['recommendations'] = self.getRecommendations(tickers)
 
             # Getting tickers analysis
-            dict['analysis'] = yFinanceExtractor().getAnalysis(tickers)
+            dict['analysis'] = self.getAnalysis(tickers)
 
             # Getting tickers news
             # NOT WORKING - AM FIXING IT
-            dict['news'] = yFinanceExtractor().getNews(tickers)
+            dict['news'] = self.getNews(tickers)
 
             # Getting tickers Mutual Fund Holders
-            dict['Mutal Fund Holders'] =  yFinanceExtractor().getMutualFundHolders(tickers)
+            dict['Mutal Fund Holders'] = self.getMutualFundHolders(tickers)
             
             # Getting tickers Institutional Holders
-            dict['Institutional Holders'] = yFinanceExtractor().getInstitutionalHolders(tickers)
+            dict['Institutional Holders'] = self.getInstitutionalHolders(tickers)
             return dict
 def main():
 main()
