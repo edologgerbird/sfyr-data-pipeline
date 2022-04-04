@@ -65,16 +65,6 @@ def extract_SGX_data(**kwargs):
     sgx_data = SGXDataExtractor_layer.get_SGX_data()
     return sgx_data
 
-'''
->> query_SGX_Data
-
->> transform_SGX_data
-
->> load SGX data
-
-
-'''    
-
 
 def extract_SBR_news_data(**kwargs):
     # >> extracts SBR_data
@@ -112,10 +102,19 @@ def extract_yFinance_data(**kwargs):
 # 1B. Data Transformation Modules (1)
 ########################################
 
+def query_SGX_data(**kwargs):
+    >> query recent SGX data from GBQ
+    >> return DataFrame: SGX_data
+
+def transform_SGX_data(**kwargs):
+    >> xom.pull(DataFrame: SGX_data)
+    >> compares SGX_data extracted from SGX source and SGX_data queried from GBQ. New column to indicate "Active" or "Delisted"
+    >> returns DataFrame: SGX_data_new
+
 def transform_SBR_news_data(**kwargs):
     >> xcom.pull(DataFrame: SBR_news_data)
     >> TickerExtractor(DataFrame: SBR_news)
-        >> xcom.pull(DataFrame: SGX Data)
+        >> xcom.pull(DataFrame: SGX Data_new)
     >> STIMovementExtractor(DataFrame: SBR_news)
     >> FinBERT(DataFrame: SBR_news)
     >> Transform to NoSQL Format
@@ -124,7 +123,7 @@ def transform_SBR_news_data(**kwargs):
 def transform_Tele_news_data(**kwargs):
     >> xcom.pull(DataFrame: Tele_news_data)
     >> TickerExtractor(DataFrame: Tele_news)
-        >> xcom.pull(DataFrame: SGX Data)
+        >> xcom.pull(DataFrame: SGX Data_new)
     >> FinBERT(DataFrame: Tele_news)
     >> Transform to NoSQL Format
     >> return dictionary: Tele_news_data_transformed
@@ -132,7 +131,7 @@ def transform_Tele_news_data(**kwargs):
 def transform_YahooFin_news_data(**kwargs):
     >> xcom.pull(DataFrame: YahooFin_news_data)
     >> TickerExtractor(DataFrame: YahooFin_news)
-        >> xcom.pull(DataFrame: SGX Data)
+        >> xcom.pull(DataFrame: SGX Data_new)
     >> FinBERT(DataFrame: YahooFin_news)
     >> Transform to NoSQL Format
     >> return dictionary: YahooFin_news_data_transformed
@@ -143,6 +142,10 @@ def transform_YahooFin_news_data(**kwargs):
 ###################################
 # 1C. Data Loading Modules (1)
 ###################################
+
+def load_SGX_data(**kwargs):
+    >> xcom.pull(DataFrame: SGX_data_new)
+    >> upload to GBQ
 
 def load_SBR_news_data(**kwargs):
     >> xcomm.pull(dictionary: SBR_news_data_transformed)
@@ -259,6 +262,14 @@ extract_yFinance_data_task = PythonOperator(task_id = 'extract_yFinance_data_tas
 # 3B. Data Transformation Tasks (1)
 ####################################
 
+query_SGX_data_task = PythonOperator(task_id = 'query_SGX_data_task', 
+                                        python_callable = query_SGX_data, 
+                                        provide_context=True, dag = dag)
+
+transform_SGX_data_task = PythonOperator(task_id = 'transform_SGX_data_task', 
+                                        python_callable = transform_SGX_data, 
+                                        provide_context=True, dag = dag)
+
 transform_SBR_data_task = PythonOperator(task_id = 'transform_SBR_data_task', 
                                         python_callable = transform_SBR_news_data, 
                                         provide_context=True, dag = dag)
@@ -276,6 +287,10 @@ transform_YahooFin_data_task = PythonOperator(task_id = 'transform_YahooFin_data
 ##############################
 # 3C. Data Loading Tasks (1)
 ##############################
+
+load_SGX_data_task = PythonOperator(task_id = 'load_SGX_data_task', 
+                                        python_callable = load_SGX_news_data, 
+                                        provide_context=True, dag = dag)
 
 load_SBR_data_task = PythonOperator(task_id = 'load_SBR_data_task', 
                                         python_callable = load_SBR_news_data, 
@@ -327,9 +342,8 @@ load_heatlists_task = PythonOperator(task_id = 'load_SBR_data_task',
 # 4. DEFINE OPERATORS HIERARCHY
 ##########################################
 [[extract_SGX_data_task >> extract_YahooFin_data_task] , extract_SBR_data_task , extract_Tele_data_task ] 
-# [[extract_SGX_data_task >> query_SGX_data_task >> transform_SGX_data_task >> load_SGX_data_task] >> extract_YahooFin_data_task >> asdfasdfasdfasdf ], [ extract_SBR_data_task , extract_Tele_data_task ]]
 '''
-extract_SGX_data_task >> extract_SBR_data_task >> extract_Tele_data_task >> \
+extract_SGX_data_task >> query_SGX_data_task>> transform_SGX_data_task >> load_SGX_data_task >> extract_SBR_data_task >> extract_Tele_data_task >> \
 extract_YahooFin_data_task >> extract_yFinance_data_task >> \
 transform_SBR_data_task >> transform_Tele_data_task >> transform_YahooFin_data_task >> \
 load_SBR_data_task >> load_Tele_data_task >> load_YahooFin_data_task >> \
