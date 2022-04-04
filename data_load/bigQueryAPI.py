@@ -25,7 +25,7 @@ class bigQueryDB:
     datasetTable = datasetName+ "." + tableName
     if isinstance(data, pd.DataFrame):
       try:
-        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id)
+        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, credentials=self.credentials)
         self.syncTables()    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet 
         return True
       except Exception as err:
@@ -39,7 +39,7 @@ class bigQueryDB:
     if (datasetTable in self.datasetTable):
       if isinstance(data, pd.DataFrame):
         try:
-            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="append")
+            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="append", credentials=self.credentials)
             return True
         except Exception as err:
             raise err
@@ -54,7 +54,7 @@ class bigQueryDB:
     if (datasetTable in self.datasetTable):
       if isinstance(data, pd.DataFrame):
         try:
-            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="replace")
+            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id, if_exists="replace", credentials=self.credentials)
             return True
         except Exception as err:
             raise err
@@ -89,7 +89,7 @@ class bigQueryDB:
     
   def gbdQueryAPI(self, query):
     try: 
-      df = pandas_gbq.read_gbq(query, project_id=self.project_id)
+      df = pandas_gbq.read_gbq(query, project_id=self.project_id, credentials=self.credentials)
       return df
     
     except Exception as err: 
