@@ -3,9 +3,6 @@ import datetime as dt
 import pandas as pd
 import numpy as np
 import yfinance as yf
-from urllib.request import Request, urlopen
-import requests
-import lxml
 from functools import reduce
 
 
