@@ -121,38 +121,39 @@ class yFinanceExtractor:
     # NEED TO REFORMAT THE INDEXING
     def getEarningsandRevenue(self, tickers):
         # Get Earnings and Revenue
-        earnings = pd.DataFrame()
-        revenues = pd.DataFrame()
+        all_tickers_earnings = pd.DataFrame()
+        all_tickers_revenues = pd.DataFrame()
 
         for ticker in tickers:
             if (ticker.earnings.shape[1] > 2):
-                revenues[ticker.ticker] = np.nan
-                earnings[ticker.ticker] = np.nan
+                all_tickers_revenues[ticker.ticker] = np.nan
+                all_tickers_earnings[ticker.ticker] = np.nan
 
             else:
-                earning = ticker.earnings.Earnings.rename(ticker.ticker).to_frame()
-                earnings = pd.concat([earnings,earning])
-                revenue = ticker.earnings.Revenue.rename(ticker.ticker).to_frame()
-                revenues = pd.concat([revenues,revenue])
-        return revenues, earnings
+                ticker_earning = ticker.earnings.Earnings.rename(ticker.ticker).to_frame()
+                all_tickers_earnings = pd.concat([all_tickers_earnings,ticker_earning])
+                ticker_revenues = ticker.earnings.Revenue.rename(ticker.ticker).to_frame()
+                all_tickers_revenues = pd.concat([all_tickers_revenues,ticker_revenues])
+        return all_tickers_revenues, all_tickers_earnings
             
     # NEED TO REFORMAT THE INDEXING
     def getQuarterlyEarningsandRevenue(self, tickers):
         # Get Quarterly Earnings and Revenue
-        qearnings = pd.DataFrame()
-        qrevenues = pd.DataFrame()
+        all_tickers_quarterly_earnings = pd.DataFrame()
+        all_tickers_quarterly_revenues = pd.DataFrame()
 
         for ticker in tickers:
             if (ticker.quarterly_earnings.shape[1] > 2):
-                qrevenues[ticker.ticker] = np.nan
-                qearnings[ticker.ticker] = np.nan
+                all_tickers_quarterly_revenues[ticker.ticker] = np.nan
+                all_tickers_quarterly_earnings[ticker.ticker] = np.nan
 
             else:
-                qearning = ticker.quarterly_earnings.Earnings.rename(ticker.ticker).to_frame()
-                qearnings = pd.concat([qearnings,qearning])
-                qrevenue = ticker.quarterly_earnings.Revenue.rename(ticker.ticker).to_frame()
-                qrevenues = pd.concat([qrevenues,qrevenue])
-        return qrevenues, qearnings
+                ticker_quarterly_earning = ticker.quarterly_earnings.Earnings.rename(ticker.ticker).to_frame()
+                all_tickers_quarterly_earnings = pd.concat([all_tickers_quarterly_earnings,ticker_quarterly_earning])
+                
+                ticker_quarterly_revenue = ticker.quarterly_earnings.Revenue.rename(ticker.ticker).to_frame()
+                all_tickers_quarterly_revenues = pd.concat([all_tickers_quarterly_revenues,ticker_quarterly_revenue])
+        return all_tickers_quarterly_earnings, all_tickers_quarterly_revenues
             
     def getMajorHolders(self, tickers):
         # Get Major Holders
