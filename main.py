@@ -1,17 +1,17 @@
 import time
-from data_extract.SBRExtractor import SBRExtractor
-from data_extract.SGXDataExtractor import SGXDataExtractor
-from data_extract.TelegramExtractor import TelegramExtractor
+# from data_extract.SBRExtractor import SBRExtractor
+# from data_extract.SGXDataExtractor import SGXDataExtractor
+# from data_extract.TelegramExtractor import TelegramExtractor
 from data_load.bigQueryAPI import bigQueryDB
-from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
-from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
-from data_pipeline.FirestorePipeline import FirestorePipeline
-from data_pipeline.HeatListPipeline import HeatListPipeline
+# from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
+# from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
+# from data_pipeline.FirestorePipeline import FirestorePipeline
+# from data_pipeline.HeatListPipeline import HeatListPipeline
 
 
 if __name__ == '__main__':
     start_time = time.time()
-
+    print(1111111)
     # ---- Test SGX Data Extraction ---- #
     # sgx_data_extractor_layer = SGXDataExtractor()
     # sgx_data_extractor_layer.load_SGX_data_from_source()
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 
 
     # ---- Test GBQ Pipeline ---- #
-    # print(gbqQuery().getDataFields("SGX.Tickers"))
+    print(bigQueryDB().getDataFields("SGX.Tickers"))
 
     # HeatListPipeline_layer = HeatListPipeline()
     # ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(

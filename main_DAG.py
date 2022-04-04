@@ -4,9 +4,11 @@ from airflow.operators.python_operator import PythonOperator
 
 # Importing High Level Pipeline Modules
 # Extract Modules
+from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.SBRExtractor import SBRExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
+
 
 # Transform Modules
 from data_transform.STIMovementExtractor import STIMovementExtractor
@@ -37,44 +39,71 @@ import pandas as pd
 # 0. DEFINE GLOBAL VARIABLES
 ####################################################
 
-'''
-start_date = datetime: start_date
-end_date = datetime: end_date
+global_start_date = datetime.now()
+global_end_date = datetime.now()
 
-firestoreDBLayer = firestoreDB: firestoreDBLayer
-bigQueryDBLayer = bigQueryDB: bigQueryDBLayer
+firestoreDBLayer = firestoreDB()
+bigQueryDBLayer = bigQueryDB()
 
-tickerExtractionLayer = TickerExtractor: tickerExtractionLayer
-FinBERTLayer = FinBERT: FinBERTLayer
-'''
+tickerExtractionLayer = TickerExtractor()
+FinBERTLayer = FinBERT()
 
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
 ####################################################
 
-'''
-
 ##############################
 # 1A. Data Extraction Modules
 ##############################
 
 def extract_SGX_data(**kwargs):
-    >> extracts SGX_data
-    >> return DataFrame: SGX_data
+    # >> extracts SGX_data
+    # >> return DataFrame: SGX_data
+    SGXDataExtractor_layer = SGXDataExtractor()
+    SGXDataExtractor_layer.load_SGX_data_from_source()
+    sgx_data = SGXDataExtractor_layer.get_SGX_data()
+    return sgx_data
+
+'''
+>> query_SGX_Data
+
+>> transform_SGX_data
+
+>> load SGX data
+
+
+'''    
+
 
 def extract_SBR_news_data(**kwargs):
-    >> extracts SBR_data
-    >> return DataFrame: SBR_data
+    # >> extracts SBR_data
+    # >> return DataFrame: SBR_data
+    SBRExtractor_layer = SBRExtractor()
+    sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
+        start_date=global_start_date, end_date=global_end_date)
+    return sbr_raw_data
+
 
 def extract_Tele_news_data(**kwargs):
-    >> extracts Tele_data
-    >> return DataFrame: Tele_data
+    # >> extracts Tele_data
+    # >> return DataFrame: Tele_data
+    TelegramExtractor_layer = TelegramExtractor()
+    tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
+        start_date=global_start_date, end_date=global_end_date)
+    return tele_data_raw
+
 
 def extract_YahooFin_news_data(**kwargs):
-    >> extracts YahooFin_data
-    >> return DataFrame: YahooFin_data
+    # >> extracts YahooFin_data
+    # >> return DataFrame: YahooFin_data
+    yahooFinNewsExtractor_layer = yahooFinNewsExtractor()
+    # pending time periood
+    yahooFinNews_data_raw = yahooFinNewsExtractor_layer.getSGXTickerNews()
+    return yahooFinNews_data_raw
 
+
+'''
 def extract_yFinance_data(**kwargs):
     >> extract YahooFin_data
     >> return dictionary of DataFrames: YahooFin_data
@@ -171,58 +200,56 @@ def load_heatlists(**kwargs):
 '''
 
 ############################################
-#2. DEFINE AIRFLOW DAG (SETTINGS + SCHEDULE)
+# 2. DEFINE AIRFLOW DAG (SETTINGS + SCHEDULE)
 ############################################
 
-start_date = datetime.now()
 
 default_args = {
-     'owner': 'is3107_g7',
-     'depends_on_past': False,
-     'email': ['is3107_g7@gmail.com'],
-     'email_on_failure': True,
-     'email_on_retry': True,
-     'retries': 1
-    }
+    'owner': 'is3107_g7',
+    'depends_on_past': False,
+    'email': ['is3107_g7@gmail.com'],
+    'email_on_failure': True,
+    'email_on_retry': True,
+    'retries': 1
+}
 
-dag = DAG( 'ETL_for_SGX_Stocks_Data',
-            default_args = default_args,
-            description = 'Collect Stock Prices For Analysis',
-            catchup = False, 
-            start_date = start_date, # may need to timedelta(days = 1)
-            schedule_interval = '0 0 * * *'  # runs daily
-          )  
-
-
+dag = DAG('_ETL_for_SGX_Stocks_Data',
+          default_args=default_args,
+          description='Collect Stock Prices For Analysis',
+          catchup=False,
+          start_date=global_start_date,  # may need to timedelta(days = 1)
+          schedule_interval='0 0 * * *'  # runs daily
+          )
 
 
 ##########################################
-#3. DEFINE AIRFLOW OPERATORS
+# 3. DEFINE AIRFLOW OPERATORS
 ##########################################
-
 
 
 ##############################
 # 3A. Data Extraction Tasks
 ##############################
+
+extract_SGX_data_task = PythonOperator(task_id='extract_SGX_data_task',
+                                       python_callable=extract_SGX_data,
+                                       provide_context=True, dag=dag)
+
+
+extract_SBR_data_task = PythonOperator(task_id='extract_SBR_data_task',
+                                       python_callable=extract_SBR_news_data,
+                                       provide_context=True, dag=dag)
+
+extract_Tele_data_task = PythonOperator(task_id='extract_Tele_data_task',
+                                        python_callable=extract_Tele_news_data,
+                                        provide_context=True, dag=dag)
+
+
+
+extract_YahooFin_data_task = PythonOperator(task_id='extract_YahooFin_data_task',
+                                            python_callable=extract_YahooFin_news_data,
+                                            provide_context=True, dag=dag)
 '''
-extract_SGX_data_task = PythonOperator(task_id = 'extract_SGX_data_task', 
-                                        python_callable = extract_SGX_data, 
-                                        provide_context=True, dag = dag)
-
-
-extract_SBR_data_task = PythonOperator(task_id = 'extract_SBR_data_task', 
-                                        python_callable = extract_SBR_news_data, 
-                                        provide_context=True, dag = dag)
-
-
-extract_Tele_data_task = PythonOperator(task_id = 'extract_Tele_data_task', 
-                                        python_callable = extract_Tele_news_data, 
-                                        provide_context=True, dag = dag)
-
-extract_YahooFin_data_task = PythonOperator(task_id = 'extract_YahooFin_data_task', 
-                                        python_callable = extract_YahooFin_news_data, 
-                                        provide_context=True, dag = dag)
 
 extract_yFinance_data_task = PythonOperator(task_id = 'extract_yFinance_data_task', 
                                         python_callable = extract_yFinance_news_data, 
@@ -297,9 +324,10 @@ load_heatlists_task = PythonOperator(task_id = 'load_SBR_data_task',
 '''
 
 ##########################################
-#4. DEFINE OPERATORS HIERARCHY
+# 4. DEFINE OPERATORS HIERARCHY
 ##########################################
-
+[[extract_SGX_data_task >> extract_YahooFin_data_task] , extract_SBR_data_task , extract_Tele_data_task ] 
+# [[extract_SGX_data_task >> query_SGX_data_task >> transform_SGX_data_task >> load_SGX_data_task] >> extract_YahooFin_data_task >> asdfasdfasdfasdf ], [ extract_SBR_data_task , extract_Tele_data_task ]]
 '''
 extract_SGX_data_task >> extract_SBR_data_task >> extract_Tele_data_task >> \
 extract_YahooFin_data_task >> extract_yFinance_data_task >> \
@@ -307,6 +335,5 @@ transform_SBR_data_task >> transform_Tele_data_task >> transform_YahooFin_data_t
 load_SBR_data_task >> load_Tele_data_task >> load_YahooFin_data_task >> \
 load_yFinance_data_task >> query_SBR_data_task >> query_Tele_data_task >> \
 query_YahooFin_data_task >> generate_heatlists_task >> load_heatlists_task
-
 
 '''
