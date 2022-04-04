@@ -13,9 +13,7 @@ class yFinanceExtractor:
         else:
             df = pd.read_csv()
             df.company_code = df.company_code.str[:] + ".SI"
-    
-    def tickerQuery(self,queryName, *args):
-        query = getattr(yf, queryName)
+
     
     def checkTickers(self,companyCode):
         # To check if ticker exist
