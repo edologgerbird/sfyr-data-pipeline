@@ -489,13 +489,6 @@ class yFinanceExtractor:
             dict['Institutional Holders'] = institutionalHolders
             return dict
 def main():
-        # Reading data
-        file = 'SGX_data.csv'
-        df = pd.read_csv(file)
-        
-        #Extracting Company Code
-        companyCode = df['company_code'].to_numpy()
-        dict = yFinanceExtractor().getDictionary(companyCode)
 main()
     
     
