@@ -157,21 +157,21 @@ class yFinanceExtractor:
             
     def getMajorHolders(self, tickers):
         # Get Major Holders
-        majorHolders = pd.DataFrame()
+        all_tickers_majorHolders = pd.DataFrame()
         for ticker in tickers:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
                 data= {'% of Shares Held by All Insider': np.nan, '% of Shares Held by Institutions':np.nan ,
                         '% of Float Held by Institutions':np.nan,'Number of Institutions Holding Shares':np.nan,
                         'Ticker':ticker.ticker}
-                mHolders = pd.DataFrame(data, index = [0])
-                majorHolders = pd.concat([majorHolders,mHolders])
+                ticker_majorHolders = pd.DataFrame(data, index = [0])
+                all_tickers_majorHolders = pd.concat([all_tickers_majorHolders,ticker_majorHolders])
 
             else:
-                mHolders = ticker.major_holders[0].rename({0: '% of Shares Held by All Insider', 1:'% of Shares Held by Institutions' , 2:'% of Float Held by Institutions' ,3:'Number of Institutions Holding Shares'})
-                mHolders['Ticker'] = ticker.ticker
-                majorHolders = majorHolders.append(mHolders)
-        majorHolders = majorHolders.reset_index(drop=True)
-        return majorHolders
+                ticker_majorHolders = ticker.major_holders[0].rename({0: '% of Shares Held by All Insider', 1:'% of Shares Held by Institutions' , 2:'% of Float Held by Institutions' ,3:'Number of Institutions Holding Shares'})
+                ticker_majorHolders['Ticker'] = ticker.ticker
+                all_tickers_majorHolders = all_tickers_majorHolders.append(ticker_majorHolders)
+        all_tickers_majorHolders = all_tickers_majorHolders.reset_index(drop=True)
+        return all_tickers_majorHolders
         
     # NEED TO REFORMAT THE INDEXING
     def getBasicShares(self,tickers):
@@ -188,15 +188,15 @@ class yFinanceExtractor:
     # NEED TO REFORMAT THE INDEXING
     def getStockInfo(self, tickers):
         # Get stock information
-        info = pd.DataFrame()
+        all_info = pd.DataFrame()
 
         for ticker in tickers:
             if ticker.info is None:
-                info[ticker.ticker] = np.nan
+                all_info[ticker.ticker] = np.nan
             else:
                 stockInfo = pd.DataFrame(ticker.info.values(), index = ticker.info.keys(), columns= [ticker.ticker])
-                info = pd.concat([info, stockInfo])
-        return info
+                all_info = pd.concat([all_info, stockInfo])
+        return all_info
         
     def getOptionsExpirations(self,tickers):
         # Get options expirations
@@ -210,31 +210,31 @@ class yFinanceExtractor:
     def getSustainability(self, tickers):
         # Get Sustainability
 
-        sus = pd.DataFrame()
+        all_sustainability = pd.DataFrame()
 
         for ticker in tickers:
             if ticker.sustainability is None:
-                sus[ticker.ticker] = np.nan
+                all_sustainability[ticker.ticker] = np.nan
             else:
                 sustainability = ticker.sustainability.rename(columns={"Value": ticker.ticker})
-                sus = pd.concat([sus, sustainability])
-        return sus
+                all_sustainability = pd.concat([all_sustainability, sustainability])
+        return all_sustainability
         
     def getCalendar(self,tickers):
         # Get next event (earnings, etc)
-        calendar = pd.DataFrame()
+        all_calendar = pd.DataFrame()
         for ticker in tickers:
             if ticker.calendar is None:
                 data= {'Earnings Date': np.nan,'Earnings Average': np.nan,'Earnings Low':np.nan,'Earnings High':np.nan,'Revenue Average':np.nan,
                                     'Revenue Low':np.nan,    'Revenue High':np.nan,    'Ticker':ticker.ticker}
-                c = pd.DataFrame(data, index=['Value'])
-                calendar = pd.concat([calendar,c])
+                ticker_calendar = pd.DataFrame(data, index=['Value'])
+                calendar = pd.concat([all_calendar,ticker_calendar])
 
             else:
-                c = ticker.calendar.transpose()
-                c['Ticker'] = ticker.ticker
-                calendar = pd.concat([calendar,c])
-            return calendar
+                ticker_calendar = ticker.calendar.transpose()
+                ticker_calendar['Ticker'] = ticker.ticker
+                all_calendar = pd.concat([all_calendar,ticker_calendar])
+            return all_calendar
     
     def getRecommendations(self,tickers):
         # Get Recommendations
