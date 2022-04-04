@@ -89,7 +89,7 @@ class bigQueryDB:
     
   def gbdQueryAPI(self, query):
     try: 
-      df = pandas_gbq.read_gbq(query, project_id=self.project_id)
+      df = pandas_gbq.read_gbq(query, project_id=self.project_id, credentials = self.credentials)
       return df
     
     except Exception as err: 
