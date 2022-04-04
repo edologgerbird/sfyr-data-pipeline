@@ -11,12 +11,20 @@ from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
 # Transform Modules
 from data_transform.STIMovementExtractor import STIMovementExtractor
 from data_transform.TickerExtractor import TickerExtractor
+from data_transform.SBRDataTransform import SBRDataTransformer
+from data_transform.telegramDataTransform import telegramDataTransformer
 from data_processing.FinBertAPI import FinBERT
-from data_processing.HeatListGenerator import HeatListGenerator
+from data_processing.HeatListGeneratorAPI import HeatListGenerator
+from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
 
 # Load Modules
 from data_load.firestoreAPI import firestoreDB
 from data_load.bigQueryAPI import bigQueryDB
+from data_load.FirestoreDataLoader import FirestoreDataLoader
+
+# Query Modules
+from data_querying.heatlistQuery import HeatListQuery
+
 # will need loading modules for each source
 
 # General utility Modules
@@ -166,6 +174,7 @@ def load_heatlists(**kwargs):
 #2. DEFINE AIRFLOW DAG (SETTINGS + SCHEDULE)
 ############################################
 
+start_date = datetime.now()
 
 default_args = {
      'owner': 'is3107_g7',
