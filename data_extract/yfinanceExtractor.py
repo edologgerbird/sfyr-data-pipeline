@@ -81,7 +81,8 @@ class yFinanceExtractor:
             cf = ticker.cashflow
 
             # concatenate into one dataframe
-            financial_statements = pd.concat([pnl, bs, cf], axis=1).transpose()
+            financial_statements = pd.concat(
+                [pnl, balance_sheet, cf], axis=1).transpose()
 
             # Add ticker to dataframe
             financial_statements['Tickers'] = ticker.ticker
@@ -102,7 +103,8 @@ class yFinanceExtractor:
             cf = ticker.quarterly_cashflow
 
             # concatenate into one dataframe
-            financial_statements = pd.concat([pnl, bs, cf], axis=1).transpose()
+            financial_statements = pd.concat(
+                [pnl, balance_sheet, cf], axis=1).transpose()
 
             # Add ticker to dataframe
             financial_statements['Tickers'] = ticker.ticker
@@ -213,14 +215,16 @@ class yFinanceExtractor:
     def getStockInfo(self):
         # Get stock information
         all_tickers_info = pd.DataFrame()
-        
+
         for ticker in self.ticker_active:
-                ticker_info = pd.DataFrame(ticker.info.values(), index = ticker.info.keys(), columns= [ticker.ticker])
-                all_tickers_info = pd.concat([all_tickers_info, ticker_info])
+            ticker_info = pd.DataFrame(ticker.info.values(
+            ), index=ticker.info.keys(), columns=[ticker.ticker])
+            all_tickers_info = pd.concat([all_tickers_info, ticker_info])
 
         all_tickers_info = all_tickers_info.transpose().reset_index()
-        all_tickers_info = all_tickers_info.rename(columns={'index':'Tickers'})
-        return all_info
+        all_tickers_info = all_tickers_info.rename(
+            columns={'index': 'Tickers'})
+        return all_tickers_info
 
     def getSustainability(self):
         # Get Sustainability
@@ -255,17 +259,20 @@ class yFinanceExtractor:
     def getRecommendations(self):
         # Get Recommendations
         all_tickers_recommendations = pd.DataFrame()
-        
-        for ticker in self.ticker_active:
-                if ticker.recommendations is None:
-                    data = {'Firm':np.nan, 'To Grade':np.nan, 'From Grade':np.nan,'Action':np.nan, "Tickers":ticker.ticker}
-                    ticker_recommendations = pd.DataFrame(data, index=[np.nan])
-                    all_tickers_recommendations = pd.concat([all_tickers_recommendations, ticker_recommendations])
 
-                else:
-                    ticker_recommendations = ticker.recommendations
-                    ticker_recommendations['Tickers'] = ticker.ticker
-                    all_tickers_recommendations = pd.concat([all_tickers_recommendations, ticker_recommendations])
+        for ticker in self.ticker_active:
+            if ticker.recommendations is None:
+                data = {'Firm': np.nan, 'To Grade': np.nan, 'From Grade': np.nan,
+                        'Action': np.nan, "Tickers": ticker.ticker}
+                ticker_recommendations = pd.DataFrame(data, index=[np.nan])
+                all_tickers_recommendations = pd.concat(
+                    [all_tickers_recommendations, ticker_recommendations])
+
+            else:
+                ticker_recommendations = ticker.recommendations
+                ticker_recommendations['Tickers'] = ticker.ticker
+                all_tickers_recommendations = pd.concat(
+                    [all_tickers_recommendations, ticker_recommendations])
         all_tickers_recommendations = all_tickers_recommendations.reset_index()
         return all_tickers_recommendations
 
@@ -274,26 +281,29 @@ class yFinanceExtractor:
         all_tickers_analysis = pd.DataFrame()
         for ticker in self.ticker_active:
             if ticker.analysis is None:
-                data = {'Max Age':np.nan, 'End Date':np.nan, 'Growth':np.nan, 'Earnings Estimate Avg':np.nan,
-                        'Earnings Estimate Low':np.nan, 'Earnings Estimate High':np.nan,
-                        'Earnings Estimate Year Ago Eps':np.nan,
-                        'Earnings Estimate Number Of Analysts':np.nan, 'Earnings Estimate Growth':np.nan,
-                        'Revenue Estimate Avg':np.nan, 'Revenue Estimate Low':np.nan, 'Revenue Estimate High':np.nan,
-                        'Revenue Estimate Number Of Analysts':np.nan,
-                        'Revenue Estimate Year Ago Revenue':np.nan, 'Revenue Estimate Growth':np.nan,
-                        'Eps Trend Current':np.nan, 'Eps Trend 7Days Ago':np.nan, 'Eps Trend 30Days Ago':np.nan,
-                        'Eps Trend 60Days Ago':np.nan, 'Eps Trend 90Days Ago':np.nan,
-                        'Eps Revisions Up Last7Days':np.nan, 'Eps Revisions Up Last30Days':np.nan,
-                        'Eps Revisions Down Last30Days':np.nan, 'Eps Revisions Down Last90Days':np.nan, 'Tickers': ticker.ticker}
+                data = {'Max Age': np.nan, 'End Date': np.nan, 'Growth': np.nan, 'Earnings Estimate Avg': np.nan,
+                        'Earnings Estimate Low': np.nan, 'Earnings Estimate High': np.nan,
+                        'Earnings Estimate Year Ago Eps': np.nan,
+                        'Earnings Estimate Number Of Analysts': np.nan, 'Earnings Estimate Growth': np.nan,
+                        'Revenue Estimate Avg': np.nan, 'Revenue Estimate Low': np.nan, 'Revenue Estimate High': np.nan,
+                        'Revenue Estimate Number Of Analysts': np.nan,
+                        'Revenue Estimate Year Ago Revenue': np.nan, 'Revenue Estimate Growth': np.nan,
+                        'Eps Trend Current': np.nan, 'Eps Trend 7Days Ago': np.nan, 'Eps Trend 30Days Ago': np.nan,
+                        'Eps Trend 60Days Ago': np.nan, 'Eps Trend 90Days Ago': np.nan,
+                        'Eps Revisions Up Last7Days': np.nan, 'Eps Revisions Up Last30Days': np.nan,
+                        'Eps Revisions Down Last30Days': np.nan, 'Eps Revisions Down Last90Days': np.nan, 'Tickers': ticker.ticker}
                 ticker_analysis = pd.DataFrame(data, index=[np.nan])
-                all_tickers_analysis = pd.concat([all_tickers_analysis, ticker_analysis])
+                all_tickers_analysis = pd.concat(
+                    [all_tickers_analysis, ticker_analysis])
 
             else:
                 ticker_analysis = ticker.analysis
                 ticker_analysis['Tickers'] = ticker.ticker
-                all_tickers_analysis = pd.concat([all_tickers_analysis, ticker_analysis])
-                
-        all_tickers_analysis = all_tickers_analysis.reset_index().rename(columns ={'index':'Period'})
+                all_tickers_analysis = pd.concat(
+                    [all_tickers_analysis, ticker_analysis])
+
+        all_tickers_analysis = all_tickers_analysis.reset_index().rename(columns={
+            'index': 'Period'})
         return all_tickers_analysis
 
     def getMutualFundHolders(self):
@@ -302,7 +312,8 @@ class yFinanceExtractor:
 
         for ticker in self.ticker_active:
             if ticker.mutualfund_holders is None:
-                data = {'Holder':np.nan, 'Shares':np.nan, 'Date Reported':np.nan, '% Out':np.nan, 'Value':np.nan, 'Tickers':ticker.ticker }
+                data = {'Holder': np.nan, 'Shares': np.nan, 'Date Reported': np.nan,
+                        '% Out': np.nan, 'Value': np.nan, 'Tickers': ticker.ticker}
                 ticker_mfh = pd.DataFrame(data, index=[0])
                 all_tickers_mfh = pd.concat([all_tickers_mfh, ticker_mfh])
 
@@ -311,16 +322,17 @@ class yFinanceExtractor:
                 ticker_mfh['Tickers'] = ticker.ticker
                 all_tickers_mfh = pd.concat([all_tickers_mfh, ticker_mfh])
 
-        all_tickers_mfh = all_tickers_mfh.reset_index(drop = True)
+        all_tickers_mfh = all_tickers_mfh.reset_index(drop=True)
         return all_tickers_mfh
 
     def getInstitutionalHolders(self):
         # Get Institutional holders
         all_tickers_ih = pd.DataFrame()
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if ticker.institutional_holders is None or ticker.institutional_holders.shape[1] != 5:
-                data = {'Holder':np.nan, 'Shares':np.nan, 'Date Reported':np.nan, '% Out':np.nan, 'Value':np.nan, 'Tickers':ticker.ticker }
+                data = {'Holder': np.nan, 'Shares': np.nan, 'Date Reported': np.nan,
+                        '% Out': np.nan, 'Value': np.nan, 'Tickers': ticker.ticker}
                 ticker_ih = pd.DataFrame(data, index=[0])
                 all_tickers_ih = pd.concat([all_tickers_ih, ticker_ih])
 
@@ -329,58 +341,58 @@ class yFinanceExtractor:
                 ticker_ih['Tickers'] = ticker.ticker
                 all_tickers_ih = pd.concat([all_tickers_ih, ticker_ih])
 
-        all_tickers_ih = all_tickers_ih.reset_index(drop = True) 
+        all_tickers_ih = all_tickers_ih.reset_index(drop=True)
         return all_tickers_ih
 
-    def getDictionary(self):
-        dict = {}
+    # def getDictionary(self):
+    #     dict = {}
 
-        # Getting listed and delisted tickers
-        dict['Ticker Listing'] = self.checkTickers()
+    #     # Getting listed and delisted tickers
+    #     dict['Ticker Listing'] = self.checkTickers()
 
-        # Getting listed tickers history data
-        dict['Historical Data'] = self.getHistoricalData(listed)
+    #     # Getting listed tickers history data
+    #     dict['Historical Data'] = self.getHistoricalData(listed)
 
-        tickers = [yf.Ticker(ticker) for ticker in listed]
-        # Getting Financial Statement
-        dict['Financial Statement'] = self.getFinancialStatement()
+    #     tickers = [yf.Ticker(ticker) for ticker in listed]
+    #     # Getting Financial Statement
+    #     dict['Financial Statement'] = self.getFinancialStatement()
 
-        # Getting Quarterly Financial Statement
-        dict['Quarterly Financial Statement'] = self.getQuarterlyFinancialStatement()
+    #     # Getting Quarterly Financial Statement
+    #     dict['Quarterly Financial Statement'] = self.getQuarterlyFinancialStatement()
 
-        # Getting ISIN code (International Securities Identification Number)
-        dict['isin'] = self.getISINcode()
+    #     # Getting ISIN code (International Securities Identification Number)
+    #     dict['isin'] = self.getISINcode()
 
-        # Getting tickers revenues and earnings
-        dict['Revenues and Earnings'] = self.getEarningsandRevenue()
+    #     # Getting tickers revenues and earnings
+    #     dict['Revenues and Earnings'] = self.getEarningsandRevenue()
 
-        # Getting tickers quarterly revenues and earnings
-        dict['Quarterly Revenues and Earnings'] = self.getQuarterlyEarningsandRevenue()
+    #     # Getting tickers quarterly revenues and earnings
+    #     dict['Quarterly Revenues and Earnings'] = self.getQuarterlyEarningsandRevenue()
 
-        # Getting tickers major holders
-        dict['Major Holders'] = self.getMajorHolders()
+    #     # Getting tickers major holders
+    #     dict['Major Holders'] = self.getMajorHolders()
 
-        # Getting tickers basic shares
-        dict['Basic Shares'] = self.getBasicShares()
+    #     # Getting tickers basic shares
+    #     dict['Basic Shares'] = self.getBasicShares()
 
-        # Getting tickers stock information
-        dict['Stock Information'] = self.getStockInfo()
+    #     # Getting tickers stock information
+    #     dict['Stock Information'] = self.getStockInfo()
 
-        # Getting tickers sustainability
-        dict['sustainability'] = self.getSustainability()
+    #     # Getting tickers sustainability
+    #     dict['sustainability'] = self.getSustainability()
 
-        # Getting tickers calendar - next events
-        dict['calendar'] = self.getCalendar()
+    #     # Getting tickers calendar - next events
+    #     dict['calendar'] = self.getCalendar()
 
-        # Getting tickers recommendations
-        dict['recommendations'] = self.getRecommendations()
+    #     # Getting tickers recommendations
+    #     dict['recommendations'] = self.getRecommendations()
 
-        # Getting tickers analysis
-        dict['analysis'] = self.getAnalysis()
+    #     # Getting tickers analysis
+    #     dict['analysis'] = self.getAnalysis()
 
-        # Getting tickers Mutual Fund Holders
-        dict['Mutal Fund Holders'] = self.getMutualFundHolders()
+    #     # Getting tickers Mutual Fund Holders
+    #     dict['Mutal Fund Holders'] = self.getMutualFundHolders()
 
-        # Getting tickers Institutional Holders
-        dict['Institutional Holders'] = self.getInstitutionalHolders()
-        return dict
+    #     # Getting tickers Institutional Holders
+    #     dict['Institutional Holders'] = self.getInstitutionalHolders()
+    #     return dict
