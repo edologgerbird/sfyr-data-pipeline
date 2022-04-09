@@ -135,9 +135,12 @@ class yFinanceExtractor:
         all_tickers_earnings_and_revenues = pd.DataFrame()
 
         for ticker in self.ticker_active:
-            if (ticker.earnings.shape[1] > 2):
+            if (ticker.earnings.shape[0] < 1):
                 # Ticker's revenue and earning do not exist
-                pass
+                data= {'Revenue': np.nan,'Earnings': np.nan,'Tickers':ticker.ticker}
+                ticker_earning_and_revenue = pd.DataFrame(data, index = [np.nan])
+                all_tickers_earnings_and_revenues = pd.concat([all_tickers_earnings_and_revenues,ticker_earning_and_revenue])
+
 
             else:
                 ticker_earning_and_revenue = ticker.earnings
@@ -151,9 +154,11 @@ class yFinanceExtractor:
         all_tickers_quarterly_earnings_and_revenues = pd.DataFrame()
 
         for ticker in self.ticker_active:
-            if (ticker.quarterly_earnings.shape[1] > 2):
+            if (ticker.quarterly_earnings.shape[0] < 1):
                 # Ticker's revenue and earning do not exist
-                pass
+                data= {'Revenue': np.nan,'Earnings': np.nan,'Tickers':ticker.ticker}
+                ticker_quarterly_earning_and_revenue = pd.DataFrame(data, index = [np.nan])
+                all_tickers_quarterly_earnings_and_revenues = pd.concat([all_tickers_quarterly_earnings_and_revenues,ticker_quarterly_earning_and_revenue])
 
             else:
                 ticker_quarterly_earning_and_revenue = ticker.quarterly_earnings
@@ -187,7 +192,9 @@ class yFinanceExtractor:
         for ticker in self.ticker_active:
             if ticker.shares is None:
                 # Ticker does not have shares info
-                pass
+                data= {'BasicShares': np.nan,'Tickers':ticker.ticker}
+                ticker_share = pd.DataFrame(data, index = [np.nan])
+                all_tickers_shares = pd.concat([all_tickers_shares,ticker_share])
             else:
                 ticker_share = ticker.shares
                 ticker_share['Tickers'] = ticker.ticker
