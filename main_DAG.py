@@ -47,6 +47,9 @@ bigQueryDB_layer = bigQueryDB()
 
 FinBERT_layer = FinBERT()
 
+FirestoreDataLoader_layer = FirestoreDataLoader(firestoreDB_layer)
+HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
+
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
@@ -65,7 +68,7 @@ def extract_SGX_data(**kwargs):
     return sgx_data
 
 
-def extract_SBR_news_data(**kwargs):
+def extract_SBR_data(**kwargs):
     # >> extracts SBR_data
     # >> return DataFrame: SBR_data
     SBRExtractor_layer = SBRExtractor()
@@ -74,16 +77,16 @@ def extract_SBR_news_data(**kwargs):
     return sbr_raw_data
 
 
-def extract_Tele_news_data(**kwargs):
-    # >> extracts Tele_data
-    # >> return DataFrame: Tele_data
+def extract_tele_data(**kwargs):
+    # >> extracts tele_data
+    # >> return DataFrame: tele_data
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
         start_date=global_start_date, end_date=global_end_date)
     return tele_data_raw
 
 
-def extract_YahooFin_news_data(**kwargs):
+def extract_YahooFin_data(**kwargs):
     # >> extracts YahooFin_data
     # >> return DataFrame: YahooFin_data
     yahooFinNewsExtractor_layer = yahooFinNewsExtractor()
@@ -92,36 +95,36 @@ def extract_YahooFin_news_data(**kwargs):
     return yahooFinNews_data_raw
 
 
-'''
 def extract_yFinance_data(**kwargs):
-    >> extract YahooFin_data
-    >> return dictionary of DataFrames: YahooFin_data
-'''
+    # >> extract YahooFin_data
+    # >> return dictionary of DataFrames: YahooFin_data
+    return
+
 ########################################
 # 1B. Data Transformation Modules (1)
 ########################################
 
 
-'''
 def query_SGX_data(**kwargs):
-    >> query recent SGX data from GBQ
-    >> return DataFrame: SGX_data
+    # >> query recent SGX data from GBQ
+    # >> return DataFrame: SGX_data
+    return
+
 
 def transform_SGX_data(**kwargs):
-    >> xcom.pull(DataFrame: SGX_data)
-    >> compares SGX_data extracted from SGX source and SGX_data queried from GBQ. New column to indicate "Active" or "Delisted"
-    >> Initialise TickerExtractor with SGX_data_new
-    >> returns TickerExtractor: TickerExtractorLayer
+    # >> xcom.pull(DataFrame: SGX_data)
+    # >> compares SGX_data extracted from SGX source and SGX_data queried from GBQ. New column to indicate "Active" or "Delisted"
+    # >> Initialise TickerExtractor with SGX_data_new
+    # >> returns TickerExtractor: TickerExtractorLayer
+    return
 
-'''
 
-
-def transform_SBR_news_data(**kwargs):
+def transform_SBR_data(**kwargs):
 
     ti = kwargs['ti']
 
     # >> xcom.pull(DataFrame: SBR_news_data)
-    SBR_data_raw = ti.xcom_pull(task_ids="extract_SBR_news_data")
+    SBR_data_raw = ti.xcom_pull(task_ids="extract_SBR_data_task")
 
     # >> TickerExtractor(DataFrame: SBR_news)
     #     >> xcom.pull(DataFrame: SGX Data_new)
@@ -149,25 +152,25 @@ def transform_SBR_news_data(**kwargs):
     return SBR_data_transformed
 
 
-def transform_Tele_news_data(**kwargs):
+def transform_tele_data(**kwargs):
 
     ti = kwargs['ti']
 
-    # >> xcom.pull(DataFrame: Tele_news_data)
-    tele_data_raw = ti.xcom_pull(task_ids="extract_tele_news_data")
+    # >> xcom.pull(DataFrame: tele_news_data)
+    tele_data_raw = ti.xcom_pull(task_ids="extract_tele_data_task")
 
-    # >> TickerExtractor(DataFrame: Tele_news)
+    # >> TickerExtractor(DataFrame: tele_news)
     #     >> xcom.pull(DataFrame: SGX Data_new)
     ticker_extractor_layer = ti.xcom_pull(task_ids="transform_SGX_data_task")
     tele_data_with_tickers = ticker_extractor_layer.populate_ticker_occurences(
         tele_data_raw["message"])
 
-    # >> FinBERT(DataFrame: Tele_news)
+    # >> FinBERT(DataFrame: tele_news)
     tele_data_with_sentiments = FinBERT_layer.FinBert_pipeline(
         tele_data_raw["message"])
 
     # >> Transform to NoSQL Format
-    # >> return dictionary: Tele_news_data_transformed
+    # >> return dictionary: tele_news_data_transformed
     telegramDataTransformer_layer = telegramDataTransformer()
     tele_data_transformed = telegramDataTransformer_layer.transformTelegramData(
         tele_data_raw, tele_data_with_tickers, tele_data_with_sentiments)
@@ -175,81 +178,127 @@ def transform_Tele_news_data(**kwargs):
     return tele_data_transformed
 
 
-'''
-def transform_YahooFin_news_data(**kwargs):
-    >> xcom.pull(DataFrame: YahooFin_news_data)
-    >> TickerExtractor(DataFrame: YahooFin_news)
-        >> xcom.pull(DataFrame: SGX Data_new)
-    >> FinBERT(DataFrame: YahooFin_news)
-    >> Transform to NoSQL Format
-    >> return dictionary: YahooFin_news_data_transformed
+def transform_YahooFin_data(**kwargs):
+    # >> xcom.pull(DataFrame: YahooFin_news_data)
+    # >> TickerExtractor(DataFrame: YahooFin_news)
+    #     >> xcom.pull(DataFrame: SGX Data_new)
+    # >> FinBERT(DataFrame: YahooFin_news)
+    # >> Transform to NoSQL Format
+    # >> return dictionary: YahooFin_news_data_transformed
+    return
 
-## Does yFinance data need transformating?
-'''
+
+def transform_yFinance_data(**kwargs):
+    # >> xcom.pull(DataFrame: yFinance_data)
+    # >> Transform
+    # >> return list of dictionary: yFinance_data_transformed
+    return
+
+# Does yFinance data need transforming?
+
 
 ###################################
 # 1C. Data Loading Modules (1)
 ###################################
 
-'''
 def load_SGX_data(**kwargs):
-    >> xcom.pull(DataFrame: SGX_data_new)
-    >> upload to GBQ
+    # >> xcom.pull(DataFrame: SGX_data_new)
+    # >> upload to GBQ
+    return
 
-def load_SBR_news_data(**kwargs):
-    >> xcomm.pull(dictionary: SBR_news_data_transformed)
-    >> upload to Firestore Database
 
-def load_Tele_news_data(**kwargs):
-    >> xcomm.pull(dictionary: Tele_news_data_transformed)
-    >> upload to Firestore Database
+def load_SBR_data(**kwargs):
+    ti = kwargs['ti']
+    # >> xcomm.pull(dictionary: SBR_news_data_transformed)
+    SBR_data_to_upload = ti.xcom_pull(task_ids='transform_SBR_data_task')
+    # >> upload to Firestore Database
+    FirestoreDataLoader_layer.upload_to_firestore(
+        "SBR_data", SBR_data_to_upload)
+
+
+def load_tele_data(**kwargs):
+    ti = kwargs['ti']
+    # >> xcomm.pull(dictionary: tele_news_data_transformed)
+    tele_data_to_upload = ti.xcom_pull(task_ids='transform_tele_data_task')
+    # >> upload to Firestore Database
+    FirestoreDataLoader_layer.upload_to_firestore(
+        "Telegram_data", tele_data_to_upload)
+
 
 def load_YahooFin_news_data(**kwargs):
-    >> xcomm.pull(dictionary: YahooFin_news_data_transformed)
-    >> upload to Firestore Database
+    # >> xcomm.pull(dictionary: YahooFin_news_data_transformed)
+    # >> upload to Firestore Database
+    return
+
 
 def load_yFinance_data(**kwargs):
-    >> xcomm.pull(dictionary of DataFrames: yFinance_data)
-    >> upload to Google BigQuery
-'''
+    # >> xcomm.pull(dictionary of DataFrames: yFinance_data)
+    # >> upload to Google BigQuery
+    return
+
 
 ########################################
 # 1D. Data Transformation Modules (2)
 ########################################
-'''
-def query_SBR_news_data(**kwargs):
-    >> query SBR_news_data from Firestore Database
-    >> return dictionary: SBR_news_Query_Results
 
-def query_Tele_news_data(**kwargs):
-    >> query Tele_news_data from Firestore Database
-    >> return dictionary: Tele_news_Query_Results
+
+def query_SBR_data(**kwargs):
+    # >> query SBR_news_data from Firestore Database
+    SBR_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
+        "SBR_data", global_start_date)
+    # >> return dictionary: SBR_news_Query_Results
+    return SBR_query_for_heatlist
+
+
+def query_tele_data(**kwargs):
+    # >> query tele_news_data from Firestore Database
+    tele_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
+        "Telegram_data", global_start_date)
+    # >> return dictionary: tele_news_Query_Results
+    return tele_query_for_heatlist
+
 
 def query_YahooFin_news_data(**kwargs):
-    >> query YahooFin_news_data from Firestore Database
-    >> return dictionary: YahooFin_news_Query_Results
+    # >> query YahooFin_news_data from Firestore Database
+    # >> return dictionary: YahooFin_news_Query_Results
+    return
+
 
 def generateHeatlists(**kwargs):
-    >> xcom.pull(
-        dictionary: SBR_news_Query_Results, 
-        dictionary: Tele_news_Query_Results,
-        dictionary: YahooFin_news_Query_Results
-        )
-    >> Generate Ticker and Industry Heatlists
-    >> return DataFrame: Ticker Heatlist, DataFrame: Industry Heatlist
-'''
+    ti = kwargs['ti']
+    # >> xcom.pull(
+    #     dictionary: SBR_news_Query_Results,
+    #     dictionary: tele_news_Query_Results,
+    #     dictionary: YahooFin_news_Query_Results
+    # )
+    SBR_day_data_for_heatlist = ti.xcom_pull(
+        task_ids='transform_SBR_data_task')
+    tele_day_data_for_heatlist = ti.xcom_pull(
+        task_ids='transform_tele_data_task')
+
+    SBR_query_for_heatlist = ti.xcom_pull(task_ids='query_SBR_data_task')
+    tele_query_for_heatlist = ti.xcom_pull(task_ids='query_tele_data_task')
+
+    query_documents_container = SBR_query_for_heatlist + \
+        SBR_day_data_for_heatlist + tele_day_data_for_heatlist + tele_query_for_heatlist
+    # >> Generate Ticker and Industry Heatlists
+    GenerateHeatlistsFromQuery_layer = GenerateHeatlistsFromQuery()
+    ticker_heatlist, industry_heatlist = GenerateHeatlistsFromQuery_layer.HeatlistPipeline_execute(
+        query_documents_container)
+    # >> return DataFrame: Ticker Heatlist, DataFrame: Industry Heatlist
+    return (ticker_heatlist, industry_heatlist)
+
+
 ########################################
 # 1E. Data Load Modules (2)
 ########################################
-'''
 def load_heatlists(**kwargs):
-    >> xcom.pull(
-        DataFrame: Ticker Heatlist, 
-        DataFrame: Industry Heatlist
-        )
-    >> upload to Google Big Query
-
-'''
+    # >> xcom.pull(
+    #     DataFrame: Ticker Heatlist,
+    #     DataFrame: Industry Heatlist
+    #     )
+    # >> upload to Google Big Query
+    return
 
 ############################################
 # 2. DEFINE AIRFLOW DAG (SETTINGS + SCHEDULE)
@@ -289,114 +338,160 @@ extract_SGX_data_task = PythonOperator(task_id='extract_SGX_data_task',
 
 
 extract_SBR_data_task = PythonOperator(task_id='extract_SBR_data_task',
-                                       python_callable=extract_SBR_news_data,
+                                       python_callable=extract_SBR_data,
                                        provide_context=True, dag=dag)
 
-extract_Tele_data_task = PythonOperator(task_id='extract_Tele_data_task',
-                                        python_callable=extract_Tele_news_data,
+extract_tele_data_task = PythonOperator(task_id='extract_tele_data_task',
+                                        python_callable=extract_tele_data,
                                         provide_context=True, dag=dag)
 
 extract_YahooFin_data_task = PythonOperator(task_id='extract_YahooFin_data_task',
-                                            python_callable=extract_YahooFin_news_data,
+                                            python_callable=extract_YahooFin_data,
                                             provide_context=True, dag=dag)
-'''
 
-extract_yFinance_data_task = PythonOperator(task_id = 'extract_yFinance_data_task', 
-                                        python_callable = extract_yFinance_news_data, 
-                                        provide_context=True, dag = dag)
-'''
+
+extract_yFinance_data_task = PythonOperator(task_id='extract_yFinance_data_task',
+                                            python_callable=extract_yFinance_data,
+                                            provide_context=True, dag=dag)
+
 
 ####################################
 # 3B. Data Transformation Tasks (1)
 ####################################
-'''
-query_SGX_data_task = PythonOperator(task_id = 'query_SGX_data_task', 
-                                        python_callable = query_SGX_data, 
-                                        provide_context=True, dag = dag)
 
-transform_SGX_data_task = PythonOperator(task_id = 'transform_SGX_data_task', 
-                                        python_callable = transform_SGX_data, 
-                                        provide_context=True, dag = dag)
+query_SGX_data_task = PythonOperator(task_id='query_SGX_data_task',
+                                     python_callable=query_SGX_data,
+                                     provide_context=True, dag=dag)
 
-transform_SBR_data_task = PythonOperator(task_id = 'transform_SBR_data_task', 
-                                        python_callable = transform_SBR_news_data, 
-                                        provide_context=True, dag = dag)
+transform_SGX_data_task = PythonOperator(task_id='transform_SGX_data_task',
+                                         python_callable=transform_SGX_data,
+                                         provide_context=True, dag=dag)
 
-transform_Tele_data_task = PythonOperator(task_id = 'transform_Tele_data_task', 
-                                        python_callable = transform_Tele_news_data, 
-                                        provide_context=True, dag = dag)
+transform_SBR_data_task = PythonOperator(task_id='transform_SBR_data_task',
+                                         python_callable=transform_SBR_data,
+                                         provide_context=True, dag=dag)
 
-transform_YahooFin_data_task = PythonOperator(task_id = 'transform_YahooFin_data_task', 
-                                        python_callable = transform_YahooFin_news_data, 
-                                        provide_context=True, dag = dag)
+transform_tele_data_task = PythonOperator(task_id='transform_tele_data_task',
+                                          python_callable=transform_tele_data,
+                                          provide_context=True, dag=dag)
 
-## Does yFinance data need transforming?
-'''
+transform_YahooFin_data_task = PythonOperator(task_id='transform_YahooFin_data_task',
+                                              python_callable=transform_YahooFin_data,
+                                              provide_context=True, dag=dag)
+
+transform_yFinance_data_task = PythonOperator(task_id='transform_yFinance_data_task',
+                                              python_callable=transform_yFinance_data,
+                                              provide_context=True, dag=dag)
+
+
+# Does yFinance data need transforming?
+
 ##############################
 # 3C. Data Loading Tasks (1)
 ##############################
-'''
-load_SGX_data_task = PythonOperator(task_id = 'load_SGX_data_task', 
-                                        python_callable = load_SGX_news_data, 
-                                        provide_context=True, dag = dag)
 
-load_SBR_data_task = PythonOperator(task_id = 'load_SBR_data_task', 
-                                        python_callable = load_SBR_news_data, 
-                                        provide_context=True, dag = dag)
+load_SGX_data_task = PythonOperator(task_id='load_SGX_data_task',
+                                    python_callable=load_SGX_data,
+                                    provide_context=True, dag=dag)
 
-load_Tele_data_task = PythonOperator(task_id = 'load_Tele_data_task', 
-                                        python_callable = load_Tele_news_data, 
-                                        provide_context=True, dag = dag)
+load_SBR_data_task = PythonOperator(task_id='load_SBR_data_task',
+                                    python_callable=load_SBR_data,
+                                    provide_context=True, dag=dag)
 
-load_YahooFin_data_task = PythonOperator(task_id = 'load_YahooFin_data_task', 
-                                        python_callable = load_YahooFin_news_data, 
-                                        provide_context=True, dag = dag)
+load_tele_data_task = PythonOperator(task_id='load_tele_data_task',
+                                     python_callable=load_tele_data,
+                                     provide_context=True, dag=dag)
 
-load_yFinance_data_task = PythonOperator(task_id = 'load_yFinance_data_task', 
-                                        python_callable = load_yFinance_news_data, 
-                                        provide_context=True, dag = dag)
-'''
+load_YahooFin_data_task = PythonOperator(task_id='load_YahooFin_data_task',
+                                         python_callable=load_YahooFin_news_data,
+                                         provide_context=True, dag=dag)
+
+load_yFinance_data_task = PythonOperator(task_id='load_yFinance_data_task',
+                                         python_callable=load_yFinance_data,
+                                         provide_context=True, dag=dag)
+
 ####################################
 # 3D. Data Transformation Tasks (2)
 ####################################
-'''
-query_SBR_data_task = PythonOperator(task_id = 'query_SBR_data_task', 
-                                        python_callable = query_SBR_news_data, 
-                                        provide_context=True, dag = dag)
 
-query_Tele_data_task = PythonOperator(task_id = 'query_Tele_data_task', 
-                                        python_callable = query_Tele_news_data, 
-                                        provide_context=True, dag = dag)
+query_SBR_data_task = PythonOperator(task_id='query_SBR_data_task',
+                                     python_callable=query_SBR_data,
+                                     provide_context=True, dag=dag)
 
-query_YahooFin_data_task = PythonOperator(task_id = 'query_YahooFin_data_task', 
-                                        python_callable = query_YahooFin_news_data, 
-                                        provide_context=True, dag = dag)
+query_tele_data_task = PythonOperator(task_id='query_tele_data_task',
+                                      python_callable=query_tele_data,
+                                      provide_context=True, dag=dag)
 
-generate_heatlists_task = PythonOperator(task_id = 'generate_heatlists_task', 
-                                        python_callable = generateHeatlists, 
-                                        provide_context=True, dag = dag)
-'''
+query_YahooFin_data_task = PythonOperator(task_id='query_YahooFin_data_task',
+                                          python_callable=query_YahooFin_news_data,
+                                          provide_context=True, dag=dag)
+
+generate_heatlists_task = PythonOperator(task_id='generate_heatlists_task',
+                                         python_callable=generateHeatlists,
+                                         provide_context=True, dag=dag)
+
 ##############################
 # 3E. Data Loading Tasks (2)
 ##############################
-'''
-load_heatlists_task = PythonOperator(task_id = 'load_SBR_data_task', 
-                                        python_callable = load_heatlists, 
-                                        provide_context=True, dag = dag)
 
-'''
+load_heatlists_task = PythonOperator(task_id='load_heatlists_task',
+                                     python_callable=load_heatlists,
+                                     provide_context=True, dag=dag)
+
 
 ##########################################
 # 4. DEFINE OPERATORS HIERARCHY
 ##########################################
-[[extract_SGX_data_task >> extract_YahooFin_data_task],
-    extract_SBR_data_task, extract_Tele_data_task]
+
+[[extract_SGX_data_task >> query_SGX_data_task >> transform_SGX_data_task], extract_tele_data_task, extract_SBR_data_task] 
+
+extract_tele_data_task >> transform_tele_data_task
+
+extract_SBR_data_task >> transform_SBR_data_task
+
+transform_SGX_data_task >> [transform_tele_data_task, extract_yFinance_data_task, load_SGX_data_task, extract_YahooFin_data_task,transform_SBR_data_task]
+
+transform_tele_data_task >> query_tele_data_task >> generate_heatlists_task
+
+transform_tele_data_task >> load_tele_data_task
+
+transform_SBR_data_task >> load_SBR_data_task
+
+extract_yFinance_data_task >> transform_yFinance_data_task >> load_yFinance_data_task
+
+extract_YahooFin_data_task >> transform_YahooFin_data_task >> [load_YahooFin_data_task, query_YahooFin_data_task]
+
+transform_SBR_data_task >> query_SBR_data_task >> generate_heatlists_task
+
+query_YahooFin_data_task >> generate_heatlists_task
+
+generate_heatlists_task >> load_heatlists_task
+
+
+# >> [[transform_tele_data_task >> [load_tele_data_task, query_tele_data_task]], [transform_SBR_data_task >> [load_SBR_data_task, query_SBR_data_task]], [extract_yFinance_data_task >> transform_yFinance_data_task >> load_yFinance_data_task], load_SGX_data_task, [extract_YahooFin_data_task >> transform_YahooFin_data_task >> [query_YahooFin_data_task, load_YahooFin_data_task]]] >> generate_heatlists_task >> load_heatlists_task
+
 '''
-extract_SGX_data_task >> query_SGX_data_task>> transform_SGX_data_task >> load_SGX_data_task >> extract_SBR_data_task >> extract_Tele_data_task >> \
-extract_YahooFin_data_task >> extract_yFinance_data_task >> \
-transform_SBR_data_task >> transform_Tele_data_task >> transform_YahooFin_data_task >> \
-load_SBR_data_task >> load_Tele_data_task >> load_YahooFin_data_task >> \
-load_yFinance_data_task >> query_SBR_data_task >> query_Tele_data_task >> \
+a = [extract_SGX_data_task >> query_SGX_data_task >> transform_SGX_data_task]
+
+b = [extract_tele_data_task >> transform_tele_data_task]
+
+c = [extract_SBR_data_task >> transform_SBR_data_task]
+
+d = [extract_yFinance_data_task,
+     transform_yFinance_data_task, load_yFinance_data_task]
+
+e = [extract_YahooFin_data_task >> transform_YahooFin_data_task >>
+     [load_YahooFin_data_task, query_YahooFin_data_task]]
+
+a >> [b, c]
+'''
+
+'''
+extract_SGX_data_task >> query_SGX_data_task>> transform_SGX_data_task >> load_SGX_data_task >> extract_SBR_data_task >> extract_tele_data_task >> \
+extract_YahooFin_data_task >> extract_yFinance_data_task >> transform_yFinance_data_task >> \
+transform_SBR_data_task >> transform_tele_data_task >> transform_YahooFin_data_task >> \
+load_SBR_data_task >> load_tele_data_task >> load_YahooFin_data_task >> \
+load_yFinance_data_task >> query_SBR_data_task >> query_tele_data_task >> \
 query_YahooFin_data_task >> generate_heatlists_task >> load_heatlists_task
 
 '''

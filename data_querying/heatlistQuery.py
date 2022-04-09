@@ -5,6 +5,7 @@ Querying Module for Heatlist
 import datetime as dt
 from dateutil.parser import parse
 
+
 class HeatListQuery:
     def __init__(self, firestoreDB):
         self.firestoreDB_layer = firestoreDB
@@ -45,12 +46,10 @@ class HeatListQuery:
         subset = {k: query_res[k] for k in heatlist_fields}
         return subset
 
-    def query_pipeline(self, date):
+    def query_pipeline(self, collection, date):
         start_date, end_date = self.get_look_back_period(date, 7)
         self.set_dates(start_date=start_date, end_date=end_date)
-        query_results = self.query_documents_by_date()
+        query_results = self.query_documents_by_date(collection)
         output = [self.get_heatlist_data_from_query(
             query_result) for query_result in query_results]
         return output
-
-
