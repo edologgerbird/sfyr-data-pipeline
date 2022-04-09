@@ -210,18 +210,16 @@ class yFinanceExtractor:
         all_tickers_shares = all_tickers_shares.reset_index()
         return all_tickers_shares
 
-    # NEED TO REFORMAT THE INDEXING
     def getStockInfo(self):
         # Get stock information
-        all_info = pd.DataFrame()
-
+        all_tickers_info = pd.DataFrame()
+        
         for ticker in self.ticker_active:
-            if ticker.info is None:
-                all_info[ticker.ticker] = np.nan
-            else:
-                stockInfo = pd.DataFrame(ticker.info.values(
-                ), index=ticker.info.keys(), columns=[ticker.ticker])
-                all_info = pd.concat([all_info, stockInfo])
+                ticker_info = pd.DataFrame(ticker.info.values(), index = ticker.info.keys(), columns= [ticker.ticker])
+                all_tickers_info = pd.concat([all_tickers_info, ticker_info])
+
+        all_tickers_info = all_tickers_info.transpose().reset_index()
+        all_tickers_info = all_tickers_info.rename(columns={'index':'Tickers'})
         return all_info
 
     def getSustainability(self):
