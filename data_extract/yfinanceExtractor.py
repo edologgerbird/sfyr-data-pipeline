@@ -130,42 +130,38 @@ class yFinanceExtractor:
         df_isin = pd.DataFrame(list(isin_dict.items()),columns = ['Ticker','International Securities Identification Number'])
         return df_isin
           
-    # NEED TO REFORMAT THE INDEXING
-    def getEarningsandRevenue(self, tickers):
+    def getEarningsandRevenue(self):
         # Get Earnings and Revenue
-        all_tickers_earnings = pd.DataFrame()
-        all_tickers_revenues = pd.DataFrame()
+        all_tickers_earnings_and_revenues = pd.DataFrame()
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if (ticker.earnings.shape[1] > 2):
-                all_tickers_revenues[ticker.ticker] = np.nan
-                all_tickers_earnings[ticker.ticker] = np.nan
+                # Ticker's revenue and earning do not exist
+                pass
 
             else:
-                ticker_earning = ticker.earnings.Earnings.rename(ticker.ticker).to_frame()
-                all_tickers_earnings = pd.concat([all_tickers_earnings,ticker_earning])
-                ticker_revenues = ticker.earnings.Revenue.rename(ticker.ticker).to_frame()
-                all_tickers_revenues = pd.concat([all_tickers_revenues,ticker_revenues])
-        return all_tickers_revenues, all_tickers_earnings
+                ticker_earning_and_revenue = ticker.earnings
+                ticker_earning_and_revenue['Tickers'] = ticker.ticker
+                all_tickers_earnings_and_revenues = pd.concat([all_tickers_earnings_and_revenues,ticker_earning_and_revenue])
+        return all_tickers_earnings_and_revenues
             
-    # NEED TO REFORMAT THE INDEXING
-    def getQuarterlyEarningsandRevenue(self, tickers):
+ 
+    def getQuarterlyEarningsandRevenue(self):
         # Get Quarterly Earnings and Revenue
-        all_tickers_quarterly_earnings = pd.DataFrame()
-        all_tickers_quarterly_revenues = pd.DataFrame()
+        all_tickers_quarterly_earnings_and_revenues = pd.DataFrame()
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if (ticker.quarterly_earnings.shape[1] > 2):
-                all_tickers_quarterly_revenues[ticker.ticker] = np.nan
-                all_tickers_quarterly_earnings[ticker.ticker] = np.nan
+                # Ticker's revenue and earning do not exist
+                pass
 
             else:
-                ticker_quarterly_earning = ticker.quarterly_earnings.Earnings.rename(ticker.ticker).to_frame()
-                all_tickers_quarterly_earnings = pd.concat([all_tickers_quarterly_earnings,ticker_quarterly_earning])
-                
-                ticker_quarterly_revenue = ticker.quarterly_earnings.Revenue.rename(ticker.ticker).to_frame()
-                all_tickers_quarterly_revenues = pd.concat([all_tickers_quarterly_revenues,ticker_quarterly_revenue])
-        return all_tickers_quarterly_earnings, all_tickers_quarterly_revenues
+                ticker_quarterly_earning_and_revenue = ticker.quarterly_earnings
+                ticker_quarterly_earning_and_revenue['Tickers'] = ticker.ticker
+                all_tickers_quarterly_earnings_and_revenues = pd.concat([all_tickers_quarterly_earnings_and_revenues,ticker_quarterly_earning_and_revenue])
+
+        all_tickers_quarterly_earnings_and_revenues = all_tickers_quarterly_earnings_and_revenues.reset_index()
+        return all_tickers_quarterly_earnings_and_revenues
             
     def getMajorHolders(self, tickers):
         # Get Major Holders
@@ -185,17 +181,20 @@ class yFinanceExtractor:
         all_tickers_majorHolders = all_tickers_majorHolders.reset_index(drop=True)
         return all_tickers_majorHolders
         
-    # NEED TO REFORMAT THE INDEXING
-    def getBasicShares(self,tickers):
+    def getBasicShares(self):
         # Get Basic Shares
-        shares = pd.DataFrame()
-        for ticker in tickers:
+        all_tickers_shares = pd.DataFrame()
+        for ticker in self.ticker_active:
             if ticker.shares is None:
-                shares[ticker.ticker] = np.nan
+                # Ticker does not have shares info
+                pass
             else:
-                share = ticker.shares.rename(columns = {"BasicShares": ticker.ticker})
-                shares = pd.concat([shares, share])
-        return shares
+                ticker_share = ticker.shares
+                ticker_share['Tickers'] = ticker.ticker
+                all_tickers_shares = pd.concat([all_tickers_shares, ticker_share])
+                
+        all_tickers_shares = all_tickers_shares.reset_index()
+        return all_tickers_shares
             
     # NEED TO REFORMAT THE INDEXING
     def getStockInfo(self, tickers):
