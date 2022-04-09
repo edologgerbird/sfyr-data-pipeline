@@ -1,18 +1,12 @@
 from datetime import datetime as dt
-from datetime import timedelta
 from datetime import date
 import pandas as pd
 import numpy as np
 import yfinance as yf
-from functools import reduce
-from data_load.bigQueryAPI import bigQueryDB
 
 
 class yFinanceExtractor:
     def __init__(self, sgxTickers):
-        # self.datasetTable = "SGX.Tickers"
-        # self.gbqQueryTickers = bigQueryDB().getDataFields(
-        #     self.datasetTable, "company_code")
         self.sgxTickers = sgxTickers
         self.sgxTickers.company_code = self.sgxTickers.company_code.str[:] + ".SI"
         self.ticker_active = []
@@ -24,13 +18,13 @@ class yFinanceExtractor:
         delisted = []
 
         # Check if ticker exist
-        for t in self.sgxTickers["company_code"]:
+        for ticker in self.sgxTickers["company_code"]:
             length = yf.download(
-                t, period='max', interval='1d', timeout=None).shape[0]
+                ticker, period='max', interval='1d', timeout=None).shape[0]
             if length > 0:
-                activeTickers.append(t)
+                activeTickers.append(ticker)
             else:
-                delisted.append(t)
+                delisted.append(ticker)
 
         # Generate dataframe of existing and missing tickers
         dfTickers = pd.DataFrame({'Listed': activeTickers})
