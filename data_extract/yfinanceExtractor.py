@@ -224,16 +224,6 @@ class yFinanceExtractor:
                 all_info = pd.concat([all_info, stockInfo])
         return all_info
 
-    def getOptionsExpirations(self):
-        # Get options expirations
-        options_dict = {}
-
-        for ticker in self.ticker_active:
-            options_dict[ticker.ticker] = list(ticker.options)
-            df_options = pd.DataFrame.from_dict(
-                options_dict, orient='index').transpose()
-        return df_options
-
     def getSustainability(self):
         # Get Sustainability
         all_sustainability = pd.DataFrame()
