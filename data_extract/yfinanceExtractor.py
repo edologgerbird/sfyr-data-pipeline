@@ -1,5 +1,4 @@
-from datetime import datetime as dt
-from datetime import date
+from datetime import datetime as dt, date as date
 import pandas as pd
 import numpy as np
 import yfinance as yf
