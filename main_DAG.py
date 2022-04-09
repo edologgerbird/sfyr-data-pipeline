@@ -15,6 +15,7 @@ from data_transform.STIMovementExtractor import STIMovementExtractor
 from data_transform.TickerExtractor import TickerExtractor
 from data_transform.SBRDataTransform import SBRDataTransformer
 from data_transform.telegramDataTransform import telegramDataTransformer
+from data_transform.yahooFinNewsTransform import yahooFinNewsTransform
 from data_processing.FinBertAPI import FinBERT
 from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
 
@@ -176,13 +177,14 @@ def transform_tele_data(**kwargs):
 
 
 def transform_YahooFin_data(**kwargs):
+    ti = kwargs['ti']
     # >> xcom.pull(DataFrame: YahooFin_news_data)
-    # >> TickerExtractor(DataFrame: YahooFin_news)
-    #     >> xcom.pull(DataFrame: SGX Data_new)
-    # >> FinBERT(DataFrame: YahooFin_news)
-    # >> Transform to NoSQL Format
-    # >> return dictionary: YahooFin_news_data_transformed
-    return
+    yahoo_fin_data = ti.xcom_pull(task_ids="extract_YahooFin_data_task")
+    yahooFinNewsTransform_layer = yahooFinNewsTransform()
+    news_formatted = yahooFinNewsTransform_layer.tickerNewsFormat(yahoo_fin_data, start_date=global_start_date, end_date=global_end_date)
+    yahoo_fin_data_sentiments = FinBERT_layer.FinBert_pipeline(news_formatted["message"])
+    yahoo_fin_data_transformed = yahooFinNewsTransform_layer(yahoo_fin_data_sentiments)
+    return yahoo_fin_data_transformed
 
 
 def transform_yFinance_data(**kwargs):
@@ -191,7 +193,6 @@ def transform_yFinance_data(**kwargs):
     # >> return list of dictionary: yFinance_data_transformed
     return
 
-# Does yFinance data need transforming?
 
 
 ###################################
@@ -220,9 +221,11 @@ def load_tele_data(**kwargs):
 
 
 def load_YahooFin_news_data(**kwargs):
+    ti = kwargs['ti']
     # >> xcomm.pull(dictionary: YahooFin_news_data_transformed)
+    yahoo_fin_data_to_upload = ti.xcom_pull(task_ids='transform_YahooFin_data_task')
     # >> upload to Firestore Database
-    return
+    firestoreDB_layer.fsAddListofDocuments("YahooFin_data", yahoo_fin_data_to_upload)
 
 
 def load_yFinance_data(**kwargs):
@@ -254,8 +257,10 @@ def query_tele_data(**kwargs):
 
 def query_YahooFin_news_data(**kwargs):
     # >> query YahooFin_news_data from Firestore Database
+    yahoo_fin_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
+        "YahooFin_data", global_start_date)
     # >> return dictionary: YahooFin_news_Query_Results
-    return
+    return yahoo_fin_query_for_heatlist
 
 
 def generateHeatlists(**kwargs):
