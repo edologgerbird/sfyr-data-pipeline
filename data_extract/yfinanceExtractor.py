@@ -227,7 +227,6 @@ class yFinanceExtractor:
     
     def getSustainability(self, tickers):
         # Get Sustainability
-
         all_sustainability = pd.DataFrame()
 
         for ticker in tickers:
@@ -341,10 +340,6 @@ class yFinanceExtractor:
                 'Eps Revisions Up Last7Days', 'Eps Revisions Up Last30Days',
                 'Eps Revisions Down Last30Days', 'Eps Revisions Down Last90Days'])
         return analysis
-        
-    # FUNCTION NOT WORKING???
-    def getNews(self, tickers):
-        pass
     
     def getMutualFundHolders(self, tickers):
         # Get Mutual Fund Holders
