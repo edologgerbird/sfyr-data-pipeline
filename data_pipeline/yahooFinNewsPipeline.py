@@ -14,9 +14,14 @@ class yahooFinNewsPipeline:
         self.articles = []
         print("Firestore Pipeline Initialised")
 
-    def tickerNewsFormat(self, news):
+    def tickerNewsFormat(self, news, start_date=None, end_date=dt.now()):
         newsFormatted = []
         articles = []
+        
+        # Start Date <= End Date Validation
+        if (start_date is not None and end_date is not None and start_date > end_date):
+            raise Exception('Start date input must be before end date input')
+
         for i in range(0,len(news)):
             ticker = news.at[i,"Ticker"]
             tickerNews = news.at[i,"News"]
@@ -29,9 +34,16 @@ class yahooFinNewsPipeline:
                     "basequery": article["summary_detail"]["base"],
                     "tickers": [ticker]
                 }
-                articles.append(article["summary"])
-                newsFormatted.append(articleFormatted)
-        
+                
+                if start_date != None:
+                    if articleFormatted["date"] <= end_date and articleFormatted["date"] >= start_date:
+                        newsFormatted.append(articleFormatted)
+                        articles.append(article["summary"])
+                else:
+                    if articleFormatted["date"] <= end_date:
+                        newsFormatted.append(articleFormatted)
+                        articles.append(article["summary"])
+
         # NLP for Yahoo-Fin-News Data sentiments
         pdArticles = pd.DataFrame(articles)
         pdArticles.columns = ["message"]
