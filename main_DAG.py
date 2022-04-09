@@ -78,7 +78,7 @@ def extract_SBR_data(**kwargs):
     # >> return DataFrame: SBR_data
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
-        start_date=global_start_date, end_date=global_end_date)
+        start_date=global_start_date_excute_time, end_date=global_end_date)
     return sbr_raw_data
 
 
@@ -87,7 +87,7 @@ def extract_tele_data(**kwargs):
     # >> return DataFrame: tele_data
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
-        start_date=global_start_date, end_date=global_end_date)
+        start_date=global_start_date_excute_time, end_date=global_end_date)
     return tele_data_raw
 
 
@@ -189,7 +189,7 @@ def transform_YahooFin_data(**kwargs):
     yahoo_fin_data = ti.xcom_pull(task_ids="extract_YahooFin_data_task")
     yahooFinNewsTransform_layer = yahooFinNewsTransform()
     news_formatted = yahooFinNewsTransform_layer.tickerNewsFormat(
-        yahoo_fin_data, start_date=global_start_date, end_date=global_end_date)
+        yahoo_fin_data, start_date=global_start_date_excute_time, end_date=global_end_date)
     yahoo_fin_data_sentiments = FinBERT_layer.FinBert_pipeline(
         news_formatted["message"])
     yahoo_fin_data_transformed = yahooFinNewsTransform_layer(
