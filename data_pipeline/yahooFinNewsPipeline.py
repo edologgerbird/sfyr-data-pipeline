@@ -57,8 +57,8 @@ class yahooFinNewsPipeline:
             }
         return self.data_pending_upload
 
-    def newsToFirestore(self):
-        self.firestoreDB_layer.fsAddListofDocuments(
-            "Yahoo-Fin-News", self.data_pending_upload)
-        self.data_pending_upload = None
-        print("Yahoo News Data Uploaded")
+    # def newsToFirestore(self):
+    #     self.firestoreDB_layer.fsAddListofDocuments(
+    #         "Yahoo-Fin-News", self.data_pending_upload)
+    #     self.data_pending_upload = None
+    #     print("Yahoo News Data Uploaded")
