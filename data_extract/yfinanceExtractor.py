@@ -120,7 +120,7 @@ class yFinanceExtractor:
                 isin_dict[ticker.ticker] = np.nan
 
         df_isin = pd.DataFrame(list(isin_dict.items()), columns=[
-                               'Tickers', 'International Securities Identification Number'])
+                               'Tickers', 'ISIN'])
         return df_isin
 
     def getEarningsandRevenue(self):
