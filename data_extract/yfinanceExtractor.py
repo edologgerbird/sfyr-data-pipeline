@@ -332,13 +332,11 @@ class yFinanceExtractor:
         all_tickers_ih = all_tickers_ih.reset_index(drop = True) 
         return all_tickers_ih
 
-    def getDictionary(self, companyCode):
+    def getDictionary(self):
         dict = {}
 
         # Getting listed and delisted tickers
-        listed, delisted = self.checkTickers(companyCode)
-        dict['Listed'] = listed
-        dict['Delisted'] = delisted
+        dict['Ticker Listing'] = self.checkTickers()
 
         # Getting listed tickers history data
         dict['Historical Data'] = self.getHistoricalData(listed)
@@ -354,10 +352,10 @@ class yFinanceExtractor:
         dict['isin'] = self.getISINcode()
 
         # Getting tickers revenues and earnings
-        revenues_and_earnings = self.getEarningsandRevenue()
+        dict['Revenues and Earnings'] = self.getEarningsandRevenue()
 
         # Getting tickers quarterly revenues and earnings
-        quarterly_revenues_and_earnings = self.getQuarterlyEarningsandRevenue()
+        dict['Quarterly Revenues and Earnings'] = self.getQuarterlyEarningsandRevenue()
 
         # Getting tickers major holders
         dict['Major Holders'] = self.getMajorHolders()
