@@ -72,8 +72,13 @@ class yFinanceExtractor:
 
     def getFinancialStatement(self):
         # Retrieve financial statement (Financials, Balance Sheet and Cash flow)
+<<<<<<< HEAD
         financial_statements_dataframe = []  # list for each ticker's dataframe
         financial_statements = pd.DataFrame()
+=======
+        financial_statements_dataframe = pd.DataFrame() 
+
+>>>>>>> c692501a5353bf7e1c183046d32f35501e174643
         for ticker in self.ticker_active:
             # get each financial statement
             pnl = ticker.financials
@@ -81,19 +86,9 @@ class yFinanceExtractor:
             cf = ticker.cashflow
 
             # concatenate into one dataframe
-            financial_statements = pd.concat([pnl, balance_sheet, cf])
+            financial_statements = pd.concat([pnl, bs, cf],axis = 1).transpose()
 
-            # make dataframe format nicer
-            # Swap dates and columns
-            data = financial_statements.T
-            # reset index (date) into a column
-            data = data.reset_index()
-            # Rename old index from '' to Date
-            data.columns = ['Date', *data.columns[1:]]
-            # Add ticker to dataframe
-            data['Tickers'] = ticker.ticker
-            financial_statements_dataframe.append(data)
-
+<<<<<<< HEAD
         parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
 
         for financial_statements in financial_statements_dataframe:
@@ -109,34 +104,43 @@ class yFinanceExtractor:
         # Get quarterly financial statement (Financials, Balance Sheet, Cashflows)
         financial_statements_dataframe = []  # list for each ticker's dataframe
         financial_statements = pd.DataFrame()
+=======
+            # Add ticker to dataframe
+            financial_statements['Tickers'] = ticker.ticker
+            financial_statements_dataframe = pd.concat([financial_statements_dataframe, financial_statements])
+        financial_statements_dataframe = financial_statements_dataframe.reset_index().rename(columns={financial_statements_dataframe.index.name:'Date'})
+        return financial_statements_dataframe
+        
+    def getQuarterlyFinancialStatement(self):
+        # Get quarterly financial statement (Financials, Balance Sheet, Cashflows)
+        financial_statements_dataframe = pd.DataFrame() 
+
+>>>>>>> c692501a5353bf7e1c183046d32f35501e174643
         for ticker in self.ticker_active:
             # get each quarter financial statement
             pnl = ticker.quarterly_financials
-            bs = ticker.quarterly_balancesheet
+            balance_sheet = ticker.quarterly_balancesheet
             cf = ticker.quarterly_cashflow
 
             # concatenate into one dataframe
-            qfs = pd.concat([pnl, bs, cf])
+            financial_statements = pd.concat([pnl, bs, cf],axis = 1).transpose()
 
-            # make dataframe format nicer
-            # Swap dates and columns
-            data = qfs.T
-            # reset index (date) into a column
-            data = data.reset_index()
-            # Rename old index from '' to Date
-            data.columns = ['Date', *data.columns[1:]]
             # Add ticker to dataframe
-            data['Tickers'] = ticker.ticker
-            dfs.append(data)
+            financial_statements['Tickers'] = ticker.ticker
+            financial_statements_dataframe = pd.concat([financial_statements_dataframe, financial_statements])
+        financial_statements_dataframe = financial_statements_dataframe.reset_index().rename(columns={financial_statements_dataframe.index.name:'Date'})
+        return financial_statements_dataframe
 
-        parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
-
+<<<<<<< HEAD
         for qfs in dfs:
             qfs.columns = parser._maybe_dedup_name(qfs.columns)
         qfs = pd.concat(dfs, ignore_index=True)
         qfs = qfs.set_index(['Tickers', 'Date'])
         return qfs
 
+=======
+        
+>>>>>>> c692501a5353bf7e1c183046d32f35501e174643
     def getISINcode(self):
         # Get ISIN code (International Securities Identification Number)
         isin_dict = {}
@@ -158,12 +162,20 @@ class yFinanceExtractor:
         for ticker in self.ticker_active:
             if (ticker.earnings.shape[0] < 1):
                 # Ticker's revenue and earning do not exist
+<<<<<<< HEAD
                 data = {'Revenue': np.nan, 'Earnings': np.nan,
                         'Tickers': ticker.ticker}
                 ticker_earning_and_revenue = pd.DataFrame(data, index=[np.nan])
                 all_tickers_earnings_and_revenues = pd.concat(
                     [all_tickers_earnings_and_revenues, ticker_earning_and_revenue])
 
+=======
+                data= {'Revenue': np.nan,'Earnings': np.nan,'Tickers':ticker.ticker}
+                ticker_earning_and_revenue = pd.DataFrame(data, index = [np.nan])
+                all_tickers_earnings_and_revenues = pd.concat([all_tickers_earnings_and_revenues,ticker_earning_and_revenue])
+
+            print('hello')
+>>>>>>> c692501a5353bf7e1c183046d32f35501e174643
             else:
                 ticker_earning_and_revenue = ticker.earnings
                 ticker_earning_and_revenue['Tickers'] = ticker.ticker
