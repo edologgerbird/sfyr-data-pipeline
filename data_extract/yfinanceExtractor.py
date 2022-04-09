@@ -256,133 +256,65 @@ class yFinanceExtractor:
 
     def getRecommendations(self):
         # Get Recommendations
-        dfs = []  # list for each ticker's dataframe
-        re = pd.DataFrame()
-
+        all_tickers_recommendations = pd.DataFrame()
+        
         for ticker in self.ticker_active:
-            if ticker.recommendations is None:
-                pass
+                if ticker.recommendations is None:
+                    data = {'Firm':np.nan, 'To Grade':np.nan, 'From Grade':np.nan,'Action':np.nan, "Tickers":ticker.ticker}
+                    ticker_recommendations = pd.DataFrame(data, index=[np.nan])
+                    all_tickers_recommendations = pd.concat([all_tickers_recommendations, ticker_recommendations])
 
-            else:
-                # get each recommendations
-                re = ticker.recommendations
-
-                # concatenate into one dataframe
-                re = pd.concat([re])
-
-                # make dataframe format nicer
-                # Swap dates and columns
-                data = re.T
-                # reset index (date) into a column
-                data = data.reset_index()
-                # Rename old index from '' to Date
-                data.columns = ['Date', *data.columns[1:]]
-                # Add ticker to dataframe
-                data['Tickers'] = ticker.ticker
-                dfs.append(data)
-
-        parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
-
-        for reco in dfs:
-            reco.columns = parser._maybe_dedup_names(reco.columns)
-
-        if len(dfs) > 0:
-            reco = pd.concat(dfs, ignore_index=True)
-            reco = reco.set_index(['Tickers', 'Date'])
-        else:
-            reco = pd.DataFrame(
-                columns=['Firm', 'To Grade', 'From Grade', 'Action'])
-        return reco
+                else:
+                    ticker_recommendations = ticker.recommendations
+                    ticker_recommendations['Tickers'] = ticker.ticker
+                    all_tickers_recommendations = pd.concat([all_tickers_recommendations, ticker_recommendations])
+        all_tickers_recommendations = all_tickers_recommendations.reset_index()
+        return all_tickers_recommendations
 
     def getAnalysis(self):
         # Get Analysis
-        dfs = []  # list for each ticker's dataframe
-        an = pd.DataFrame()
-
+        all_tickers_analysis = pd.DataFrame()
         for ticker in self.ticker_active:
             if ticker.analysis is None:
-                pass
+                data = {'Max Age':np.nan, 'End Date':np.nan, 'Growth':np.nan, 'Earnings Estimate Avg':np.nan,
+                        'Earnings Estimate Low':np.nan, 'Earnings Estimate High':np.nan,
+                        'Earnings Estimate Year Ago Eps':np.nan,
+                        'Earnings Estimate Number Of Analysts':np.nan, 'Earnings Estimate Growth':np.nan,
+                        'Revenue Estimate Avg':np.nan, 'Revenue Estimate Low':np.nan, 'Revenue Estimate High':np.nan,
+                        'Revenue Estimate Number Of Analysts':np.nan,
+                        'Revenue Estimate Year Ago Revenue':np.nan, 'Revenue Estimate Growth':np.nan,
+                        'Eps Trend Current':np.nan, 'Eps Trend 7Days Ago':np.nan, 'Eps Trend 30Days Ago':np.nan,
+                        'Eps Trend 60Days Ago':np.nan, 'Eps Trend 90Days Ago':np.nan,
+                        'Eps Revisions Up Last7Days':np.nan, 'Eps Revisions Up Last30Days':np.nan,
+                        'Eps Revisions Down Last30Days':np.nan, 'Eps Revisions Down Last90Days':np.nan, 'Tickers': ticker.ticker}
+                ticker_analysis = pd.DataFrame(data, index=[np.nan])
+                all_tickers_analysis = pd.concat([all_tickers_analysis, ticker_analysis])
 
             else:
-                # get each analysis
-                analysis = ticker.analysis
-
-                # concatenate into one dataframe
-                an = pd.concat([analysis])
-
-                # make dataframe format nicer
-                # Swap dates and columns
-                data = an.T
-                # reset index (date) into a column
-                data = data.reset_index()
-                # Rename old index from '' to Date
-                data.columns = ['Date', *data.columns[1:]]
-                # Add ticker to dataframe
-                data['Tickers'] = ticker.ticker
-                dfs.append(data)
-
-        parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
-
-        for analysis in dfs:
-            analysis.columns = parser._maybe_dedup_names(analysis.columns)
-
-        if len(dfs) > 0:
-            analysis = pd.concat(dfs, ignore_index=True)
-            analysis = analysis.set_index(['Tickers', 'Date'])
-        else:
-            analysis = pd.DataFrame(columns=['Max Age', 'End Date', 'Growth', 'Earnings Estimate Avg',
-                                             'Earnings Estimate Low', 'Earnings Estimate High',
-                                             'Earnings Estimate Year Ago Eps',
-                                             'Earnings Estimate Number Of Analysts', 'Earnings Estimate Growth',
-                                             'Revenue Estimate Avg', 'Revenue Estimate Low', 'Revenue Estimate High',
-                                             'Revenue Estimate Number Of Analysts',
-                                             'Revenue Estimate Year Ago Revenue', 'Revenue Estimate Growth',
-                                             'Eps Trend Current', 'Eps Trend 7Days Ago', 'Eps Trend 30Days Ago',
-                                             'Eps Trend 60Days Ago', 'Eps Trend 90Days Ago',
-                                             'Eps Revisions Up Last7Days', 'Eps Revisions Up Last30Days',
-                                             'Eps Revisions Down Last30Days', 'Eps Revisions Down Last90Days'])
-        return analysis
+                ticker_analysis = ticker.analysis
+                ticker_analysis['Tickers'] = ticker.ticker
+                all_tickers_analysis = pd.concat([all_tickers_analysis, ticker_analysis])
+                
+        all_tickers_analysis = all_tickers_analysis.reset_index().rename(columns ={'index':'Period'})
+        return all_tickers_analysis
 
     def getMutualFundHolders(self):
         # Get Mutual Fund Holders
-        dfs = []  # list for each ticker's dataframe
-        mfh = pd.DataFrame()
+        all_tickers_mfh = pd.DataFrame()
 
         for ticker in self.ticker_active:
             if ticker.mutualfund_holders is None:
-                pass
+                data = {'Holder':np.nan, 'Shares':np.nan, 'Date Reported':np.nan, '% Out':np.nan, 'Value':np.nan, 'Tickers':ticker.ticker }
+                ticker_mfh = pd.DataFrame(data, index=[0])
+                all_tickers_mfh = pd.concat([all_tickers_mfh, ticker_mfh])
 
             else:
-                # get each mutual fund holder
-                mutualfundholders = ticker.mutualfund_holders
+                ticker_mfh = ticker.mutualfund_holders
+                ticker_mfh['Tickers'] = ticker.ticker
+                all_tickers_mfh = pd.concat([all_tickers_mfh, ticker_mfh])
 
-                # concatenate into one dataframe
-                mfh = pd.concat([mutualfundholders])
-
-                # make dataframe format nicer
-                # Swap dates and columns
-                data = mfh.T
-                # reset index (date) into a column
-                data = data.reset_index()
-                # Rename old index from '' to Date
-                data.columns = ['Date', *data.columns[1:]]
-                # Add ticker to dataframe
-                data['Tickers'] = ticker.ticker
-                dfs.append(data)
-
-        parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
-
-        for mutalFundHolders in dfs:
-            mutalFundHolders.columns = parser._maybe_dedup_names(
-                mutalFundHolders.columns)
-
-        if len(dfs) > 0:
-            mutalFundHolders = pd.concat(dfs, ignore_index=True)
-            mutalFundHolders = mutalFundHolders.set_index(['Tickers', 'Date'])
-        else:
-            mutalFundHolders = pd.DataFrame(
-                columns=['Holder', 'Shares', 'Date Reported', '% Out', 'Value'])
-        return mutalFundHolders
+        all_tickers_mfh = all_tickers_mfh.reset_index(drop = True)
+        return all_tickers_mfh
 
     def getInstitutionalHolders(self):
         # Get Institutional holders
