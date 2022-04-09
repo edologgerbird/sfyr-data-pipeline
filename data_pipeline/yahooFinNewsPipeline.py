@@ -55,6 +55,7 @@ class yahooFinNewsPipeline:
                 "neutral": sentiments.iloc[i]["Neutral"],
                 "positive": sentiments.iloc[i]["Positive"],
             }
+        return self.data_pending_upload
 
     def newsToFirestore(self):
         self.firestoreDB_layer.fsAddListofDocuments(
