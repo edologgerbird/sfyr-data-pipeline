@@ -227,19 +227,19 @@ class yFinanceExtractor:
             columns={'index': 'Tickers'})
         return all_tickers_info
 
-    def getSustainability(self):
-        # Get Sustainability
-        all_sustainability = pd.DataFrame()
+    # def getSustainability(self):
+    #     # Get Sustainability
+    #     all_sustainability = pd.DataFrame()
 
-        for ticker in self.ticker_active:
-            if ticker.sustainability is None:
-                all_sustainability[ticker.ticker] = np.nan
-            else:
-                sustainability = ticker.sustainability.rename(
-                    columns={"Value": ticker.ticker})
-                all_sustainability = pd.concat(
-                    [all_sustainability, sustainability])
-        return all_sustainability
+    #     for ticker in self.ticker_active:
+    #         if ticker.sustainability is None:
+    #             all_sustainability[ticker.ticker] = np.nan
+    #         else:
+    #             sustainability = ticker.sustainability.rename(
+    #                 columns={"Value": ticker.ticker})
+    #             all_sustainability = pd.concat(
+    #                 [all_sustainability, sustainability])
+    #     return all_sustainability
 
     def getCalendar(self):
         # Get next event (earnings, etc)
