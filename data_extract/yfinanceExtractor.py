@@ -243,7 +243,7 @@ class yFinanceExtractor:
                 data = {'Earnings Date': np.nan, 'Earnings Average': np.nan, 'Earnings Low': np.nan, 'Earnings High': np.nan, 'Revenue Average': np.nan,
                         'Revenue Low': np.nan,    'Revenue High': np.nan,    'Tickers': ticker.ticker}
                 ticker_calendar = pd.DataFrame(data, index=['Value'])
-                calendar = pd.concat([all_calendar, ticker_calendar])
+                all_calendar = pd.concat([all_calendar, ticker_calendar])
 
             else:
                 ticker_calendar = ticker.calendar.transpose()
