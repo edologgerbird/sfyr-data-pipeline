@@ -117,10 +117,10 @@ class yFinanceExtractor:
         qfs = qfs.set_index(['Tickers','Date'])
         return qfs
         
-    def getISINcode(self, tickers):
+    def getISINcode(self):
         # Get ISIN code (International Securities Identification Number)
         isin_dict = {}
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             try:
                 isin = ticker.isin
                 isin_dict[ticker.ticker] = isin
@@ -168,10 +168,10 @@ class yFinanceExtractor:
         all_tickers_quarterly_earnings_and_revenues = all_tickers_quarterly_earnings_and_revenues.reset_index()
         return all_tickers_quarterly_earnings_and_revenues
             
-    def getMajorHolders(self, tickers):
+    def getMajorHolders(self):
         # Get Major Holders
         all_tickers_majorHolders = pd.DataFrame()
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
                 data= {'% of Shares Held by All Insider': np.nan, '% of Shares Held by Institutions':np.nan ,
                         '% of Float Held by Institutions':np.nan,'Number of Institutions Holding Shares':np.nan,
@@ -204,11 +204,11 @@ class yFinanceExtractor:
         return all_tickers_shares
             
     # NEED TO REFORMAT THE INDEXING
-    def getStockInfo(self, tickers):
+    def getStockInfo(self):
         # Get stock information
         all_info = pd.DataFrame()
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if ticker.info is None:
                 all_info[ticker.ticker] = np.nan
             else:
@@ -216,20 +216,20 @@ class yFinanceExtractor:
                 all_info = pd.concat([all_info, stockInfo])
         return all_info
         
-    def getOptionsExpirations(self,tickers):
+    def getOptionsExpirations(self):
         # Get options expirations
         options_dict = {}
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             options_dict[ticker.ticker] = list(ticker.options)
             df_options = pd.DataFrame.from_dict(options_dict, orient = 'index').transpose()
         return df_options
     
-    def getSustainability(self, tickers):
+    def getSustainability(self):
         # Get Sustainability
         all_sustainability = pd.DataFrame()
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if ticker.sustainability is None:
                 all_sustainability[ticker.ticker] = np.nan
             else:
@@ -237,10 +237,10 @@ class yFinanceExtractor:
                 all_sustainability = pd.concat([all_sustainability, sustainability])
         return all_sustainability
         
-    def getCalendar(self,tickers):
+    def getCalendar(self):
         # Get next event (earnings, etc)
         all_calendar = pd.DataFrame()
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if ticker.calendar is None:
                 data= {'Earnings Date': np.nan,'Earnings Average': np.nan,'Earnings Low':np.nan,'Earnings High':np.nan,'Revenue Average':np.nan,
                                     'Revenue Low':np.nan,    'Revenue High':np.nan,    'Tickers':ticker.ticker}
@@ -253,12 +253,12 @@ class yFinanceExtractor:
                 all_calendar = pd.concat([all_calendar,ticker_calendar])
             return all_calendar
     
-    def getRecommendations(self,tickers):
+    def getRecommendations(self):
         # Get Recommendations
         dfs = [] # list for each ticker's dataframe
         re = pd.DataFrame()
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if ticker.recommendations is None:
                 pass
             
@@ -292,12 +292,12 @@ class yFinanceExtractor:
             reco = pd.DataFrame(columns=['Firm', 'To Grade', 'From Grade', 'Action'])
         return reco
         
-    def getAnalysis(self, tickers):
+    def getAnalysis(self):
         # Get Analysis
         dfs = [] # list for each ticker's dataframe
         an = pd.DataFrame()
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if ticker.analysis is None:
                 pass
             
@@ -341,12 +341,12 @@ class yFinanceExtractor:
                 'Eps Revisions Down Last30Days', 'Eps Revisions Down Last90Days'])
         return analysis
     
-    def getMutualFundHolders(self, tickers):
+    def getMutualFundHolders(self):
         # Get Mutual Fund Holders
         dfs = [] # list for each ticker's dataframe
         mfh = pd.DataFrame()
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if ticker.mutualfund_holders is None:
                 pass
             
@@ -381,12 +381,12 @@ class yFinanceExtractor:
         return mutalFundHolders
 
       
-    def getInstitutionalHolders(self,tickers):
+    def getInstitutionalHolders(self):
         # Get Institutional holders
         dfs = [] # list for each ticker's dataframe
         ih = pd.DataFrame()
 
-        for ticker in tickers:
+        for ticker in self.ticker_active:
             if ticker.mutualfund_holders is None:
                 pass
             
