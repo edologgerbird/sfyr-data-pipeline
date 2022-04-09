@@ -74,7 +74,7 @@ class yFinanceExtractor:
             # Rename old index from '' to Date
             data.columns = ['Date', *data.columns[1:]]
             # Add ticker to dataframe
-            data['Ticker'] = ticker.ticker
+            data['Tickers'] = ticker.ticker
             financial_statements_dataframe.append(data)
 
         parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
@@ -82,7 +82,7 @@ class yFinanceExtractor:
         for financial_statements in financial_statements_dataframe:
                 financial_statements.columns = parser._maybe_dedup_names(financial_statements.columns)
         financial_statements = pd.concat(financial_statements_dataframe, ignore_index=True)
-        financial_statements = financial_statements.set_index(['Ticker','Date'])
+        financial_statements = financial_statements.set_index(['Tickers','Date'])
         return financial_statements
         
     def getQuarterlyFinancialStatement(self):
@@ -106,7 +106,7 @@ class yFinanceExtractor:
             # Rename old index from '' to Date
             data.columns = ['Date', *data.columns[1:]]
             # Add ticker to dataframe
-            data['Ticker'] = ticker.ticker
+            data['Tickers'] = ticker.ticker
             dfs.append(data)
 
         parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
@@ -114,7 +114,7 @@ class yFinanceExtractor:
         for qfs in dfs:
                 qfs.columns = parser._maybe_dedup_name(qfs.columns)
         qfs = pd.concat(dfs, ignore_index=True)
-        qfs = qfs.set_index(['Ticker','Date'])
+        qfs = qfs.set_index(['Tickers','Date'])
         return qfs
         
     def getISINcode(self, tickers):
@@ -127,7 +127,7 @@ class yFinanceExtractor:
             except:
                 isin_dict[ticker.ticker] = np.nan
 
-        df_isin = pd.DataFrame(list(isin_dict.items()),columns = ['Ticker','International Securities Identification Number'])
+        df_isin = pd.DataFrame(list(isin_dict.items()),columns = ['Tickers','International Securities Identification Number'])
         return df_isin
           
     def getEarningsandRevenue(self):
@@ -175,13 +175,13 @@ class yFinanceExtractor:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
                 data= {'% of Shares Held by All Insider': np.nan, '% of Shares Held by Institutions':np.nan ,
                         '% of Float Held by Institutions':np.nan,'Number of Institutions Holding Shares':np.nan,
-                        'Ticker':ticker.ticker}
+                        'Tickers':ticker.ticker}
                 ticker_majorHolders = pd.DataFrame(data, index = [0])
                 all_tickers_majorHolders = pd.concat([all_tickers_majorHolders,ticker_majorHolders])
 
             else:
                 ticker_majorHolders = ticker.major_holders[0].rename({0: '% of Shares Held by All Insider', 1:'% of Shares Held by Institutions' , 2:'% of Float Held by Institutions' ,3:'Number of Institutions Holding Shares'})
-                ticker_majorHolders['Ticker'] = ticker.ticker
+                ticker_majorHolders['Tickers'] = ticker.ticker
                 all_tickers_majorHolders = all_tickers_majorHolders.append(ticker_majorHolders)
         all_tickers_majorHolders = all_tickers_majorHolders.reset_index(drop=True)
         return all_tickers_majorHolders
@@ -244,7 +244,7 @@ class yFinanceExtractor:
         for ticker in tickers:
             if ticker.calendar is None:
                 data= {'Earnings Date': np.nan,'Earnings Average': np.nan,'Earnings Low':np.nan,'Earnings High':np.nan,'Revenue Average':np.nan,
-                                    'Revenue Low':np.nan,    'Revenue High':np.nan,    'Ticker':ticker.ticker}
+                                    'Revenue Low':np.nan,    'Revenue High':np.nan,    'Tickers':ticker.ticker}
                 ticker_calendar = pd.DataFrame(data, index=['Value'])
                 calendar = pd.concat([all_calendar,ticker_calendar])
 
@@ -278,7 +278,7 @@ class yFinanceExtractor:
                 # Rename old index from '' to Date
                 data.columns = ['Date', *data.columns[1:]]
                 # Add ticker to dataframe
-                data['Ticker'] = ticker.ticker
+                data['Tickers'] = ticker.ticker
                 dfs.append(data)
 
         parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
@@ -288,7 +288,7 @@ class yFinanceExtractor:
 
         if len(dfs) > 0:
             reco = pd.concat(dfs, ignore_index=True)
-            reco = reco.set_index(['Ticker','Date'])
+            reco = reco.set_index(['Tickers','Date'])
         else:
             reco = pd.DataFrame(columns=['Firm', 'To Grade', 'From Grade', 'Action'])
         return reco
@@ -317,7 +317,7 @@ class yFinanceExtractor:
                 # Rename old index from '' to Date
                 data.columns = ['Date', *data.columns[1:]]
                 # Add ticker to dataframe
-                data['Ticker'] = ticker.ticker
+                data['Tickers'] = ticker.ticker
                 dfs.append(data)
 
         parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
@@ -327,7 +327,7 @@ class yFinanceExtractor:
 
         if len(dfs) > 0:
             analysis = pd.concat(dfs, ignore_index=True)
-            analysis = analysis.set_index(['Ticker','Date'])
+            analysis = analysis.set_index(['Tickers','Date'])
         else:
             analysis = pd.DataFrame(columns=['Max Age', 'End Date', 'Growth', 'Earnings Estimate Avg',
                 'Earnings Estimate Low', 'Earnings Estimate High',
@@ -370,7 +370,7 @@ class yFinanceExtractor:
                 # Rename old index from '' to Date
                 data.columns = ['Date', *data.columns[1:]]
                 # Add ticker to dataframe
-                data['Ticker'] = ticker.ticker
+                data['Tickers'] = ticker.ticker
                 dfs.append(data)
 
         parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
@@ -380,7 +380,7 @@ class yFinanceExtractor:
                 
         if len(dfs) > 0:
             mutalFundHolders = pd.concat(dfs, ignore_index=True)
-            mutalFundHolders = mutalFundHolders.set_index(['Ticker','Date'])
+            mutalFundHolders = mutalFundHolders.set_index(['Tickers','Date'])
         else:
             mutalFundHolders = pd.DataFrame(columns=['Holder', 'Shares', 'Date Reported', '% Out', 'Value'])
         return mutalFundHolders
@@ -410,7 +410,7 @@ class yFinanceExtractor:
                 # Rename old index from '' to Date
                 data.columns = ['Date', *data.columns[1:]]
                 # Add ticker to dataframe
-                data['Ticker'] = ticker.ticker
+                data['Tickers'] = ticker.ticker
                 dfs.append(data)
 
         parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
@@ -420,7 +420,7 @@ class yFinanceExtractor:
 
         if len(dfs) > 0:
             institutionalHolders = pd.concat(dfs, ignore_index=True)
-            institutionalHolders = institutionalHolders.set_index(['Ticker','Date'])
+            institutionalHolders = institutionalHolders.set_index(['Tickers','Date'])
         else:
             institutionalHolders = pd.DataFrame(columns=['Holder', 'Shares', 'Date Reported', '% Out', 'Value'])
             return institutionalHolders
