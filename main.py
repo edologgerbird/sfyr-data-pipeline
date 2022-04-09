@@ -1,15 +1,14 @@
-import time
-from datetime import datetime as dt
-from matplotlib import ticker
-from data_extract.SBRExtractor import SBRExtractor
-from data_extract.SGXDataExtractor import SGXDataExtractor
-from data_extract.TelegramExtractor import TelegramExtractor
-from data_load.bigQueryAPI import bigQueryDB
-from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
-from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
-from data_pipeline.FirestorePipeline import FirestorePipeline
 from data_pipeline.HeatListPipeline import HeatListPipeline
-
+from data_pipeline.FirestorePipeline import FirestorePipeline
+from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
+from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
+from data_load.bigQueryAPI import bigQueryDB
+from data_extract.TelegramExtractor import TelegramExtractor
+from data_extract.SGXDataExtractor import SGXDataExtractor
+from data_extract.SBRExtractor import SBRExtractor
+from matplotlib import ticker
+from datetime import datetime as dt
+import time
 
 if __name__ == '__main__':
     start_time = time.time()
@@ -32,10 +31,10 @@ if __name__ == '__main__':
     # tele_data_extractor_layer.extract_telegram_messages(start_date="01-02-2022", end_date="10-02-2022")
 
     # ---- Test YahooFinNews Extraction and Pipeline ---- #
-    tickerNews = yahooFinNewsExtractor().getSGXTickerNews()
-    yahoo_fin_pipeline_layer = yahooFinNewsPipeline()
-    formattedData = yahoo_fin_pipeline_layer.tickerNewsFormat(
-        tickerNews, dt(2020, 5, 17))
+    # tickerNews = yahooFinNewsExtractor().getSGXTickerNews()
+    # yahoo_fin_pipeline_layer = yahooFinNewsPipeline()
+    # formattedData = yahoo_fin_pipeline_layer.tickerNewsFormat(
+    #     tickerNews, dt(2020, 5, 17))
     # yahoo_fin_pipeline_layer.newsToFirestore()
 
     # ---- Test FireStore Pipeline ---- #
