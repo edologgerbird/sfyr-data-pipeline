@@ -16,13 +16,11 @@ from data_transform.TickerExtractor import TickerExtractor
 from data_transform.SBRDataTransform import SBRDataTransformer
 from data_transform.telegramDataTransform import telegramDataTransformer
 from data_processing.FinBertAPI import FinBERT
-from data_processing.HeatListGeneratorAPI import HeatListGenerator
 from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
 
 # Load Modules
 from data_load.firestoreAPI import firestoreDB
 from data_load.bigQueryAPI import bigQueryDB
-from data_load.FirestoreDataLoader import FirestoreDataLoader
 
 # Query Modules
 from data_querying.heatlistQuery import HeatListQuery
@@ -47,7 +45,6 @@ bigQueryDB_layer = bigQueryDB()
 
 FinBERT_layer = FinBERT()
 
-FirestoreDataLoader_layer = FirestoreDataLoader(firestoreDB_layer)
 HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
 
 
@@ -127,7 +124,7 @@ def transform_SBR_data(**kwargs):
     SBR_data_raw = ti.xcom_pull(task_ids="extract_SBR_data_task")
 
     # >> TickerExtractor(DataFrame: SBR_news)
-    #     >> xcom.pull(DataFrame: SGX Data_new)
+    #     >> xcom.pull(tickerExtractor: ticker_extractor_layer)
     ticker_extractor_layer = ti.xcom_pull(task_ids="transform_SGX_data_task")
 
     SBR_data_with_tickers = ticker_extractor_layer.populate_ticker_occurences(
@@ -212,17 +209,14 @@ def load_SBR_data(**kwargs):
     # >> xcomm.pull(dictionary: SBR_news_data_transformed)
     SBR_data_to_upload = ti.xcom_pull(task_ids='transform_SBR_data_task')
     # >> upload to Firestore Database
-    FirestoreDataLoader_layer.upload_to_firestore(
-        "SBR_data", SBR_data_to_upload)
-
+    firestoreDB_layer.fsAddListofDocuments("SBR_data", SBR_data_to_upload)
 
 def load_tele_data(**kwargs):
     ti = kwargs['ti']
     # >> xcomm.pull(dictionary: tele_news_data_transformed)
     tele_data_to_upload = ti.xcom_pull(task_ids='transform_tele_data_task')
     # >> upload to Firestore Database
-    FirestoreDataLoader_layer.upload_to_firestore(
-        "Telegram_data", tele_data_to_upload)
+    firestoreDB_layer.fsAddListofDocuments("Telegram_data", tele_data_to_upload)
 
 
 def load_YahooFin_news_data(**kwargs):
