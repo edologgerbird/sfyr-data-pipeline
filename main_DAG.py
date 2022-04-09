@@ -39,6 +39,7 @@ import pandas as pd
 ####################################################
 
 global_start_date = datetime.now() + timedelta(days=1)
+global_start_date_minus_one = datetime.now() - timedelta(days=1)
 global_start_date_day = global_start_date.day
 global_start_date_month = global_start_date.month
 global_start_date_year = global_start_date.year
@@ -247,7 +248,7 @@ def load_yFinance_data(**kwargs):
 def query_SBR_data(**kwargs):
     # >> query SBR_news_data from Firestore Database
     SBR_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
-        "SBR_data", global_start_date)
+        "SBR_data", global_start_date_minus_one)
     # >> return dictionary: SBR_news_Query_Results
     return SBR_query_for_heatlist
 
@@ -255,7 +256,7 @@ def query_SBR_data(**kwargs):
 def query_tele_data(**kwargs):
     # >> query tele_news_data from Firestore Database
     tele_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
-        "Telegram_data", global_start_date)
+        "Telegram_data", global_start_date_minus_one)
     # >> return dictionary: tele_news_Query_Results
     return tele_query_for_heatlist
 
@@ -263,7 +264,7 @@ def query_tele_data(**kwargs):
 def query_YahooFin_news_data(**kwargs):
     # >> query YahooFin_news_data from Firestore Database
     yahoo_fin_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
-        "YahooFin_data", global_start_date)
+        "YahooFin_data", global_start_date_minus_one)
     # >> return dictionary: YahooFin_news_Query_Results
     return yahoo_fin_query_for_heatlist
 
