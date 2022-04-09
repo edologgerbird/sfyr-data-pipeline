@@ -433,55 +433,47 @@ class yFinanceExtractor:
 
             tickers = [yf.Ticker(ticker) for ticker in listed]
             # Getting Financial Statement
-            dict['Financial Statement'] = self.getFinancialStatement(tickers)
+            dict['Financial Statement'] = self.getFinancialStatement()
 
             # Getting Quarterly Financial Statement
-            dict['Quarterly Financial Statement'] = self.getQuarterlyFinancialStatement(tickers)
+            dict['Quarterly Financial Statement'] = self.getQuarterlyFinancialStatement()
 
             # Getting ISIN code (International Securities Identification Number)
-            dict['isin'] = self.getISINcode(tickers)
+            dict['isin'] = self.getISINcode()
 
             #Getting tickers revenues and earnings
-            revenues, earnings = self.getEarningsandRevenue(tickers)
-            dict['revenues'] = revenues
-            dict['earnings'] = earnings
+            revenues_and_earnings = self.getEarningsandRevenue()
+
 
             #Getting tickers quarterly revenues and earnings
-            qrevenues, qearnings = self.getQuarterlyEarningsandRevenue(tickers)
-            dict['quarterly revenues'] = qrevenues
-            dict['quarterly earnings'] = qearnings
+            quarterly_revenues_and_earnings = self.getQuarterlyEarningsandRevenue()
+
 
             # Getting tickers major holders
-            dict['Major Holders'] = self.getMajorHolders(tickers)
+            dict['Major Holders'] = self.getMajorHolders()
             
             # Getting tickers basic shares
-            dict['Basic Shares'] =  self.getBasicShares(tickers)
+            dict['Basic Shares'] =  self.getBasicShares()
 
             # Getting tickers stock information
-            dict['Stock Information'] = self.getStockInfo(tickers)
-
-            # Getting Tickers options expirations
-            dict['Options Expiration'] = self.getOptionsExpirations(tickers)
+            dict['Stock Information'] = self.getStockInfo()
 
             # Getting tickers sustainability
-            dict['sustainability'] = self.getSustainability(tickers)
+            dict['sustainability'] = self.getSustainability()
 
             # Getting tickers calendar - next events
-            dict['calendar'] = self.getCalendar(tickers)
+            dict['calendar'] = self.getCalendar()
 
             # Getting tickers recommendations
-            dict['recommendations'] = self.getRecommendations(tickers)
+            dict['recommendations'] = self.getRecommendations()
 
             # Getting tickers analysis
-            dict['analysis'] = self.getAnalysis(tickers)
+            dict['analysis'] = self.getAnalysis()
 
-            # Getting tickers news
-            # NOT WORKING - AM FIXING IT
-            dict['news'] = self.getNews(tickers)
 
             # Getting tickers Mutual Fund Holders
-            dict['Mutal Fund Holders'] = self.getMutualFundHolders(tickers)
+            dict['Mutal Fund Holders'] = self.getMutualFundHolders()
             
             # Getting tickers Institutional Holders
-            dict['Institutional Holders'] = self.getInstitutionalHolders(tickers)
+            dict['Institutional Holders'] = self.getInstitutionalHolders()
             return dict
