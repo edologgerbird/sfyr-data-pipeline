@@ -116,7 +116,7 @@ class yFinanceExtractor:
                 ticker_earning_and_revenue = pd.DataFrame(data, index = [np.nan])
                 all_tickers_earnings_and_revenues = pd.concat([all_tickers_earnings_and_revenues,ticker_earning_and_revenue])
 
-
+            print('hello')
             else:
                 ticker_earning_and_revenue = ticker.earnings
                 ticker_earning_and_revenue['Tickers'] = ticker.ticker
