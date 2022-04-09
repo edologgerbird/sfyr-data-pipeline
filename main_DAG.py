@@ -43,7 +43,8 @@ global_start_date_minus_one = datetime.now() - timedelta(days=1)
 global_start_date_day = global_start_date.day
 global_start_date_month = global_start_date.month
 global_start_date_year = global_start_date.year
-global_start_date_excute_time = datetime(year = global_start_date_year, month = global_start_date_month, day=global_start_date_day, hour = 9, minute=30 )
+global_start_date_excute_time = datetime(
+    year=global_start_date_year, month=global_start_date_month, day=global_start_date_day, hour=9, minute=30)
 
 global_end_date = global_start_date_excute_time
 
@@ -187,9 +188,12 @@ def transform_YahooFin_data(**kwargs):
     # >> xcom.pull(DataFrame: YahooFin_news_data)
     yahoo_fin_data = ti.xcom_pull(task_ids="extract_YahooFin_data_task")
     yahooFinNewsTransform_layer = yahooFinNewsTransform()
-    news_formatted = yahooFinNewsTransform_layer.tickerNewsFormat(yahoo_fin_data, start_date=global_start_date, end_date=global_end_date)
-    yahoo_fin_data_sentiments = FinBERT_layer.FinBert_pipeline(news_formatted["message"])
-    yahoo_fin_data_transformed = yahooFinNewsTransform_layer(yahoo_fin_data_sentiments)
+    news_formatted = yahooFinNewsTransform_layer.tickerNewsFormat(
+        yahoo_fin_data, start_date=global_start_date, end_date=global_end_date)
+    yahoo_fin_data_sentiments = FinBERT_layer.FinBert_pipeline(
+        news_formatted["message"])
+    yahoo_fin_data_transformed = yahooFinNewsTransform_layer(
+        yahoo_fin_data_sentiments)
     return yahoo_fin_data_transformed
 
 
@@ -198,7 +202,6 @@ def transform_yFinance_data(**kwargs):
     # >> Transform
     # >> return list of dictionary: yFinance_data_transformed
     return
-
 
 
 ###################################
@@ -218,20 +221,24 @@ def load_SBR_data(**kwargs):
     # >> upload to Firestore Database
     firestoreDB_layer.fsAddListofDocuments("SBR_data", SBR_data_to_upload)
 
+
 def load_tele_data(**kwargs):
     ti = kwargs['ti']
     # >> xcomm.pull(dictionary: tele_news_data_transformed)
     tele_data_to_upload = ti.xcom_pull(task_ids='transform_tele_data_task')
     # >> upload to Firestore Database
-    firestoreDB_layer.fsAddListofDocuments("Telegram_data", tele_data_to_upload)
+    firestoreDB_layer.fsAddListofDocuments(
+        "Telegram_data", tele_data_to_upload)
 
 
 def load_YahooFin_news_data(**kwargs):
     ti = kwargs['ti']
     # >> xcomm.pull(dictionary: YahooFin_news_data_transformed)
-    yahoo_fin_data_to_upload = ti.xcom_pull(task_ids='transform_YahooFin_data_task')
+    yahoo_fin_data_to_upload = ti.xcom_pull(
+        task_ids='transform_YahooFin_data_task')
     # >> upload to Firestore Database
-    firestoreDB_layer.fsAddListofDocuments("YahooFin_data", yahoo_fin_data_to_upload)
+    firestoreDB_layer.fsAddListofDocuments(
+        "YahooFin_data", yahoo_fin_data_to_upload)
 
 
 def load_yFinance_data(**kwargs):
@@ -299,12 +306,32 @@ def generateHeatlists(**kwargs):
 ########################################
 
 def load_heatlists(**kwargs):
+    ti = kwargs['ti']
     # >> xcom.pull(
     #     DataFrame: Ticker Heatlist,
     #     DataFrame: Industry Heatlist
     #     )
+
+    generated_heatlist = ti.xcom_pull(task_ids='generateHeatlists')
+    ticker_heatlist = generated_heatlist[0]
+    industry_heatlist = generated_heatlist[1]
+
+    heatlist_generated_date = datetime.now()
+    heatlist_date = heatlist_generated_date.strftime("%d-%m-%Y")
+    heatlist_time = "Market Open"
+    if heatlist_generated_date.strftime("%H") > 12:
+        heatlist_time = "Market Close"
+
+    # Load Ticker Heatlist to GBQ
+    bigQueryDB_layer.gbqCreateNewTable(
+        ticker_heatlist, "Ticker_Heatlist", heatlist_date + heatlist_time)
+
+    # Load Industry Heatlist to GBQ
+    bigQueryDB_layer.gbqCreateNewTable(
+        industry_heatlist, "Industry_Heatlist", heatlist_date + heatlist_time)
+
     # >> upload to Google Big Query
-    return
+    return True
 
 ############################################
 # 2. DEFINE AIRFLOW DAG (SETTINGS + SCHEDULE)
@@ -449,13 +476,15 @@ load_heatlists_task = PythonOperator(task_id='load_heatlists_task',
 # 4. DEFINE OPERATORS HIERARCHY
 ##########################################
 
-[[extract_SGX_data_task >> query_SGX_data_task >> transform_SGX_data_task], extract_tele_data_task, extract_SBR_data_task] 
+[[extract_SGX_data_task >> query_SGX_data_task >> transform_SGX_data_task],
+    extract_tele_data_task, extract_SBR_data_task]
 
 extract_tele_data_task >> transform_tele_data_task
 
 extract_SBR_data_task >> transform_SBR_data_task
 
-transform_SGX_data_task >> [transform_tele_data_task, extract_yFinance_data_task, load_SGX_data_task, extract_YahooFin_data_task,transform_SBR_data_task]
+transform_SGX_data_task >> [transform_tele_data_task, extract_yFinance_data_task,
+                            load_SGX_data_task, extract_YahooFin_data_task, transform_SBR_data_task]
 
 transform_tele_data_task >> query_tele_data_task >> generate_heatlists_task
 
@@ -465,7 +494,8 @@ transform_SBR_data_task >> load_SBR_data_task
 
 extract_yFinance_data_task >> transform_yFinance_data_task >> load_yFinance_data_task
 
-extract_YahooFin_data_task >> transform_YahooFin_data_task >> [load_YahooFin_data_task, query_YahooFin_data_task]
+extract_YahooFin_data_task >> transform_YahooFin_data_task >> [
+    load_YahooFin_data_task, query_YahooFin_data_task]
 
 transform_SBR_data_task >> query_SBR_data_task >> generate_heatlists_task
 
