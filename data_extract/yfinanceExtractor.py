@@ -9,11 +9,12 @@ from data_load.bigQueryAPI import bigQueryDB
 
 
 class yFinanceExtractor:
-    def __init__(self):
-        self.datasetTable = "SGX.Tickers"
-        self.gbqQueryTickers = bigQueryDB().getDataFields(
-            self.datasetTable, "company_code")
-        self.gbqQueryTickers.company_code = self.gbqQueryTickers.company_code.str[:] + ".SI"
+    def __init__(self, sgxTickers):
+        # self.datasetTable = "SGX.Tickers"
+        # self.gbqQueryTickers = bigQueryDB().getDataFields(
+        #     self.datasetTable, "company_code")
+        self.sgxTickers = sgxTickers
+        self.sgxTickers.company_code = self.sgxTickers.company_code.str[:] + ".SI"
         self.ticker_active = []
         self.ticker_delisted = []
         self.ticker_with_status = pd.DataFrame()
@@ -23,7 +24,7 @@ class yFinanceExtractor:
         delisted = []
 
         # Check if ticker exist
-        for t in self.gbqQueryTickers["company_code"]:
+        for t in self.sgxTickers["company_code"]:
             length = yf.download(
                 t, period='max', interval='1d', timeout=None).shape[0]
             if length > 0:
