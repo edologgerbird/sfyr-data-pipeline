@@ -50,7 +50,7 @@ class yFinanceExtractor:
         historicalData = historicalData.reset_index()
         
         # Generate all existing tickers' history
-        return historical_data
+        return historicalData
     
 
     def getFinancialStatement(self):
