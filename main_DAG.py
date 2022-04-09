@@ -30,6 +30,7 @@ from data_querying.heatlistQuery import HeatListQuery
 
 # General utility Modules
 from datetime import datetime, timedelta
+import pendulum
 import datetime as dt
 import pandas as pd
 
@@ -38,13 +39,12 @@ import pandas as pd
 # 0. DEFINE GLOBAL VARIABLES
 ####################################################
 
-global_start_date = datetime.now() + timedelta(days=1)
+global_start_date_plus_one = datetime.now() + timedelta(days=1)
 global_start_date_minus_one = datetime.now() - timedelta(days=1)
-global_start_date_day = global_start_date.day
-global_start_date_month = global_start_date.month
-global_start_date_year = global_start_date.year
-global_start_date_excute_time = datetime(
-    year=global_start_date_year, month=global_start_date_month, day=global_start_date_day, hour=9, minute=30)
+global_start_date_day = global_start_date_plus_one.day
+global_start_date_month = global_start_date_plus_one.month
+global_start_date_year = global_start_date_plus_one.year
+global_start_date_excute_time = pendulum.datetime(year=global_start_date_year, month=global_start_date_month, day=global_start_date_day, hour=9, minute=30, tz="Asia/Singapore")
 
 global_end_date = global_start_date_excute_time
 
