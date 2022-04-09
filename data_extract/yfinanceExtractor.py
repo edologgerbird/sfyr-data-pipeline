@@ -35,15 +35,20 @@ class yFinanceExtractor:
 
         # Update Class Copy
         self.ticker_with_status = dfTickers
-        self.ticker_active = activeTickers
+        self.ticker_active = [yf.Ticker(ticker) for ticker in activeTickers]
         self.ticker_delisted = delisted
 
         return dfTickers
         
     def getHistoricalData(self):
         # Listed Tickers' historical market data
-        ticker_active_list = " ".join(self.ticker_active)
-        historical_data = yf.download(ticker_active_list, period='max', interval = '1d', actions = True, timeout= None)
+        historicalData = pd.DataFrame()
+        for ticker in self.ticker_active:
+            tickerHistoricalData = yf.download(ticker, period='max', interval = '1d', timeout= None)
+            tickerHistoricalData["Tickers"] = ticker
+            historicalData = pd.concat([historicalData, tickerHistoricalData])
+        historicalData = historicalData.reset_index()
+        
         # Generate all existing tickers' history
         return historical_data
     
