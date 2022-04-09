@@ -38,8 +38,13 @@ import pandas as pd
 # 0. DEFINE GLOBAL VARIABLES
 ####################################################
 
-global_start_date = datetime.now()
-global_end_date = datetime.now()
+global_start_date = datetime.now() + timedelta(days=1)
+global_start_date_day = global_start_date.day
+global_start_date_month = global_start_date.month
+global_start_date_year = global_start_date.year
+global_start_date_excute_time = datetime(year = global_start_date_year, month = global_start_date_month, day=global_start_date_day, hour = 9, minute=30 )
+
+global_end_date = global_start_date_excute_time
 
 firestoreDB_layer = firestoreDB()
 bigQueryDB_layer = bigQueryDB()
@@ -291,6 +296,7 @@ def generateHeatlists(**kwargs):
 ########################################
 # 1E. Data Load Modules (2)
 ########################################
+
 def load_heatlists(**kwargs):
     # >> xcom.pull(
     #     DataFrame: Ticker Heatlist,
@@ -313,12 +319,12 @@ default_args = {
     'retries': 1
 }
 
-dag = DAG('_ETL_for_SGX_Stocks_Data',
+dag = DAG('ETL_for_SGX_Stocks_Data',
           default_args=default_args,
           description='Collect Stock Prices For Analysis',
           catchup=False,
-          start_date=global_start_date,  # may need to timedelta(days = 1)
-          schedule_interval='0 0 * * *'  # runs daily
+          start_date=global_start_date_excute_time,  # starts next day at 9.30AM
+          schedule_interval='0 */12 * * *'  # runs at 12 hour interval
           )
 
 
