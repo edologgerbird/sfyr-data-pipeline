@@ -4,80 +4,87 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 from functools import reduce
+from data_load.bigQueryAPI import bigQueryDB
 
 
 class yFinanceExtractor:
-    def __init__(self, fileDirectory = None):
-        if (fileDirectory == None):
-            print("Future Integration with BigQuery")
-        else:
-            df = pd.read_csv()
-            df.company_code = df.company_code.str[:] + ".SI"
+    def __init__(self):
+        self.datasetTable = "SGX.Tickers"
+        self.gbqQueryTickers = bigQueryDB().getDataFields(self.datasetTable,"company_code")
+        self.gbqQueryTickers.company_code = self.gbqQueryTickers.company_code.str[:] + ".SI"
+        self.ticker_active = []
+        self.ticker_delisted = []
+        self.ticker_with_status = pd.DataFrame()
 
-    
-    def checkTickers(self,companyCode):
-        # To check if ticker exist
-        listed = []
+
+    def checkTickers(self):
+        activeTickers = []
         delisted = []
 
-        for t in companyCode:
+        # Check if ticker exist
+        for t in self.gbqQueryTickers["company_code"]:
             length = yf.download(t, period='max', interval = '1d', timeout= None).shape[0]
             if length > 0:
-                listed.append(t)
+                activeTickers.append(t)
             else:
                 delisted.append(t)
 
         # Generate dataframe of existing and missing tickers
-        dfTickers = pd.DataFrame({'Listed':listed})
+        dfTickers = pd.DataFrame({'Listed':activeTickers})
         dfTickers["Delisted"] = pd.Series(delisted)
-        return listed, delisted
-        
-    def getHistoricalData(self, listedTickerArray):
-        # Listed Tickers' historical market data
-        listedCodeList = " ".join(listedTickerArray)
-        historicalData = yf.download(listedCodeList, period='max', interval = '1d', actions = True, timeout= None)
 
+        # Update Class Copy
+        self.ticker_with_status = dfTickers
+        self.ticker_active = activeTickers
+        self.ticker_delisted = delisted
+
+        return dfTickers
+        
+    def getHistoricalData(self):
+        # Listed Tickers' historical market data
+        ticker_active_list = " ".join(self.ticker_active)
+        historical_data = yf.download(ticker_active_list, period='max', interval = '1d', actions = True, timeout= None)
         # Generate all existing tickers' history
-        return historicalData
+        return historical_data
     
 
-    def getFinancialStatement(self, tickers):
+    def getFinancialStatement(self):
         # Retrieve financial statement (Financials, Balance Sheet and Cash flow)
-        dfs = [] # list for each ticker's dataframe
-        fs = pd.DataFrame()
-        for ticker in tickers:
+        financial_statements_dataframe = [] # list for each ticker's dataframe
+        financial_statements = pd.DataFrame()
+        for ticker in self.ticker_active:
             # get each financial statement
             pnl = ticker.financials
-            bs = ticker.balancesheet
+            balance_sheet = ticker.balancesheet
             cf = ticker.cashflow
 
             # concatenate into one dataframe
-            fs = pd.concat([pnl, bs, cf])
+            financial_statements = pd.concat([pnl, balance_sheet, cf])
 
             # make dataframe format nicer
             # Swap dates and columns
-            data = fs.T
+            data = financial_statements.T
             # reset index (date) into a column
             data = data.reset_index()
             # Rename old index from '' to Date
             data.columns = ['Date', *data.columns[1:]]
             # Add ticker to dataframe
             data['Ticker'] = ticker.ticker
-            dfs.append(data)
+            financial_statements_dataframe.append(data)
 
         parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
 
-        for fs in dfs:
-                fs.columns = parser._maybe_dedup_names(fs.columns)
-        fs = pd.concat(dfs, ignore_index=True)
-        fs = fs.set_index(['Ticker','Date'])
-        return fs
+        for financial_statements in financial_statements_dataframe:
+                financial_statements.columns = parser._maybe_dedup_names(financial_statements.columns)
+        financial_statements = pd.concat(financial_statements_dataframe, ignore_index=True)
+        financial_statements = financial_statements.set_index(['Ticker','Date'])
+        return financial_statements
         
-    def getQuarterlyFinancialStatement(self, tickers):
+    def getQuarterlyFinancialStatement(self):
         # Get quarterly financial statement (Financials, Balance Sheet, Cashflows)
-        dfs = [] # list for each ticker's dataframe
-        fs = pd.DataFrame()
-        for ticker in tickers:
+        financial_statements_dataframe = [] # list for each ticker's dataframe
+        financial_statements = pd.DataFrame()
+        for ticker in self.ticker_active:
             # get each quarter financial statement
             pnl = ticker.quarterly_financials
             bs = ticker.quarterly_balancesheet
@@ -472,7 +479,3 @@ class yFinanceExtractor:
             # Getting tickers Institutional Holders
             dict['Institutional Holders'] = self.getInstitutionalHolders(tickers)
             return dict
-def main():
-main()
-    
-    
