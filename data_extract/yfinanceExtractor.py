@@ -318,97 +318,73 @@ class yFinanceExtractor:
 
     def getInstitutionalHolders(self):
         # Get Institutional holders
-        dfs = []  # list for each ticker's dataframe
-        ih = pd.DataFrame()
+        all_tickers_ih = pd.DataFrame()
 
-        for ticker in self.ticker_active:
-            if ticker.mutualfund_holders is None:
-                pass
+        for ticker in tickers:
+            if ticker.institutional_holders is None or ticker.institutional_holders.shape[1] != 5:
+                data = {'Holder':np.nan, 'Shares':np.nan, 'Date Reported':np.nan, '% Out':np.nan, 'Value':np.nan, 'Tickers':ticker.ticker }
+                ticker_ih = pd.DataFrame(data, index=[0])
+                all_tickers_ih = pd.concat([all_tickers_ih, ticker_ih])
 
             else:
-                # get each institutional holder
-                institutionalholder = ticker.mutualfund_holders
+                ticker_ih = ticker.institutional_holders
+                ticker_ih['Tickers'] = ticker.ticker
+                all_tickers_ih = pd.concat([all_tickers_ih, ticker_ih])
 
-                # concatenate into one dataframe
-                ih = pd.concat([institutionalholder])
+        all_tickers_ih = all_tickers_ih.reset_index(drop = True) 
+        return all_tickers_ih
 
-                # make dataframe format nicer
-                # Swap dates and columns
-                data = ih.T
-                # reset index (date) into a column
-                data = data.reset_index()
-                # Rename old index from '' to Date
-                data.columns = ['Date', *data.columns[1:]]
-                # Add ticker to dataframe
-                data['Tickers'] = ticker.ticker
-                dfs.append(data)
+    def getDictionary(self, companyCode):
+        dict = {}
 
-        parser = pd.io.parsers.base_parser.ParserBase({'usecols': None})
+        # Getting listed and delisted tickers
+        listed, delisted = self.checkTickers(companyCode)
+        dict['Listed'] = listed
+        dict['Delisted'] = delisted
 
-        for institutionalHolders in dfs:
-            institutionalHolders.columns = parser._maybe_dedup_names(
-                institutionalHolders.columns)
+        # Getting listed tickers history data
+        dict['Historical Data'] = self.getHistoricalData(listed)
 
-        if len(dfs) > 0:
-            institutionalHolders = pd.concat(dfs, ignore_index=True)
-            institutionalHolders = institutionalHolders.set_index(
-                ['Tickers', 'Date'])
-        else:
-            institutionalHolders = pd.DataFrame(
-                columns=['Holder', 'Shares', 'Date Reported', '% Out', 'Value'])
-            return institutionalHolders
+        tickers = [yf.Ticker(ticker) for ticker in listed]
+        # Getting Financial Statement
+        dict['Financial Statement'] = self.getFinancialStatement()
 
-        def getDictionary(self, companyCode):
-            dict = {}
+        # Getting Quarterly Financial Statement
+        dict['Quarterly Financial Statement'] = self.getQuarterlyFinancialStatement()
 
-            # Getting listed and delisted tickers
-            listed, delisted = self.checkTickers(companyCode)
-            dict['Listed'] = listed
-            dict['Delisted'] = delisted
+        # Getting ISIN code (International Securities Identification Number)
+        dict['isin'] = self.getISINcode()
 
-            # Getting listed tickers history data
-            dict['Historical Data'] = self.getHistoricalData(listed)
+        # Getting tickers revenues and earnings
+        revenues_and_earnings = self.getEarningsandRevenue()
 
-            tickers = [yf.Ticker(ticker) for ticker in listed]
-            # Getting Financial Statement
-            dict['Financial Statement'] = self.getFinancialStatement()
+        # Getting tickers quarterly revenues and earnings
+        quarterly_revenues_and_earnings = self.getQuarterlyEarningsandRevenue()
 
-            # Getting Quarterly Financial Statement
-            dict['Quarterly Financial Statement'] = self.getQuarterlyFinancialStatement()
+        # Getting tickers major holders
+        dict['Major Holders'] = self.getMajorHolders()
 
-            # Getting ISIN code (International Securities Identification Number)
-            dict['isin'] = self.getISINcode()
+        # Getting tickers basic shares
+        dict['Basic Shares'] = self.getBasicShares()
 
-            # Getting tickers revenues and earnings
-            revenues_and_earnings = self.getEarningsandRevenue()
+        # Getting tickers stock information
+        dict['Stock Information'] = self.getStockInfo()
 
-            # Getting tickers quarterly revenues and earnings
-            quarterly_revenues_and_earnings = self.getQuarterlyEarningsandRevenue()
+        # Getting tickers sustainability
+        dict['sustainability'] = self.getSustainability()
 
-            # Getting tickers major holders
-            dict['Major Holders'] = self.getMajorHolders()
+        # Getting tickers calendar - next events
+        dict['calendar'] = self.getCalendar()
 
-            # Getting tickers basic shares
-            dict['Basic Shares'] = self.getBasicShares()
+        # Getting tickers recommendations
+        dict['recommendations'] = self.getRecommendations()
 
-            # Getting tickers stock information
-            dict['Stock Information'] = self.getStockInfo()
+        # Getting tickers analysis
+        dict['analysis'] = self.getAnalysis()
 
-            # Getting tickers sustainability
-            dict['sustainability'] = self.getSustainability()
+        # Getting tickers Mutual Fund Holders
+        dict['Mutal Fund Holders'] = self.getMutualFundHolders()
 
-            # Getting tickers calendar - next events
-            dict['calendar'] = self.getCalendar()
-
-            # Getting tickers recommendations
-            dict['recommendations'] = self.getRecommendations()
-
-            # Getting tickers analysis
-            dict['analysis'] = self.getAnalysis()
-
-            # Getting tickers Mutual Fund Holders
-            dict['Mutal Fund Holders'] = self.getMutualFundHolders()
-
-            # Getting tickers Institutional Holders
-            dict['Institutional Holders'] = self.getInstitutionalHolders()
-            return dict
+        # Getting tickers Institutional Holders
+        dict['Institutional Holders'] = self.getInstitutionalHolders()
+        return dict
