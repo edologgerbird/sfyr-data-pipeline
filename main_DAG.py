@@ -503,25 +503,6 @@ query_YahooFin_data_task >> generate_heatlists_task
 
 generate_heatlists_task >> load_heatlists_task
 
-
-# >> [[transform_tele_data_task >> [load_tele_data_task, query_tele_data_task]], [transform_SBR_data_task >> [load_SBR_data_task, query_SBR_data_task]], [extract_yFinance_data_task >> transform_yFinance_data_task >> load_yFinance_data_task], load_SGX_data_task, [extract_YahooFin_data_task >> transform_YahooFin_data_task >> [query_YahooFin_data_task, load_YahooFin_data_task]]] >> generate_heatlists_task >> load_heatlists_task
-
-'''
-a = [extract_SGX_data_task >> query_SGX_data_task >> transform_SGX_data_task]
-
-b = [extract_tele_data_task >> transform_tele_data_task]
-
-c = [extract_SBR_data_task >> transform_SBR_data_task]
-
-d = [extract_yFinance_data_task,
-     transform_yFinance_data_task, load_yFinance_data_task]
-
-e = [extract_YahooFin_data_task >> transform_YahooFin_data_task >>
-     [load_YahooFin_data_task, query_YahooFin_data_task]]
-
-a >> [b, c]
-'''
-
 '''
 extract_SGX_data_task >> query_SGX_data_task>> transform_SGX_data_task >> load_SGX_data_task >> extract_SBR_data_task >> extract_tele_data_task >> \
 extract_YahooFin_data_task >> extract_yFinance_data_task >> transform_yFinance_data_task >> \
