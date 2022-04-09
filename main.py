@@ -2,6 +2,7 @@ import time
 from data_extract.SBRExtractor import SBRExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
+from data_extract.yfinanceExtractor import yFinanceExtractor
 from data_load.bigQueryAPI import bigQueryDB
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
@@ -50,5 +51,9 @@ if __name__ == '__main__':
     #     '16-02-2022')
     # print(ticker_heatlist)
     # print(industry_heatlist)
+
+    # ---- Test yFinance Pipeline ---- #
+    yFinanceExtractor().checkTickers()
+
 
     print("--- %s seconds ---" % (time.time() - start_time))
