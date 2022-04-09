@@ -115,8 +115,7 @@ class yFinanceExtractor:
                 data= {'Revenue': np.nan,'Earnings': np.nan,'Tickers':ticker.ticker}
                 ticker_earning_and_revenue = pd.DataFrame(data, index = [np.nan])
                 all_tickers_earnings_and_revenues = pd.concat([all_tickers_earnings_and_revenues,ticker_earning_and_revenue])
-
-            print('hello')
+                
             else:
                 ticker_earning_and_revenue = ticker.earnings
                 ticker_earning_and_revenue['Tickers'] = ticker.ticker
@@ -190,15 +189,6 @@ class yFinanceExtractor:
                 stockInfo = pd.DataFrame(ticker.info.values(), index = ticker.info.keys(), columns= [ticker.ticker])
                 all_info = pd.concat([all_info, stockInfo])
         return all_info
-        
-    def getOptionsExpirations(self):
-        # Get options expirations
-        options_dict = {}
-
-        for ticker in self.ticker_active:
-            options_dict[ticker.ticker] = list(ticker.options)
-            df_options = pd.DataFrame.from_dict(options_dict, orient = 'index').transpose()
-        return df_options
     
     def getSustainability(self):
         # Get Sustainability
