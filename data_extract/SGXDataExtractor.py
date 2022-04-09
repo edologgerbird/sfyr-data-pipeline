@@ -2,6 +2,7 @@ import pandas as pd
 from urllib.request import Request, urlopen
 import json
 from data_load.bigQueryAPI import bigQueryDB
+
 class SGXDataExtractor:
     def __init__(self):
         with open('utils/serviceAccount.json', 'r') as jsonFile:
@@ -51,8 +52,17 @@ class SGXDataExtractor:
     def load_SGX_data_from_source(self):
         self.extract_SGX_json_data()
         self.populate_SGX_data()
+        #self.update_ticker_status()
         self.SGX_data_to_bg()
         # self.SGX_data_to_csv() # Depreciated 
 
+    #Initial code
+    # def get_SGX_data(self):
+    #     return self.SGX_data_store
+
+    #Modified code
     def get_SGX_data(self):
+        self.extract_SGX_json_data()
+        self.populate_SGX_data()
         return self.SGX_data_store
+
