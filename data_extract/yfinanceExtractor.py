@@ -11,6 +11,7 @@ class yFinanceExtractor:
         self.ticker_active = []
         self.ticker_delisted = []
         self.ticker_with_status = pd.DataFrame()
+        self.checkTickers()
 
     def checkTickers(self):
         activeTickers = []
@@ -214,7 +215,8 @@ class yFinanceExtractor:
                 all_tickers_dict[ticker.ticker] = pd.Series()
             else:
                 all_tickers_dict[ticker.ticker] = pd.Series(ticker.info)
-        all_tickers_info = pd.DataFrame(all_tickers_dict).transpose().reset_index().rename(columns={'index':'Tickers'})
+        all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
+        ).reset_index().rename(columns={'index': 'Tickers'})
         return all_tickers_info
 
     # def getSustainability(self):
