@@ -12,8 +12,8 @@ class yFinanceExtractor:
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
         self.ticker_delisted = []  # List of Inactive Ticker Name String
-        self.ticker_with_status = pd.DataFrame()  # Active Tickers with Status
-        self.historical_data = pd.DataFrame()  # Active Tickers historical data
+        self.ticker_with_status = pd.DataFrame()
+        self.historical_data = pd.DataFrame()
         self.financial_statements = pd.DataFrame()
         self.quarterly_financial_statements = pd.DataFrame()
         self.isin = pd.DataFrame()
