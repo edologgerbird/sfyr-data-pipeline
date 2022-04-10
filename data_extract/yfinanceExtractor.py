@@ -67,7 +67,7 @@ class yFinanceExtractor:
                 tickerHistoricalData = yf.download(
                     ticker.ticker, period='max', interval='1d', timeout=None)
                 tickerHistoricalData["Tickers"] = self.removeSI(ticker.ticker)
-                tickerHistoricalData["Market Status"] = "Closed"
+                tickerHistoricalData["Market Status"] = "Market_Closed"
 
             else:
                 start_date_string = start_date.strftime('%Y-%m-%d')
