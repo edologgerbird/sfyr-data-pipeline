@@ -19,12 +19,12 @@ class HeatListGenerator:
         print("Querying SGX Data...")
         self.sgx_data = bigQueryDB().getDataFields(self.datasetTable)
         self.sgx_data_mapper = {x: y for x, y in zip(
-            self.sgx_data["company_code"], self.sgx_data["company_name"])}
+            self.sgx_data["ticker"], self.sgx_data["company_name"])}
 
         self.industry_df = pd.read_csv(
             "csv_store/industry_new.csv")  # Replace with GBQ query
         self.industry_mapper = {x: y for x, y in zip(
-            self.industry_df["company_code"], self.industry_df["industry"])}
+            self.industry_df["ticker"], self.industry_df["industry"])}
 
         self.ticker_heat_list = dict()
         self.industry_heat_list = dict()
@@ -67,23 +67,23 @@ class HeatListGenerator:
     def generateHeatScoreFromRes(self, dict_res):
         ticker_list = [ticker for sublist in [x["tickers"]
                                               for x in self.dict_query] for ticker in sublist]
-        for company_code in ticker_list:
-            if company_code not in self.ticker_heat_list:
-                self.ticker_heat_list[company_code] = dict_res["sentiments"]["positive"] - \
+        for ticker in ticker_list:
+            if ticker not in self.ticker_heat_list:
+                self.ticker_heat_list[ticker] = dict_res["sentiments"]["positive"] - \
                     dict_res["sentiments"]["negative"]
-                self.frequency_counter[company_code] = 1
-                if company_code in self.sgx_data_mapper:
-                    self.tickers_present[company_code] = self.sgx_data_mapper[company_code]
+                self.frequency_counter[ticker] = 1
+                if ticker in self.sgx_data_mapper:
+                    self.tickers_present[ticker] = self.sgx_data_mapper[ticker]
                 else:
-                    self.tickers_present[company_code] = None
+                    self.tickers_present[ticker] = None
             else:
-                self.ticker_heat_list[company_code] += (
+                self.ticker_heat_list[ticker] += (
                     dict_res["sentiments"]["positive"] - dict_res["sentiments"]["negative"])
-                self.frequency_counter[company_code] += 1
+                self.frequency_counter[ticker] += 1
 
-            if company_code in self.industry_mapper and self.industry_mapper[company_code] is not np.NaN:
-                industry = self.industry_mapper[company_code]
-                if self.industry_mapper[company_code] not in self.industry_heat_list:
+            if ticker in self.industry_mapper and self.industry_mapper[ticker] is not np.NaN:
+                industry = self.industry_mapper[ticker]
+                if self.industry_mapper[ticker] not in self.industry_heat_list:
                     self.industry_heat_list[industry] = dict_res["sentiments"]["positive"] - \
                         dict_res["sentiments"]["negative"]
                 else:
