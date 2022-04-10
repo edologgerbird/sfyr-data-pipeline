@@ -247,7 +247,7 @@ class yFinanceExtractor:
                 ticker_share['Tickers'] = self.removeSI(ticker.ticker)
                 basic_shares_df = pd.concat(
                     [basic_shares_df, ticker_share])
-
+        basic_shares_df = basic_shares_df.reset_index()
         # Store to Shared Data
         self.basic_shares = basic_shares_df
         return basic_shares_df
