@@ -161,6 +161,7 @@ test/
 csv_store/
 *.csv
 *.session
+*.session-journal
 None.session
 
 ### Creds ###
