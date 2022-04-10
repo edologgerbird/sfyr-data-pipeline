@@ -5,7 +5,7 @@ from data_load.bigQueryAPI import bigQueryDB
 
 
 class TickerExtractor:
-    def __init__(self):
+    def __init__(self, SGX_data):
         print("Initialising Ticker Extractor...")
         with open('utils/serviceAccount.json', 'r') as jsonFile:
             self.config = json.load(jsonFile)["tickerExtractor"]
@@ -15,7 +15,8 @@ class TickerExtractor:
         self.datasetTable = "SGX.Tickers"
 
         print("Querying SGX Data...")
-        self.SGX_data = bigQueryDB().getDataFields(self.datasetTable)
+        self.SGX_data = SGX_data
+        # self.SGX_data = bigQueryDB().getDataFields(self.datasetTable)
         # self.SGX_data = pd.read_csv("csv_store/SGX_data.csv")  # Depreciated
         print("Successfully retrieved SGX Data")
         print("Initialising Mappers...")
