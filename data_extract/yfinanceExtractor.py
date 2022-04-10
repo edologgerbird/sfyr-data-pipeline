@@ -214,7 +214,7 @@ class yFinanceExtractor:
         for ticker in self.ticker_active:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
                 ticker_majorHolders = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)}))
                 majorHolders_df = pd.concat(
                     [majorHolders_df, ticker_majorHolders])
 
