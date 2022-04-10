@@ -208,16 +208,13 @@ class yFinanceExtractor:
 
     def getStockInfo(self):
         # Get stock information
-        all_tickers_info = pd.DataFrame()
-
+        all_tickers_dict = {}
         for ticker in self.ticker_active:
-            ticker_info = pd.DataFrame(ticker.info.values(
-            ), index=ticker.info.keys(), columns=[ticker.ticker])
-            all_tickers_info = pd.concat([all_tickers_info, ticker_info])
-
-        all_tickers_info = all_tickers_info.transpose().reset_index()
-        all_tickers_info = all_tickers_info.rename(
-            columns={'index': 'Tickers'})
+            if ticker.info is None:
+                all_tickers_dict[ticker.ticker] = pd.Series()
+            else:
+                all_tickers_dict[ticker.ticker] = pd.Series(ticker.info)
+        all_tickers_info = pd.DataFrame(all_tickers_dict).transpose().reset_index().rename(columns={'index':'Tickers'})
         return all_tickers_info
 
     # def getSustainability(self):
