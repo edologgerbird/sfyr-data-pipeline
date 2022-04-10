@@ -1,7 +1,10 @@
+from pendulum import datetime
+from data_extract.yfinanceExtractor import yFinanceExtractor
 from data_pipeline.HeatListPipeline import HeatListPipeline
 from data_pipeline.FirestorePipeline import FirestorePipeline
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
+from data_extract.yfinanceExtractor import yFinanceExtractor
 from data_load.bigQueryAPI import bigQueryDB
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
@@ -43,12 +46,17 @@ if __name__ == '__main__':
     #     start_date="20-02-2022", end_date="22-02-2022")
 
     # ---- Test GBQ Pipeline ---- #
-    print(bigQueryDB().getDataFields("SGX.Tickers"))
+    # print(bigQueryDB().getDataFields("SGX.Tickers"))
+
 
     # HeatListPipeline_layer = HeatListPipeline()
     # ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(
     #     '16-02-2022')
     # print(ticker_heatlist)
     # print(industry_heatlist)
+
+    # ---- Test yFinance Pipeline ---- #
+    # data = bigQueryDB().getDataFields("SGX.Tickers").head()
+    # print(yFinanceExtractor(data).getHistoricalData(dt(2020, 5, 17, 23, 10)))
 
     print("--- %s seconds ---" % (time.time() - start_time))
