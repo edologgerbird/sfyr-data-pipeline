@@ -339,14 +339,23 @@ def load_heatlists(**kwargs):
     heatlist_time = "Market Open"
     if int(heatlist_generated_date.strftime("%H")) > 12:
         heatlist_time = "Market Close"
+    heatlist_table_name = heatlist_date + " " + heatlist_time
 
-    # Load Ticker Heatlist to GBQ
-    bigQueryDB_layer.gbqCreateNewTable(
-        ticker_heatlist, "Ticker_Heatlist", heatlist_date + heatlist_time)
+    # Load Ticker Heatlist to GBQ - Replace if exist
+    if (bigQueryDB_layer.gbqCheckTableExist("Ticker_Heatlist."+heatlist_table_name)):
+        bigQueryDB_layer.gbqReplace(
+        ticker_heatlist, "Ticker_Heatlist" + "." + heatlist_table_name)
+    else:
+        bigQueryDB_layer.gbqCreateNewTable(
+        ticker_heatlist, "Ticker_Heatlist", heatlist_table_name)   
 
-    # Load Industry Heatlist to GBQ
-    bigQueryDB_layer.gbqCreateNewTable(
-        industry_heatlist, "Industry_Heatlist", heatlist_date + heatlist_time)
+    # Load Industry Heatlist to GBQ - Replace if exist
+    if (bigQueryDB_layer.gbqCheckTableExist("Industry_Heatlist."+heatlist_table_name)):
+        bigQueryDB_layer.gbqReplace(
+        industry_heatlist, "Industry_Heatlist" + "." + heatlist_table_name)
+    else:
+        bigQueryDB_layer.gbqCreateNewTable(
+        industry_heatlist, "Industry_Heatlist", heatlist_table_name)  
 
     # >> upload to Google Big Query
     return True
