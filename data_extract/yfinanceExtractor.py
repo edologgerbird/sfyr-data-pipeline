@@ -55,7 +55,7 @@ class yFinanceExtractor:
         self.ticker_delisted = delisted
 
         return dfTickers
-    
+
     def removeSI(self, ticker):
         return ticker[:-3]
 
@@ -75,7 +75,7 @@ class yFinanceExtractor:
                     ticker.ticker, start=start_date_string, interval='1d', timeout=None)
                 tickerHistoricalData["Tickers"] = self.removeSI(ticker.ticker)
 
-                if start_date.time() < date.today().replace(hour=10, minute=10):
+                if int(start_date.hour) < 12:
                     tickerHistoricalData["Market Status"] = "Market_Open"
                 else:
                     tickerHistoricalData["Market Status"] = "Market_Closed"
@@ -163,17 +163,20 @@ class yFinanceExtractor:
         for ticker in self.ticker_active:
             if (ticker.earnings.shape[0] < 1):
                 # Ticker's revenue and earning do not exist
-                ticker_earning_and_revenue = pd.DataFrame(pd.Series({'Tickers':self.removeSI(ticker.ticker)})).transpose()
+                ticker_earning_and_revenue = pd.DataFrame(
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
                 earnings_and_revenues_df = pd.concat(
                     [earnings_and_revenues_df, ticker_earning_and_revenue])
 
             else:
                 ticker_earning_and_revenue = ticker.earnings
-                ticker_earning_and_revenue['Tickers'] = self.removeSI(ticker.ticker)
+                ticker_earning_and_revenue['Tickers'] = self.removeSI(
+                    ticker.ticker)
                 earnings_and_revenues_df = pd.concat(
                     [earnings_and_revenues_df, ticker_earning_and_revenue])
 
-        earnings_and_revenues_df = earnings_and_revenues_df.reset_index().rename(columns={'index':'Year'})
+        earnings_and_revenues_df = earnings_and_revenues_df.reset_index().rename(columns={
+            'index': 'Year'})
 
         # Store to Shared Data
         self.earnings_and_revenue = earnings_and_revenues_df
@@ -187,17 +190,19 @@ class yFinanceExtractor:
             if (ticker.quarterly_earnings.shape[0] < 1):
                 # Ticker's revenue and earning do not exist
                 ticker_quarterly_earning_and_revenue = pd.DataFrame(
-                    pd.Series({'Tickers':self.removeSI(ticker.ticker)})).transpose()
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
                 quarterly_earnings_and_revenues_df = pd.concat(
                     [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
 
             else:
                 ticker_quarterly_earning_and_revenue = ticker.quarterly_earnings
-                ticker_quarterly_earning_and_revenue['Tickers'] = self.removeSI(ticker.ticker)
+                ticker_quarterly_earning_and_revenue['Tickers'] = self.removeSI(
+                    ticker.ticker)
                 quarterly_earnings_and_revenues_df = pd.concat(
                     [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
 
-        quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index().rename(columns={'index':'Quarters'})
+        quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index(
+        ).rename(columns={'index': 'Quarters'})
 
         # Store to Shared Data
         self.quarterly_earnings_and_revenue = quarterly_earnings_and_revenues_df
@@ -208,15 +213,16 @@ class yFinanceExtractor:
         majorHolders_df = pd.DataFrame()
         for ticker in self.ticker_active:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
-                ticker_majorHolders = pd.DataFrame(pd.Series({'Tickers':self.removeSI(ticker.ticker)})).transpose()
-                all_tickers_majorHolders = pd.concat(
-                    [all_tickers_majorHolders, ticker_majorHolders])
+                ticker_majorHolders = pd.DataFrame(
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
+                majorHolders_df = pd.concat(
+                    [majorHolders_df, ticker_majorHolders])
 
             else:
                 ticker_majorHolders = ticker.major_holders[0].rename(
                     {0: '% of Shares Held by All Insider', 1: '% of Shares Held by Institutions', 2: '% of Float Held by Institutions', 3: 'Number of Institutions Holding Shares'})
                 ticker_majorHolders['Tickers'] = self.removeSI(ticker.ticker)
-                all_tickers_majorHolders = all_tickers_majorHolders.append(
+                majorHolders_df = majorHolders_df.append(
                     ticker_majorHolders)
         majorHolders_df = majorHolders_df.reset_index(
             drop=True)
@@ -231,14 +237,15 @@ class yFinanceExtractor:
         for ticker in self.ticker_active:
             if ticker.shares is None:
                 # Ticker does not have shares info
-                ticker_share = pd.DataFrame(pd.Series({'Tickers':self.removeSI(ticker.ticker)})).transpose()
-                all_tickers_shares = pd.concat(
-                    [all_tickers_shares, ticker_share])
+                ticker_share = pd.DataFrame(
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
+                basic_shares_df = pd.concat(
+                    [basic_shares_df, ticker_share])
             else:
                 ticker_share = ticker.shares
                 ticker_share['Tickers'] = self.removeSI(ticker.ticker)
-                all_tickers_shares = pd.concat(
-                    [all_tickers_shares, ticker_share])
+                basic_shares_df = pd.concat(
+                    [basic_shares_df, ticker_share])
 
         # Store to Shared Data
         self.basic_shares = basic_shares_df
@@ -251,7 +258,8 @@ class yFinanceExtractor:
             if ticker.info is None:
                 all_tickers_dict[self.removeSI(ticker.ticker)] = pd.Series()
             else:
-                all_tickers_dict[self.removeSI(ticker.ticker)] = pd.Series(ticker.info)
+                all_tickers_dict[self.removeSI(
+                    ticker.ticker)] = pd.Series(ticker.info)
         all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
         ).reset_index().rename(columns={'index': 'Tickers'})
         self.stock_info = all_tickers_info
@@ -271,7 +279,8 @@ class yFinanceExtractor:
         stock_calendar_df = pd.DataFrame()
         for ticker in self.ticker_active:
             if ticker.calendar is None:
-                ticker_calendar = pd.DataFrame(pd.Series({'Tickers':self.removeSI(ticker.ticker)})).transpose()
+                ticker_calendar = pd.DataFrame(
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
                 stock_calendar_df = pd.concat(
                     [stock_calendar_df, ticker_calendar])
 
@@ -291,13 +300,15 @@ class yFinanceExtractor:
 
         for ticker in self.ticker_active:
             if ticker.recommendations is None:
-                ticker_recommendations = pd.DataFrame(pd.Series({'Tickers':self.removeSI(ticker.ticker)})).transpose()
+                ticker_recommendations = pd.DataFrame(
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
                 recommendations_df = pd.concat(
                     [recommendations_df, ticker_recommendations])
 
             else:
                 ticker_recommendations = ticker.recommendations
-                ticker_recommendations['Tickers'] = self.removeSI(ticker.ticker)
+                ticker_recommendations['Tickers'] = self.removeSI(
+                    ticker.ticker)
                 recommendations_df = pd.concat(
                     [recommendations_df, ticker_recommendations])
         recommendations_df = recommendations_df.reset_index()
@@ -311,7 +322,8 @@ class yFinanceExtractor:
         analysis_df = pd.DataFrame()
         for ticker in self.ticker_active:
             if ticker.analysis is None:
-                ticker_analysis = pd.DataFrame(pd.Series({'Tickers':self.removeSI(ticker.ticker)})).transpose()
+                ticker_analysis = pd.DataFrame(
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
                 analysis_df = pd.concat(
                     [analysis_df, ticker_analysis])
 
@@ -334,7 +346,8 @@ class yFinanceExtractor:
 
         for ticker in self.ticker_active:
             if ticker.mutualfund_holders is None:
-                ticker_mfh = pd.DataFrame(pd.Series({'Tickers':self.removeSI(ticker.ticker)})).transpose()
+                ticker_mfh = pd.DataFrame(
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
                 mfh_pd = pd.concat([mfh_pd, ticker_mfh])
 
             else:
@@ -354,7 +367,8 @@ class yFinanceExtractor:
 
         for ticker in self.ticker_active:
             if ticker.institutional_holders is None or ticker.institutional_holders.shape[1] != 5:
-                ticker_ih = pd.DataFrame(pd.DataFrame(pd.Series({'Tickers':self.removeSI(ticker.ticker)})).transpose())
+                ticker_ih = pd.DataFrame(pd.DataFrame(
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose())
                 ih_pd = pd.concat([ih_pd, ticker_ih])
 
             else:

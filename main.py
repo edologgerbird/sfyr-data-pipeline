@@ -55,7 +55,6 @@ if __name__ == '__main__':
 
     # ---- Test yFinance Pipeline ---- #
     data = bigQueryDB().getDataFields("SGX.Tickers").head()
-    a = yFinanceExtractor(data).getHistoricalData()
-    print(a)
+    print(yFinanceExtractor(data).getHistoricalData())
 
     print("--- %s seconds ---" % (time.time() - start_time))
