@@ -1,19 +1,23 @@
 '''
 Querying Module for Heatlist
-
 '''
 import datetime as dt
 from dateutil.parser import parse
+import json
 
 class HeatListQuery:
     def __init__(self, firestoreDB):
+        with open('utils/serviceAccount.json', 'r') as jsonFile:
+            self.cred = json.load(jsonFile)
         self.firestoreDB_layer = firestoreDB
         self.documents_container = list()
         self.start_date = None
         self.end_date = None
+        self.lookback_period = self.cred["HeatListQuery"]["lookback_period"]
 
     def get_look_back_period(self, end_date, no_look_back_days):
-        end_date = parse(end_date, dayfirst=True)
+        # end_date = parse(end_date, dayfirst=True)
+        end_date = end_date
         start_date = end_date + dt.timedelta(days=-no_look_back_days)
         return start_date, end_date
 
@@ -45,12 +49,10 @@ class HeatListQuery:
         subset = {k: query_res[k] for k in heatlist_fields}
         return subset
 
-    def query_pipeline(self, date):
-        start_date, end_date = self.get_look_back_period(date, 7)
+    def query_pipeline(self, collection, date):
+        start_date, end_date = self.get_look_back_period(date, self.lookback_period)
         self.set_dates(start_date=start_date, end_date=end_date)
-        query_results = self.query_documents_by_date()
+        query_results = self.query_documents_by_date(collection)
         output = [self.get_heatlist_data_from_query(
             query_result) for query_result in query_results]
         return output
-
-
