@@ -14,7 +14,7 @@ class FinBERT:
         self.tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
         self.model = AutoModelForSequenceClassification.from_pretrained(
             "ProsusAI/finbert")
-        self.batch_size = 10
+        self.batch_size = 1
         print("FinBERT model initialised")
 
     def load_text_data(self, text_series):

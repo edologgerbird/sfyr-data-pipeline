@@ -17,7 +17,8 @@ class HeatListQuery:
         self.lookback_period = self.cred["HeatListQuery"]["lookback_period"]
 
     def get_look_back_period(self, end_date, no_look_back_days):
-        end_date = parse(end_date, dayfirst=True)
+        # end_date = parse(end_date, dayfirst=True)
+        end_date = end_date
         start_date = end_date + dt.timedelta(days=-no_look_back_days)
         return start_date, end_date
 
