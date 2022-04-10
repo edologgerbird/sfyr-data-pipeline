@@ -222,8 +222,10 @@ class yFinanceExtractor:
                 ticker_majorHolders = ticker.major_holders[0].rename(
                     {0: '% of Shares Held by All Insider', 1: '% of Shares Held by Institutions', 2: '% of Float Held by Institutions', 3: 'Number of Institutions Holding Shares'})
                 ticker_majorHolders['Tickers'] = self.removeSI(ticker.ticker)
-                majorHolders_df = majorHolders_df.append(
-                    ticker_majorHolders)
+                ticker_majorHolders = ticker_majorHolders.transpose()
+                majorHolders_df = pd.concat(
+                    [majorHolders_df, ticker_majorHolders], axis = 1)
+        majorHolders_df = majorHolders_df.transpose()
         majorHolders_df = majorHolders_df.reset_index(
             drop=True)
 
