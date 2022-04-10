@@ -1,7 +1,6 @@
 # Importing Airflow Modules
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from yfinance import Ticker
 
 # Importing High Level Pipeline Modules
 # Extract Modules
@@ -31,39 +30,31 @@ from data_querying.heatlistQuery import HeatListQuery
 
 # General utility Modules
 from datetime import datetime, timedelta
-import pendulum
 import datetime as dt
 import pandas as pd
+from utils.utils import get_execute_time, get_extraction_schedule
 
 
 ####################################################
 # 0. DEFINE GLOBAL VARIABLES
 ####################################################
 # Schedule first run for D+1, 0930HRS, GMT+08
-global_start_date_plus_one = datetime.now() + timedelta(days=1)
-global_start_date_minus_one = datetime.now() - timedelta(days=1)
-global_start_date_day = global_start_date_plus_one.day
-global_start_date_month = global_start_date_plus_one.month
-global_start_date_year = global_start_date_plus_one.year
-global_start_date_excute_time = pendulum.datetime(
-    year=global_start_date_year, month=global_start_date_month, day=global_start_date_day, hour=9, minute=30, tz="Asia/Singapore")
+global_start_date_excute_time = get_execute_time(datetime.now())
 
+# Extraction time handling
+# >> if time < 1200: extract from D-1 2130 till D-0 0390
+
+extraction_start_date, extraction_end_date = get_extraction_schedule(
+    datetime.now())
+
+# Testing Time
 # Time set for instant testing
 global_start_date_excute_time = datetime.now()
 global_end_date = global_start_date_excute_time
 
-# Time for data extraction
-extraction_start_date = datetime.today() - timedelta(days=7)
-extraction_end_date = datetime.today()
-
-# Database Layers
-firestoreDB_layer = firestoreDB()
-bigQueryDB_layer = bigQueryDB()
-
-# FinBERT_layer = FinBERT()
-
-HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
-
+# Test Time for data extraction
+extraction_start_date = datetime.today() - timedelta(days=21)
+extraction_end_date = datetime.today() - timedelta(days=14)
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
@@ -72,6 +63,7 @@ HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
 ##############################
 # 1A. Data Extraction Modules
 ##############################
+
 
 def extract_SGX_data(**kwargs):
     # >> extracts SGX_data
@@ -239,6 +231,7 @@ def load_SBR_data(**kwargs):
     # >> xcomm.pull(dictionary: SBR_news_data_transformed)
     SBR_data_to_upload = ti.xcom_pull(task_ids='transform_SBR_data_task')
     # >> upload to Firestore Database
+    firestoreDB_layer = firestoreDB()
     firestoreDB_layer.fsAddListofDocuments("SBR_data", SBR_data_to_upload)
 
 
@@ -247,6 +240,7 @@ def load_tele_data(**kwargs):
     # >> xcomm.pull(dictionary: tele_news_data_transformed)
     tele_data_to_upload = ti.xcom_pull(task_ids='transform_tele_data_task')
     # >> upload to Firestore Database
+    firestoreDB_layer = firestoreDB()
     firestoreDB_layer.fsAddListofDocuments(
         "Telegram_data", tele_data_to_upload)
 
@@ -257,6 +251,7 @@ def load_YahooFin_news_data(**kwargs):
     yahoo_fin_data_to_upload = ti.xcom_pull(
         task_ids='transform_YahooFin_data_task')
     # >> upload to Firestore Database
+    firestoreDB_layer = firestoreDB()
     firestoreDB_layer.fsAddListofDocuments(
         "YahooFin_data", yahoo_fin_data_to_upload)
 
@@ -274,6 +269,8 @@ def load_yFinance_data(**kwargs):
 
 def query_SBR_data(**kwargs):
     # >> query SBR_news_data from Firestore Database
+    firestoreDB_layer = firestoreDB()
+    HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
     SBR_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
         "SBR_data", global_start_date_minus_one)
     # >> return dictionary: SBR_news_Query_Results
@@ -282,6 +279,8 @@ def query_SBR_data(**kwargs):
 
 def query_tele_data(**kwargs):
     # >> query tele_news_data from Firestore Database
+    firestoreDB_layer = firestoreDB()
+    HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
     tele_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
         "Telegram_data", global_start_date_minus_one)
     # >> return dictionary: tele_news_Query_Results
@@ -290,6 +289,8 @@ def query_tele_data(**kwargs):
 
 def query_YahooFin_news_data(**kwargs):
     # >> query YahooFin_news_data from Firestore Database
+    firestoreDB_layer = firestoreDB()
+    HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
     yahoo_fin_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
         "YahooFin_data", global_start_date_minus_one)
     # >> return dictionary: YahooFin_news_Query_Results
@@ -342,6 +343,8 @@ def load_heatlists(**kwargs):
     if int(heatlist_generated_date.strftime("%H")) > 12:
         heatlist_time = "Market_Close"
     heatlist_table_name = heatlist_date + " " + heatlist_time
+
+    bigQueryDB_layer = bigQueryDB()
 
     # Load Ticker Heatlist to GBQ - Replace if exist
     if (bigQueryDB_layer.gbqCheckTableExist("Ticker_Heatlist." + heatlist_table_name)):
