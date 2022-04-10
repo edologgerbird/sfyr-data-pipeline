@@ -3,6 +3,7 @@ from tqdm import tqdm
 import pandas as pd
 from data_load.bigQueryAPI import bigQueryDB
 
+
 class yahooFinNewsExtractor:
     def __init__(self):
         self.datasetTable = "SGX.Tickers"
@@ -22,9 +23,8 @@ class yahooFinNewsExtractor:
         output = pd.DataFrame(output)
         output.columns = ["Ticker", "News"]
         return output
-    
-    def getSGXTickerNews(self):
-        gbqQueryOutput = bigQueryDB().getDataFields(self.datasetTable,"company_code")
-        sgxTickers = gbqQueryOutput.loc[:,"company_code"].tolist()
-        return self.getTickerNews(sgxTickers, True)
 
+    def getSGXTickerNews(self):
+        gbqQueryOutput = bigQueryDB().getDataFields(self.datasetTable, "ticker")
+        sgxTickers = gbqQueryOutput.loc[:, "ticker"].tolist()
+        return self.getTickerNews(sgxTickers, True)

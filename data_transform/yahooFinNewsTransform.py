@@ -1,17 +1,15 @@
 from datetime import datetime as dt
 from time import mktime
-from utils.utils import splitter
 import pandas as pd
-from data_load.firestoreAPI import firestoreDB
 
 
-class yahooFinNewsPipeline:
+class yahooFinNewsTransformer:
     def __init__(self):
-        print("Initialising Firestore Pipeline...")
-        self.firestoreDB_layer = firestoreDB()
+        # print("Initialising Firestore Pipeline...")
+        # self.firestoreDB_layer = firestoreDB()
         self.data_pending_upload = None
         self.articles = []
-        print("Firestore Pipeline Initialised")
+        # print("Firestore Pipeline Initialised")
 
     def tickerNewsFormat(self, news, start_date=None, end_date=dt.now()):
         newsFormatted = []
@@ -44,8 +42,8 @@ class yahooFinNewsPipeline:
                         articles.append(article["summary"])
 
         self.data_pending_upload = newsFormatted
-        pdArticles = pd.DataFrame(articles)
-        pdArticles.columns = ["message"]
+        pdArticles = pd.DataFrame(articles, columns=["message"])
+        #pdArticles.columns = ["message"]
         return pdArticles
 
     def finBERTFormat(self, sentiments):
@@ -56,9 +54,3 @@ class yahooFinNewsPipeline:
                 "positive": sentiments.iloc[i]["Positive"],
             }
         return self.data_pending_upload
-
-    # def newsToFirestore(self):
-    #     self.firestoreDB_layer.fsAddListofDocuments(
-    #         "Yahoo-Fin-News", self.data_pending_upload)
-    #     self.data_pending_upload = None
-    #     print("Yahoo News Data Uploaded")

@@ -113,7 +113,7 @@ test_data = {
     "text_headline": "HEADLINES HERE 2134",
     "text_body": "lorem ipsum si dollar amet 1234",
     "date": "24/12/21",
-    "company_codes": ["S69", "DF3"],
+    "ticker": ["S69", "DF3"],
     "STI_movement": {
         "direction": "positive",
         "percentage_change": 15
@@ -125,4 +125,4 @@ test_data = {
 # db.fsAddDocument("test_collection", test_data)
 # # print(db.fsGetCollection("test_collection"))
 # print(db.fsQueryDocuments("test_collection",
-#       ("company_codes", "array_contains", "S69")))
+#       ("ticker", "array_contains", "S69")))

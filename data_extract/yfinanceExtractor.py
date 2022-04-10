@@ -1,4 +1,4 @@
-from datetime import datetime as dt, date as date
+from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 import yfinance as yf
@@ -12,8 +12,8 @@ class yFinanceExtractor:
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
         self.ticker_delisted = []  # List of Inactive Ticker Name String
-        self.ticker_with_status = pd.DataFrame()  # Active Tickers with Status
-        self.historical_data = pd.DataFrame()  # Active Tickers historical data
+        self.ticker_with_status = pd.DataFrame()
+        self.historical_data = pd.DataFrame()
         self.financial_statements = pd.DataFrame()
         self.quarterly_financial_statements = pd.DataFrame()
         self.isin = pd.DataFrame()
@@ -384,56 +384,3 @@ class yFinanceExtractor:
         self.stock_ih = ih_pd
 
         return ih_pd
-
-    # def getDictionary(self):
-    #     dict = {}
-
-    #     # Getting listed and delisted tickers
-    #     dict['Ticker Listing'] = self.checkTickers()
-
-    #     # Getting listed tickers history data
-    #     dict['Historical Data'] = self.getHistoricalData(listed)
-
-    #     tickers = [yf.Ticker(ticker) for ticker in listed]
-    #     # Getting Financial Statement
-    #     dict['Financial Statement'] = self.getFinancialStatement()
-
-    #     # Getting Quarterly Financial Statement
-    #     dict['Quarterly Financial Statement'] = self.getQuarterlyFinancialStatement()
-
-    #     # Getting ISIN code (International Securities Identification Number)
-    #     dict['isin'] = self.getISINcode()
-
-    #     # Getting tickers revenues and earnings
-    #     dict['Revenues and Earnings'] = self.getEarningsandRevenue()
-
-    #     # Getting tickers quarterly revenues and earnings
-    #     dict['Quarterly Revenues and Earnings'] = self.getQuarterlyEarningsandRevenue()
-
-    #     # Getting tickers major holders
-    #     dict['Major Holders'] = self.getMajorHolders()
-
-    #     # Getting tickers basic shares
-    #     dict['Basic Shares'] = self.getBasicShares()
-
-    #     # Getting tickers stock information
-    #     dict['Stock Information'] = self.getStockInfo()
-
-    #     # Getting tickers sustainability
-    #     dict['sustainability'] = self.getSustainability()
-
-    #     # Getting tickers calendar - next events
-    #     dict['calendar'] = self.getCalendar()
-
-    #     # Getting tickers recommendations
-    #     dict['recommendations'] = self.getRecommendations()
-
-    #     # Getting tickers analysis
-    #     dict['analysis'] = self.getAnalysis()
-
-    #     # Getting tickers Mutual Fund Holders
-    #     dict['Mutal Fund Holders'] = self.getMutualFundHolders()
-
-    #     # Getting tickers Institutional Holders
-    #     dict['Institutional Holders'] = self.getInstitutionalHolders()
-    #     return dict

@@ -20,11 +20,11 @@ class TickerExtractor:
         print("Successfully retrieved SGX Data")
         print("Initialising Mappers...")
         self.SGX_ticker_map_clean = {x: y for x, y in zip(
-            self.SGX_data["company_code"], self.SGX_data["company_name"])}
+            self.SGX_data["ticker"], self.SGX_data["company_name"])}
         self.SGX_ticker_map = {x: set([y]) for x, y in zip(
-            self.SGX_data["company_code"], self.SGX_data["company_name"])}
+            self.SGX_data["ticker"], self.SGX_data["company_name"])}
 
-        for company_code, company_name_list in self.SGX_ticker_map.items():
+        for ticker, company_name_list in self.SGX_ticker_map.items():
             for company_name in company_name_list:
                 new_name_cont = set()
                 # Handles Camel Casing
@@ -43,7 +43,7 @@ class TickerExtractor:
                     new_name_cont.add(self.remove_last_word(company_name))
 
             company_name_list = company_name_list | new_name_cont
-            self.SGX_ticker_map[company_code] = list(company_name_list)
+            self.SGX_ticker_map[ticker] = list(company_name_list)
 
     def remove_last_word(self, text):
         text_split = text.split()
@@ -73,19 +73,19 @@ class TickerExtractor:
             raise TypeError("Input is not Series of String type!")
 
     def extract_ticker_from_text(self, text):
-        company_code_container = dict()
+        ticker_container = dict()
         text = str(text)
-        for company_code, company_name_container in self.SGX_ticker_map.items():
-            regexp_searcher_code = re.compile(re.escape(company_code))
+        for ticker, company_name_container in self.SGX_ticker_map.items():
+            regexp_searcher_code = re.compile(re.escape(ticker))
             if regexp_searcher_code.search(text):
-                company_code_container[company_code] = self.SGX_ticker_map_clean[company_code]
+                ticker_container[ticker] = self.SGX_ticker_map_clean[ticker]
                 continue
             for company_name in company_name_container:
                 regexp_searcher_name = re.compile(re.escape(company_name))
                 if regexp_searcher_name.search(text):
-                    company_code_container[company_code] = self.SGX_ticker_map_clean[company_code]
+                    ticker_container[ticker] = self.SGX_ticker_map_clean[ticker]
                     break
-        return company_code_container
+        return ticker_container
 
     def extract_tickers_from_text_series(self):
         print("Extracting tickers from text...")
