@@ -62,8 +62,13 @@ class FinBERT:
         for chunk in chunks:
             print(f"==== Chunk {chunk_counter} / {total_chunks}")
             text_list = self.load_text_data(chunk)
-            tokenized = self.tokenize_text(text_list)
-            predictions = self.predict_sentiments(text_list, tokenized)
+            if not text_list[0]:
+                predictions = pd.DataFrame(
+                    columns=["Text", "Positive", "Negative", "Neutral"])
+                predictions.loc[len(predictions)] = 0
+            else:
+                tokenized = self.tokenize_text(text_list)
+                predictions = self.predict_sentiments(text_list, tokenized)
 
             predictions_mega = pd.concat([predictions_mega, predictions])
             gc.collect()
@@ -73,8 +78,11 @@ class FinBERT:
 
 # Test
 # start_time = time.time()
-# data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
-# data["Title_Text"] = data["Title"] + " " + data["Text"]
+# # data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
+# # data["Title_Text"] = data["Title"] + " " + data["Text"]
 # FinBERT_layer = FinBERT()
-# FinBERT_layer.FinBert_pipeline(data["Title_Text"])
+# input_series = pd.Series([None])
+# FinBERT_layer.FinBert_pipeline(input_series)
 # print("--- %s seconds ---" % (time.time() - start_time))
+
+
