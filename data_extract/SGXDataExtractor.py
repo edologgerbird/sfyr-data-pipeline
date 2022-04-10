@@ -109,7 +109,6 @@ class SGXDataExtractor:
         self.populate_SGX_data()
         self.update_ticker_status()
         self.SGX_data_to_bg()
-        # self.SGX_data_to_csv() # Depreciated
 
     def get_SGX_data(self):
         self.extract_SGX_json_data()
