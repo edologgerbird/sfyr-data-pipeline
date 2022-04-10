@@ -8,10 +8,28 @@ class yFinanceExtractor:
     def __init__(self, sgxTickers):
         self.sgxTickers = sgxTickers
         self.sgxTickers.company_code = self.sgxTickers.company_code.str[:] + ".SI"
-        self.ticker_active = []
-        self.ticker_delisted = []
-        self.ticker_with_status = pd.DataFrame()
-        self.all_ticker_info = pd.DataFrame()
+
+        # Initalisation of Shared Data
+        self.ticker_active = []  # List of Active Ticker Objects
+        self.ticker_delisted = []  # List of Inactive Ticker Name String
+        self.ticker_with_status = pd.DataFrame()  # Active Tickers with Status
+        self.historical_data = pd.DataFrame()  # Active Tickers historical data
+        self.financial_statements = pd.DataFrame()
+        self.quarterly_financial_statements = pd.DataFrame()
+        self.isin = pd.DataFrame()
+        self.earnings_and_revenue = pd.DataFrame()
+        self.quarterly_earnings_and_revenue = pd.DataFrame()
+        self.majorHolders = pd.DataFrame()
+        self.basic_shares = pd.DataFrame()
+        self.stock_info = pd.DataFrame()
+        self.stock_industry = pd.DataFrame()
+        self.stock_calendar = pd.DataFrame()
+        self.stock_recommendation = pd.DataFrame()
+        self.stock_analysis = pd.DataFrame()
+        self.stock_mfh = pd.DataFrame()
+        self.stock_ih = pd.DataFrame()
+
+        # Check on Ticker Active/Inactive
         self.checkTickers()
 
     def checkTickers(self):
@@ -40,7 +58,7 @@ class yFinanceExtractor:
 
     def getHistoricalData(self, start_date=dt.now()):
         # Listed Tickers' historical market data
-        historicalData = pd.DataFrame()
+        historical_data_df = pd.DataFrame()
         for ticker in self.ticker_active:
             if start_date is None:
                 tickerHistoricalData = yf.download(
@@ -55,20 +73,22 @@ class yFinanceExtractor:
                 tickerHistoricalData["Tickers"] = ticker
 
                 if start_date.time() < date.today().replace(hour=10, minute=10):
-                    tickerHistoricalData["Market Status"] = "Open"
+                    tickerHistoricalData["Market Status"] = "Market_Open"
                 else:
-                    tickerHistoricalData["Market Status"] = "Closed"
+                    tickerHistoricalData["Market Status"] = "Market_Closed"
 
-            historicalData = pd.concat([historicalData, tickerHistoricalData])
+            historical_data_df = pd.concat(
+                [historical_data_df, tickerHistoricalData])
 
-        historicalData = historicalData.reset_index()
+        historical_data_df = historical_data_df.reset_index()
 
-        # Generate all existing tickers' history
-        return historicalData
+        # Store to Shared Data
+        self.historical_data = historical_data_df
+        return historical_data_df
 
     def getFinancialStatement(self):
         # Retrieve financial statement (Financials, Balance Sheet and Cash flow)
-        financial_statements_dataframe = pd.DataFrame()
+        financial_statements_df = pd.DataFrame()
 
         for ticker in self.ticker_active:
             # get each financial statement
@@ -82,15 +102,18 @@ class yFinanceExtractor:
 
             # Add ticker to dataframe
             financial_statements['Tickers'] = ticker.ticker
-            financial_statements_dataframe = pd.concat(
-                [financial_statements_dataframe, financial_statements])
-        financial_statements_dataframe = financial_statements_dataframe.reset_index(
-        ).rename(columns={financial_statements_dataframe.index.name: 'Date'})
-        return financial_statements_dataframe
+            financial_statements_df = pd.concat(
+                [financial_statements_df, financial_statements])
+        financial_statements_df = financial_statements_df.reset_index(
+        ).rename(columns={financial_statements_df.index.name: 'Date'})
+
+        # Store to Shared Data
+        self.financial_statements = financial_statements_df
+        return financial_statements_df
 
     def getQuarterlyFinancialStatement(self):
         # Get quarterly financial statement (Financials, Balance Sheet, Cashflows)
-        financial_statements_dataframe = pd.DataFrame()
+        quarterly_financial_statements_df = pd.DataFrame()
 
         for ticker in self.ticker_active:
             # get each quarter financial statement
@@ -104,11 +127,14 @@ class yFinanceExtractor:
 
             # Add ticker to dataframe
             financial_statements['Tickers'] = ticker.ticker
-            financial_statements_dataframe = pd.concat(
-                [financial_statements_dataframe, financial_statements])
-        financial_statements_dataframe = financial_statements_dataframe.reset_index(
-        ).rename(columns={financial_statements_dataframe.index.name: 'Date'})
-        return financial_statements_dataframe
+            quarterly_financial_statements_df = pd.concat(
+                [quarterly_financial_statements_df, financial_statements])
+        quarterly_financial_statements_df = quarterly_financial_statements_df.reset_index(
+        ).rename(columns={quarterly_financial_statements_df.index.name: 'Date'})
+
+        # Store to Shared Data
+        self.quarterly_financial_statements = quarterly_financial_statements_df
+        return quarterly_financial_statements_df
 
     def getISINcode(self):
         # Get ISIN code (International Securities Identification Number)
@@ -120,13 +146,16 @@ class yFinanceExtractor:
             except:
                 isin_dict[ticker.ticker] = np.nan
 
-        df_isin = pd.DataFrame(list(isin_dict.items()), columns=[
+        isin_df = pd.DataFrame(list(isin_dict.items()), columns=[
                                'Tickers', 'ISIN'])
-        return df_isin
+
+        # Store to Shared Data
+        self.isin = isin_df
+        return isin_df
 
     def getEarningsandRevenue(self):
         # Get Earnings and Revenue
-        all_tickers_earnings_and_revenues = pd.DataFrame()
+        earnings_and_revenues_df = pd.DataFrame()
 
         for ticker in self.ticker_active:
             if (ticker.earnings.shape[0] < 1):
@@ -134,19 +163,22 @@ class yFinanceExtractor:
                 data = {'Revenue': np.nan, 'Earnings': np.nan,
                         'Tickers': ticker.ticker}
                 ticker_earning_and_revenue = pd.DataFrame(data, index=[np.nan])
-                all_tickers_earnings_and_revenues = pd.concat(
-                    [all_tickers_earnings_and_revenues, ticker_earning_and_revenue])
+                earnings_and_revenues_df = pd.concat(
+                    [earnings_and_revenues_df, ticker_earning_and_revenue])
 
             else:
                 ticker_earning_and_revenue = ticker.earnings
                 ticker_earning_and_revenue['Tickers'] = ticker.ticker
-                all_tickers_earnings_and_revenues = pd.concat(
-                    [all_tickers_earnings_and_revenues, ticker_earning_and_revenue])
-        return all_tickers_earnings_and_revenues
+                earnings_and_revenues_df = pd.concat(
+                    [earnings_and_revenues_df, ticker_earning_and_revenue])
+
+        # Store to Shared Data
+        self.earnings_and_revenue = earnings_and_revenues_df
+        return earnings_and_revenues_df
 
     def getQuarterlyEarningsandRevenue(self):
         # Get Quarterly Earnings and Revenue
-        all_tickers_quarterly_earnings_and_revenues = pd.DataFrame()
+        quarterly_earnings_and_revenues_df = pd.DataFrame()
 
         for ticker in self.ticker_active:
             if (ticker.quarterly_earnings.shape[0] < 1):
@@ -155,57 +187,66 @@ class yFinanceExtractor:
                         'Tickers': ticker.ticker}
                 ticker_quarterly_earning_and_revenue = pd.DataFrame(data, index=[
                                                                     np.nan])
-                all_tickers_quarterly_earnings_and_revenues = pd.concat(
-                    [all_tickers_quarterly_earnings_and_revenues, ticker_quarterly_earning_and_revenue])
+                quarterly_earnings_and_revenues_df = pd.concat(
+                    [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
 
             else:
                 ticker_quarterly_earning_and_revenue = ticker.quarterly_earnings
                 ticker_quarterly_earning_and_revenue['Tickers'] = ticker.ticker
-                all_tickers_quarterly_earnings_and_revenues = pd.concat(
-                    [all_tickers_quarterly_earnings_and_revenues, ticker_quarterly_earning_and_revenue])
+                quarterly_earnings_and_revenues_df = pd.concat(
+                    [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
 
-        all_tickers_quarterly_earnings_and_revenues = all_tickers_quarterly_earnings_and_revenues.reset_index()
-        return all_tickers_quarterly_earnings_and_revenues
+        quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index()
+
+        # Store to Shared Data
+        self.quarterly_earnings_and_revenue = quarterly_earnings_and_revenues_df
+        return quarterly_earnings_and_revenues_df
 
     def getMajorHolders(self):
         # Get Major Holders
-        all_tickers_majorHolders = pd.DataFrame()
+        majorHolders_df = pd.DataFrame()
         for ticker in self.ticker_active:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
                 data = {'% of Shares Held by All Insider': np.nan, '% of Shares Held by Institutions': np.nan,
                         '% of Float Held by Institutions': np.nan, 'Number of Institutions Holding Shares': np.nan,
                         'Tickers': ticker.ticker}
                 ticker_majorHolders = pd.DataFrame(data, index=[0])
-                all_tickers_majorHolders = pd.concat(
-                    [all_tickers_majorHolders, ticker_majorHolders])
+                majorHolders_df = pd.concat(
+                    [majorHolders_df, majorHolders_df])
 
             else:
                 ticker_majorHolders = ticker.major_holders[0].rename(
                     {0: '% of Shares Held by All Insider', 1: '% of Shares Held by Institutions', 2: '% of Float Held by Institutions', 3: 'Number of Institutions Holding Shares'})
                 ticker_majorHolders['Tickers'] = ticker.ticker
-                all_tickers_majorHolders = all_tickers_majorHolders.append(
+                majorHolders_df = majorHolders_df.append(
                     ticker_majorHolders)
-        all_tickers_majorHolders = all_tickers_majorHolders.reset_index(
+        majorHolders_df = majorHolders_df.reset_index(
             drop=True)
-        return all_tickers_majorHolders
+
+        # Store to Shared Data
+        self.majorHolders = majorHolders_df
+        return majorHolders_df
 
     def getBasicShares(self):
         # Get Basic Shares
-        all_tickers_shares = pd.DataFrame()
+        basic_shares_df = pd.DataFrame()
         for ticker in self.ticker_active:
             if ticker.shares is None:
                 # Ticker does not have shares info
                 data = {'BasicShares': np.nan, 'Tickers': ticker.ticker}
                 ticker_share = pd.DataFrame(data, index=[np.nan])
-                all_tickers_shares = pd.concat(
-                    [all_tickers_shares, ticker_share])
+                basic_shares_df = pd.concat(
+                    [basic_shares_df, ticker_share])
             else:
                 ticker_share = ticker.shares
                 ticker_share['Tickers'] = ticker.ticker
-                all_tickers_shares = pd.concat(
-                    [all_tickers_shares, ticker_share])
-        all_tickers_shares = all_tickers_shares.reset_index()
-        return all_tickers_shares
+                basic_shares_df = pd.concat(
+                    [basic_shares_df, ticker_share])
+        basic_shares_df = basic_shares_df.reset_index()
+
+        # Store to Shared Data
+        self.basic_shares = basic_shares_df
+        return basic_shares_df
 
     def getStockInfo(self):
         # Get stock information
@@ -217,54 +258,65 @@ class yFinanceExtractor:
                 all_tickers_dict[ticker.ticker] = pd.Series(ticker.info)
         all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
         ).reset_index().rename(columns={'index': 'Tickers'})
-        self.all_ticker_info = all_tickers_info
+        self.stock_info = all_tickers_info
         return all_tickers_info
 
     def getStockIndustry(self):
-        if self.all_ticker_info.empty:
+        if self.stock_info.empty:
             self.getStockInfo()
-        stockIndusty = self.all_ticker_info[["Tickers", "industry"]]
-        return stockIndusty
+        stock_industry = self.stock_info[["Tickers", "industry"]]
+
+        # Store to Shared Data
+        self.stock_industry = stock_industry
+        return stock_industry
 
     def getCalendar(self):
         # Get next event (earnings, etc)
-        all_calendar = pd.DataFrame()
+        stock_calendar_df = pd.DataFrame()
         for ticker in self.ticker_active:
             if ticker.calendar is None:
                 data = {'Earnings Date': np.nan, 'Earnings Average': np.nan, 'Earnings Low': np.nan, 'Earnings High': np.nan, 'Revenue Average': np.nan,
                         'Revenue Low': np.nan,    'Revenue High': np.nan,    'Tickers': ticker.ticker}
                 ticker_calendar = pd.DataFrame(data, index=['Value'])
-                all_calendar = pd.concat([all_calendar, ticker_calendar])
+                stock_calendar_df = pd.concat(
+                    [stock_calendar_df, ticker_calendar])
 
             else:
                 ticker_calendar = ticker.calendar.transpose()
                 ticker_calendar['Ticker'] = ticker.ticker
-                all_calendar = pd.concat([all_calendar, ticker_calendar])
-            return all_calendar
+                stock_calendar_df = pd.concat(
+                    [stock_calendar_df, ticker_calendar])
+
+        # Store to Shared Data
+        self.stock_calendar = stock_calendar_df
+        return stock_calendar_df
 
     def getRecommendations(self):
         # Get Recommendations
-        all_tickers_recommendations = pd.DataFrame()
+        recommendations_df = pd.DataFrame()
 
         for ticker in self.ticker_active:
             if ticker.recommendations is None:
                 data = {'Firm': np.nan, 'To Grade': np.nan, 'From Grade': np.nan,
                         'Action': np.nan, "Tickers": ticker.ticker}
                 ticker_recommendations = pd.DataFrame(data, index=[np.nan])
-                all_tickers_recommendations = pd.concat(
-                    [all_tickers_recommendations, ticker_recommendations])
+                recommendations_df = pd.concat(
+                    [recommendations_df, ticker_recommendations])
 
             else:
                 ticker_recommendations = ticker.recommendations
                 ticker_recommendations['Tickers'] = ticker.ticker
-                all_tickers_recommendations = pd.concat(
-                    [all_tickers_recommendations, ticker_recommendations])
-        all_tickers_recommendations = all_tickers_recommendations.reset_index()
-        return all_tickers_recommendations
+                recommendations_df = pd.concat(
+                    [recommendations_df, ticker_recommendations])
+        recommendations_df = recommendations_df.reset_index()
+
+        # Store to Shared Data
+        self.stock_recommendation = recommendations_df
+        return recommendations_df
 
     def getAnalysis(self):
         # Get Analysis
-        all_tickers_analysis = pd.DataFrame()
+        analysis_df = pd.DataFrame()
         for ticker in self.ticker_active:
             if ticker.analysis is None:
                 data = {'Max Age': np.nan, 'End Date': np.nan, 'Growth': np.nan, 'Earnings Estimate Avg': np.nan,
@@ -279,56 +331,66 @@ class yFinanceExtractor:
                         'Eps Revisions Up Last7Days': np.nan, 'Eps Revisions Up Last30Days': np.nan,
                         'Eps Revisions Down Last30Days': np.nan, 'Eps Revisions Down Last90Days': np.nan, 'Tickers': ticker.ticker}
                 ticker_analysis = pd.DataFrame(data, index=[np.nan])
-                all_tickers_analysis = pd.concat(
-                    [all_tickers_analysis, ticker_analysis])
+                analysis_df = pd.concat(
+                    [analysis_df, ticker_analysis])
 
             else:
                 ticker_analysis = ticker.analysis
                 ticker_analysis['Tickers'] = ticker.ticker
-                all_tickers_analysis = pd.concat(
-                    [all_tickers_analysis, ticker_analysis])
+                analysis_df = pd.concat(
+                    [analysis_df, ticker_analysis])
 
-        all_tickers_analysis = all_tickers_analysis.reset_index().rename(columns={
+        analysis_df = analysis_df.reset_index().rename(columns={
             'index': 'Period'})
-        return all_tickers_analysis
+
+        # Store to Shared Data
+        self.stock_analysis = analysis_df
+        return analysis_df
 
     def getMutualFundHolders(self):
         # Get Mutual Fund Holders
-        all_tickers_mfh = pd.DataFrame()
+        mfh_pd = pd.DataFrame()
 
         for ticker in self.ticker_active:
             if ticker.mutualfund_holders is None:
                 data = {'Holder': np.nan, 'Shares': np.nan, 'Date Reported': np.nan,
                         '% Out': np.nan, 'Value': np.nan, 'Tickers': ticker.ticker}
                 ticker_mfh = pd.DataFrame(data, index=[0])
-                all_tickers_mfh = pd.concat([all_tickers_mfh, ticker_mfh])
+                mfh_pd = pd.concat([mfh_pd, ticker_mfh])
 
             else:
                 ticker_mfh = ticker.mutualfund_holders
                 ticker_mfh['Tickers'] = ticker.ticker
-                all_tickers_mfh = pd.concat([all_tickers_mfh, ticker_mfh])
+                mfh_pd = pd.concat([mfh_pd, ticker_mfh])
 
-        all_tickers_mfh = all_tickers_mfh.reset_index(drop=True)
-        return all_tickers_mfh
+        mfh_pd = mfh_pd.reset_index(drop=True)
+
+        # Store to Shared Data
+        self.stock_mfh = mfh_pd
+        return mfh_pd
 
     def getInstitutionalHolders(self):
         # Get Institutional holders
-        all_tickers_ih = pd.DataFrame()
+        ih_pd = pd.DataFrame()
 
         for ticker in self.ticker_active:
             if ticker.institutional_holders is None or ticker.institutional_holders.shape[1] != 5:
                 data = {'Holder': np.nan, 'Shares': np.nan, 'Date Reported': np.nan,
                         '% Out': np.nan, 'Value': np.nan, 'Tickers': ticker.ticker}
                 ticker_ih = pd.DataFrame(data, index=[0])
-                all_tickers_ih = pd.concat([all_tickers_ih, ticker_ih])
+                ih_pd = pd.concat([ih_pd, ticker_ih])
 
             else:
                 ticker_ih = ticker.institutional_holders
                 ticker_ih['Tickers'] = ticker.ticker
-                all_tickers_ih = pd.concat([all_tickers_ih, ticker_ih])
+                ih_pd = pd.concat([ih_pd, ticker_ih])
 
-        all_tickers_ih = all_tickers_ih.reset_index(drop=True)
-        return all_tickers_ih
+        ih_pd = ih_pd.reset_index(drop=True)
+
+        # Store to Shared Data
+        self.stock_ih = ih_pd
+
+        return ih_pd
 
     # def getDictionary(self):
     #     dict = {}
