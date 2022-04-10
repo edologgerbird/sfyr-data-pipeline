@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # print(industry_heatlist)
 
     # ---- Test yFinance Pipeline ---- #
-    # data = bigQueryDB().getDataFields("SGX.Tickers").head()
-    # print(yFinanceExtractor(data).getMajorHolders())
+    data = bigQueryDB().getDataFields("SGX.Tickers").head()
+    print(yFinanceExtractor(data).getBasicShares())
 
     print("--- %s seconds ---" % (time.time() - start_time))
