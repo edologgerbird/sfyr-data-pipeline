@@ -1,3 +1,4 @@
+from pendulum import datetime
 from data_extract.yfinanceExtractor import yFinanceExtractor
 from data_pipeline.HeatListPipeline import HeatListPipeline
 from data_pipeline.FirestorePipeline import FirestorePipeline
@@ -55,6 +56,6 @@ if __name__ == '__main__':
 
     # ---- Test yFinance Pipeline ---- #
     data = bigQueryDB().getDataFields("SGX.Tickers").head()
-    print(yFinanceExtractor(data).getHistoricalData())
+    print(yFinanceExtractor(data).getHistoricalData(dt(2020, 5, 17, 23, 10)))
 
     print("--- %s seconds ---" % (time.time() - start_time))
