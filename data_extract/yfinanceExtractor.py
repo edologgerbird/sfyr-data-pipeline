@@ -290,7 +290,7 @@ class yFinanceExtractor:
                 ticker_calendar['Ticker'] = self.removeSI(ticker.ticker)
                 stock_calendar_df = pd.concat(
                     [stock_calendar_df, ticker_calendar])
-
+        stock_calendar_df = stock_calendar_df.reset_index(drop=True)
         # Store to Shared Data
         self.stock_calendar = stock_calendar_df
         return stock_calendar_df
