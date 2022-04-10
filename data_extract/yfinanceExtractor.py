@@ -11,6 +11,7 @@ class yFinanceExtractor:
         self.ticker_active = []
         self.ticker_delisted = []
         self.ticker_with_status = pd.DataFrame()
+        self.all_ticker_info = pd.DataFrame()
         self.checkTickers()
 
     def checkTickers(self):
@@ -203,7 +204,6 @@ class yFinanceExtractor:
                 ticker_share['Tickers'] = ticker.ticker
                 all_tickers_shares = pd.concat(
                     [all_tickers_shares, ticker_share])
-
         all_tickers_shares = all_tickers_shares.reset_index()
         return all_tickers_shares
 
@@ -217,21 +217,14 @@ class yFinanceExtractor:
                 all_tickers_dict[ticker.ticker] = pd.Series(ticker.info)
         all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
         ).reset_index().rename(columns={'index': 'Tickers'})
+        self.all_ticker_info = all_tickers_info
         return all_tickers_info
 
-    # def getSustainability(self):
-    #     # Get Sustainability
-    #     all_sustainability = pd.DataFrame()
-
-    #     for ticker in self.ticker_active:
-    #         if ticker.sustainability is None:
-    #             all_sustainability[ticker.ticker] = np.nan
-    #         else:
-    #             sustainability = ticker.sustainability.rename(
-    #                 columns={"Value": ticker.ticker})
-    #             all_sustainability = pd.concat(
-    #                 [all_sustainability, sustainability])
-    #     return all_sustainability
+    def getStockIndustry(self):
+        if self.all_ticker_info.empty:
+            self.getStockInfo()
+        stockIndusty = self.all_ticker_info[["Tickers", "industry"]]
+        return stockIndusty
 
     def getCalendar(self):
         # Get next event (earnings, etc)

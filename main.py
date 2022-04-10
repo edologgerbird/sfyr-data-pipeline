@@ -2,6 +2,7 @@ from data_pipeline.HeatListPipeline import HeatListPipeline
 from data_pipeline.FirestorePipeline import FirestorePipeline
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
+from data_extract.yfinanceExtractor import yFinanceExtractor
 from data_load.bigQueryAPI import bigQueryDB
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
@@ -43,7 +44,7 @@ if __name__ == '__main__':
     #     start_date="20-02-2022", end_date="22-02-2022")
 
     # ---- Test GBQ Pipeline ---- #
-    # print(gbqQuery().getDataFields("SGX.Tickers"))
+    # print(bigQueryDB().getDataFields("SGX.Tickers"))
 
     # HeatListPipeline_layer = HeatListPipeline()
     # ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(
@@ -52,7 +53,7 @@ if __name__ == '__main__':
     # print(industry_heatlist)
 
     # ---- Test yFinance Pipeline ---- #
-    yFinanceExtractor().checkTickers()
-
+    # data = bigQueryDB().getDataFields("SGX.Tickers").head()
+    # print(yFinanceExtractor(data).getStockIndustry())
 
     print("--- %s seconds ---" % (time.time() - start_time))
