@@ -225,8 +225,7 @@ class yFinanceExtractor:
                 ticker_majorHolders = ticker_majorHolders.transpose()
                 majorHolders_df = pd.concat(
                     [majorHolders_df, ticker_majorHolders], axis = 1)
-        majorHolders_df = majorHolders_df.transpose()
-        majorHolders_df = majorHolders_df.reset_index(
+        majorHolders_df = majorHolders_df.transpose().reset_index(
             drop=True)
 
         # Store to Shared Data
