@@ -3,6 +3,7 @@ from urllib.request import Request, urlopen
 import json
 from data_load.bigQueryAPI import bigQueryDB
 
+
 class SGXDataExtractor:
     def __init__(self):
         with open('utils/serviceAccount.json', 'r') as jsonFile:
@@ -25,14 +26,14 @@ class SGXDataExtractor:
         print("Populating SGX Data Store ...")
         SGX_data_store = {
             "company_name": [],
-            "company_code": [],
+            "ticker": [],
             "trading_time": [],
             "type": [],
             "listing_board": []
         }
         for company in self.json_data:
             SGX_data_store["company_name"].append(company["n"])
-            SGX_data_store["company_code"].append(company["nc"])
+            SGX_data_store["ticker"].append(company["nc"])
             SGX_data_store["trading_time"].append(company["trading_time"])
             SGX_data_store["type"].append(company["type"])
             SGX_data_store["listing_board"].append(company["m"])
@@ -66,11 +67,11 @@ class SGXDataExtractor:
             self.updated_SGX_data_store = self.SGX_data_store
             return self.updated_SGX_data_store
 
-        #Getting the list/dataframe of tickers from GBQ (Active and delisted)
+        # Getting the list/dataframe of tickers from GBQ (Active and delisted)
         active_GBQ_ticker_df = GBQ_SGX_ticker_df[GBQ_SGX_ticker_df['active'] == True]
         delisted_GBQ_ticker_df = GBQ_SGX_ticker_df[GBQ_SGX_ticker_df['active'] == False]
-        
-        active_GBQ_ticker_list = active_GBQ_ticker_df.company_code.to_list()
+
+        active_GBQ_ticker_list = active_GBQ_ticker_df.ticker.to_list()
 
         # This list contains either active tickers from SGX only or active tickers from GBQ only
         active_SGX_xor_active_GBQ_list = list(set(active_SGX_ticker_list) ^ set(active_GBQ_ticker_list))
@@ -83,10 +84,13 @@ class SGXDataExtractor:
         for ticker in active_SGX_xor_active_GBQ_list:
             if ticker not in active_SGX_ticker_list:  #Changing status for newly delisted tickers - case 3 is considered
                 newly_delisted_entry = active_GBQ_ticker_df.loc[active_GBQ_ticker_df['company_code'] == ticker].copy()
+
                 newly_delisted_entry['active'] = False
-                updated_SGX_data = pd.concat([updated_SGX_data, newly_delisted_entry])
-        
-        self.updated_SGX_data_store = updated_SGX_data.sort_values(['company_name', 'company_code']).reset_index(drop=True)
+                updated_SGX_data = pd.concat(
+                    [updated_SGX_data, newly_delisted_entry])
+
+        self.updated_SGX_data_store = updated_SGX_data.sort_values(
+            ['company_name', 'ticker']).reset_index(drop=True)
 
         return self.updated_SGX_data_store
 
@@ -97,7 +101,7 @@ class SGXDataExtractor:
     def SGX_data_to_bg(self):
         if bigQueryDB().gbqCheckTableExist("SGX.Tickers"):
             return bigQueryDB().gbqReplace(self.updated_SGX_data_store, "SGX.Tickers")
-        else: 
+        else:
             return bigQueryDB().gbqCreateNewTable(self.updated_SGX_data_store, "SGX", "Tickers")
 
     def load_SGX_data_from_source(self):
@@ -105,7 +109,7 @@ class SGXDataExtractor:
         self.populate_SGX_data()
         self.update_ticker_status()
         self.SGX_data_to_bg()
-        # self.SGX_data_to_csv() # Depreciated 
+        # self.SGX_data_to_csv() # Depreciated
 
     def get_SGX_data(self):
         self.extract_SGX_json_data()
