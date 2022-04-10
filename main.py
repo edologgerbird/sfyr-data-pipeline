@@ -1,8 +1,5 @@
 from pendulum import datetime
 from data_extract.yfinanceExtractor import yFinanceExtractor
-from data_pipeline.HeatListPipeline import HeatListPipeline
-from data_pipeline.FirestorePipeline import FirestorePipeline
-from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
 from data_extract.yfinanceExtractor import yFinanceExtractor
 from data_load.bigQueryAPI import bigQueryDB
@@ -47,7 +44,6 @@ if __name__ == '__main__':
 
     # ---- Test GBQ Pipeline ---- #
     # print(bigQueryDB().getDataFields("SGX.Tickers"))
-
 
     # HeatListPipeline_layer = HeatListPipeline()
     # ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(
