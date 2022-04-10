@@ -7,7 +7,7 @@ import yfinance as yf
 class yFinanceExtractor:
     def __init__(self, sgxTickers):
         self.sgxTickers = sgxTickers
-        self.sgxTickers.company_code = self.sgxTickers.company_code.str[:] + ".SI"
+        self.sgxTickers.ticker = self.sgxTickers.ticker.str[:] + ".SI"
 
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
@@ -37,7 +37,7 @@ class yFinanceExtractor:
         delisted = []
 
         # Check if ticker exist
-        for ticker in self.sgxTickers["company_code"]:
+        for ticker in self.sgxTickers["ticker"]:
             length = yf.download(
                 ticker, period='max', interval='1d', timeout=None).shape[0]
             if length > 0:
@@ -224,7 +224,7 @@ class yFinanceExtractor:
                 ticker_majorHolders['Tickers'] = self.removeSI(ticker.ticker)
                 ticker_majorHolders = ticker_majorHolders.transpose()
                 majorHolders_df = pd.concat(
-                    [majorHolders_df, ticker_majorHolders], axis = 1)
+                    [majorHolders_df, ticker_majorHolders], axis=1)
         majorHolders_df = majorHolders_df.transpose().reset_index(
             drop=True)
 
