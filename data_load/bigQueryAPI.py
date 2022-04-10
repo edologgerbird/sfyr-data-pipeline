@@ -136,6 +136,7 @@ class bigQueryDB:
                 updatedDatasetList.append(dataset.dataset_id)
             # Updating serviceAccount.json
             self.cred["bigQueryConfig"]["DATASET_ID"] = updatedDatasetList
+            self.dataset_id = updatedDatasetList
 
             with open(self.credUrl, 'w') as jsonFile:
                 json.dump(self.cred, jsonFile)
