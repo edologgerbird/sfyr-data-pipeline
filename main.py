@@ -12,7 +12,7 @@ import time
 
 if __name__ == '__main__':
     start_time = time.time()
-
+    print(1111111)
     # ---- Test SGX Data Extraction ---- #
     # sgx_data_extractor_layer = SGXDataExtractor()
     # sgx_data_extractor_layer.load_SGX_data_from_source()
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     #     start_date="20-02-2022", end_date="22-02-2022")
 
     # ---- Test GBQ Pipeline ---- #
-    # print(gbqQuery().getDataFields("SGX.Tickers"))
+    print(bigQueryDB().getDataFields("SGX.Tickers"))
 
     # HeatListPipeline_layer = HeatListPipeline()
     # ticker_heatlist, industry_heatlist = HeatListPipeline_layer.HeatlistPipeline_execute(
