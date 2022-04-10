@@ -1,6 +1,5 @@
 '''
 Querying Module for Heatlist
-
 '''
 import datetime as dt
 from dateutil.parser import parse
