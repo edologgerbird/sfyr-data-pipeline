@@ -104,15 +104,9 @@ class SGXDataExtractor:
 
     def SGX_data_to_bg(self):
         if bigQueryDB().gbqCheckTableExist("SGX.Tickers"):
-<<<<<<< HEAD
             return bigQueryDB().gbqReplace(self.updated_SGX_data_store, "SGX.Tickers")
         else:
             return bigQueryDB().gbqCreateNewTable(self.updated_SGX_data_store, "SGX", "Tickers")
-=======
-            return bigQueryDB().gbqReplace(self.SGX_data_store, "SGX.Tickers")
-        else: 
-            return bigQueryDB().gbqCreateNewTable(self.SGX_data_store, "SGX", "Tickers")
->>>>>>> test/edo-DAG
 
     def load_SGX_data_from_source(self):
         self.extract_SGX_json_data()
