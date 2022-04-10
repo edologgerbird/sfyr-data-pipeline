@@ -44,7 +44,7 @@ class SGXDataExtractor:
 
     def SGX_data_to_bg(self):
         if bigQueryDB().gbqCheckTableExist("SGX.Tickers"):
-            return bigQueryDB().gbqInjestReplace(self.SGX_data_store, "SGX.Tickers")
+            return bigQueryDB().bigQueryDBIReplace(self.SGX_data_store, "SGX.Tickers")
         else: 
             return bigQueryDB().gbqCreateNewTable(self.SGX_data_store, "SGX", "Tickers")
 

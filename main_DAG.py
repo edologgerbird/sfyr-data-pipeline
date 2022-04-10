@@ -1,6 +1,7 @@
 # Importing Airflow Modules
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
+from yfinance import Ticker
 
 # Importing High Level Pipeline Modules
 # Extract Modules
@@ -15,7 +16,7 @@ from data_transform.STIMovementExtractor import STIMovementExtractor
 from data_transform.TickerExtractor import TickerExtractor
 from data_transform.SBRDataTransform import SBRDataTransformer
 from data_transform.telegramDataTransform import telegramDataTransformer
-from data_transform.yahooFinNewsTransform import yahooFinNewsTransform
+from data_transform.yahooFinNewsTransform import yahooFinNewsTransformer
 from data_processing.FinBertAPI import FinBERT
 from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
 
@@ -38,7 +39,7 @@ import pandas as pd
 ####################################################
 # 0. DEFINE GLOBAL VARIABLES
 ####################################################
-
+## Schedule first run for D+1, 0930HRS, GMT+08
 global_start_date_plus_one = datetime.now() + timedelta(days=1)
 global_start_date_minus_one = datetime.now() - timedelta(days=1)
 global_start_date_day = global_start_date_plus_one.day
@@ -46,12 +47,19 @@ global_start_date_month = global_start_date_plus_one.month
 global_start_date_year = global_start_date_plus_one.year
 global_start_date_excute_time = pendulum.datetime(year=global_start_date_year, month=global_start_date_month, day=global_start_date_day, hour=9, minute=30, tz="Asia/Singapore")
 
+## Time set for instant testing
+global_start_date_excute_time = datetime.now()
 global_end_date = global_start_date_excute_time
 
+## Time for data extraction
+extraction_start_date = datetime.today() - timedelta(days=7)
+extraction_end_date = datetime.today()
+
+## Database Layers
 firestoreDB_layer = firestoreDB()
 bigQueryDB_layer = bigQueryDB()
 
-FinBERT_layer = FinBERT()
+# FinBERT_layer = FinBERT()
 
 HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
 
@@ -78,7 +86,7 @@ def extract_SBR_data(**kwargs):
     # >> return DataFrame: SBR_data
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
-        start_date=global_start_date_excute_time, end_date=global_end_date)
+        start_date=extraction_start_date, end_date=extraction_end_date)
     return sbr_raw_data
 
 
@@ -87,7 +95,7 @@ def extract_tele_data(**kwargs):
     # >> return DataFrame: tele_data
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
-        start_date=global_start_date_excute_time, end_date=global_end_date)
+        start_date=extraction_start_date, end_date=extraction_end_date)
     return tele_data_raw
 
 
@@ -111,17 +119,25 @@ def extract_yFinance_data(**kwargs):
 
 
 def query_SGX_data(**kwargs):
+    ti = kwargs['ti']
     # >> query recent SGX data from GBQ
     # >> return DataFrame: SGX_data
-    return
+    sgx_data = ti.xcom_pull(task_ids="extract_SGX_data_task")
+    return sgx_data
 
 
 def transform_SGX_data(**kwargs):
+    ti = kwargs['ti']
     # >> xcom.pull(DataFrame: SGX_data)
     # >> compares SGX_data extracted from SGX source and SGX_data queried from GBQ. New column to indicate "Active" or "Delisted"
     # >> Initialise TickerExtractor with SGX_data_new
     # >> returns TickerExtractor: TickerExtractorLayer
-    return
+
+    ## Temporary patching
+    sgx_data = ti.xcom_pull(task_ids="query_SGX_data_task")
+    TickerExtractor_Layer = TickerExtractor()
+
+    return TickerExtractor_Layer
 
 
 def transform_SBR_data(**kwargs):
@@ -145,6 +161,7 @@ def transform_SBR_data(**kwargs):
         SBR_data_raw['Text'])[['Direction of STI Movement', 'Percentage of STI Movement']]
 
     # >> FinBERT(DataFrame: SBR_news)
+    FinBERT_layer = FinBERT()
     SBR_data_with_sentiments = FinBERT_layer.FinBert_pipeline(
         SBR_data_raw["Title"] + " " + SBR_data_raw["Text"])
 
@@ -171,6 +188,7 @@ def transform_tele_data(**kwargs):
         tele_data_raw["message"])
 
     # >> FinBERT(DataFrame: tele_news)
+    FinBERT_layer = FinBERT()
     tele_data_with_sentiments = FinBERT_layer.FinBert_pipeline(
         tele_data_raw["message"])
 
@@ -187,12 +205,12 @@ def transform_YahooFin_data(**kwargs):
     ti = kwargs['ti']
     # >> xcom.pull(DataFrame: YahooFin_news_data)
     yahoo_fin_data = ti.xcom_pull(task_ids="extract_YahooFin_data_task")
-    yahooFinNewsTransform_layer = yahooFinNewsTransform()
-    news_formatted = yahooFinNewsTransform_layer.tickerNewsFormat(
-        yahoo_fin_data, start_date=global_start_date_excute_time, end_date=global_end_date)
+    yahooFinNewsTransform_layer = yahooFinNewsTransformer()
+    news_formatted = yahooFinNewsTransform_layer.tickerNewsFormat(yahoo_fin_data, start_date=extraction_start_date, end_date=extraction_end_date)
+    FinBERT_layer = FinBERT()
     yahoo_fin_data_sentiments = FinBERT_layer.FinBert_pipeline(
         news_formatted["message"])
-    yahoo_fin_data_transformed = yahooFinNewsTransform_layer(
+    yahoo_fin_data_transformed = yahooFinNewsTransform_layer.finBERTFormat(
         yahoo_fin_data_sentiments)
     return yahoo_fin_data_transformed
 
@@ -312,14 +330,14 @@ def load_heatlists(**kwargs):
     #     DataFrame: Industry Heatlist
     #     )
 
-    generated_heatlist = ti.xcom_pull(task_ids='generateHeatlists')
+    generated_heatlist = ti.xcom_pull(task_ids='generate_heatlists_task')
     ticker_heatlist = generated_heatlist[0]
     industry_heatlist = generated_heatlist[1]
 
     heatlist_generated_date = datetime.now()
     heatlist_date = heatlist_generated_date.strftime("%d-%m-%Y")
     heatlist_time = "Market Open"
-    if heatlist_generated_date.strftime("%H") > 12:
+    if int(heatlist_generated_date.strftime("%H")) > 12:
         heatlist_time = "Market Close"
 
     # Load Ticker Heatlist to GBQ
@@ -344,7 +362,7 @@ default_args = {
     'email': ['is3107_g7@gmail.com'],
     'email_on_failure': True,
     'email_on_retry': True,
-    'retries': 1
+    'retries': 0
 }
 
 dag = DAG('ETL_for_SGX_Stocks_Data',

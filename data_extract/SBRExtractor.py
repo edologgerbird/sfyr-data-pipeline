@@ -59,11 +59,18 @@ class SBRExtractor:
         print("Extracting SBR Data ...")
 
         # If start date is None, then temporarily sets start date as 2001-01-01 as SBR was founded in 2001 (All articles will be scrapped)
-        self.start_date = parser.parse(start_date, dayfirst=True) if (
+        # self.start_date = parser.parse(start_date, dayfirst=True) if (
+        #     start_date is not None) else datetime(2001, 1, 1)
+        
+        self.start_date = start_date if (
             start_date is not None) else datetime(2001, 1, 1)
+        
 
         # If end date is None, then end date will be current datetime
-        self.end_date = parser.parse(end_date, dayfirst=True) if (
+        # self.end_date = parser.parse(end_date, dayfirst=True) if (
+        #     end_date is not None) else datetime.now()
+        
+        self.end_date = end_date if (
             end_date is not None) else datetime.now()
 
         self.end_date = self.end_date + timedelta(days=1)
