@@ -1,3 +1,4 @@
+from data_extract.yfinanceExtractor import yFinanceExtractor
 from data_pipeline.HeatListPipeline import HeatListPipeline
 from data_pipeline.FirestorePipeline import FirestorePipeline
 from data_pipeline.yahooFinNewsPipeline import yahooFinNewsPipeline
@@ -53,7 +54,8 @@ if __name__ == '__main__':
     # print(industry_heatlist)
 
     # ---- Test yFinance Pipeline ---- #
-    # data = bigQueryDB().getDataFields("SGX.Tickers").head()
-    # print(yFinanceExtractor(data).getStockIndustry())
+    data = bigQueryDB().getDataFields("SGX.Tickers").head()
+    a = yFinanceExtractor(data).getHistoricalData()
+    print(a)
 
     print("--- %s seconds ---" % (time.time() - start_time))
