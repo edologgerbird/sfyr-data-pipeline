@@ -39,23 +39,24 @@ import pandas as pd
 ####################################################
 # 0. DEFINE GLOBAL VARIABLES
 ####################################################
-## Schedule first run for D+1, 0930HRS, GMT+08
+# Schedule first run for D+1, 0930HRS, GMT+08
 global_start_date_plus_one = datetime.now() + timedelta(days=1)
 global_start_date_minus_one = datetime.now() - timedelta(days=1)
 global_start_date_day = global_start_date_plus_one.day
 global_start_date_month = global_start_date_plus_one.month
 global_start_date_year = global_start_date_plus_one.year
-global_start_date_excute_time = pendulum.datetime(year=global_start_date_year, month=global_start_date_month, day=global_start_date_day, hour=9, minute=30, tz="Asia/Singapore")
+global_start_date_excute_time = pendulum.datetime(
+    year=global_start_date_year, month=global_start_date_month, day=global_start_date_day, hour=9, minute=30, tz="Asia/Singapore")
 
-## Time set for instant testing
+# Time set for instant testing
 global_start_date_excute_time = datetime.now()
 global_end_date = global_start_date_excute_time
 
-## Time for data extraction
+# Time for data extraction
 extraction_start_date = datetime.today() - timedelta(days=7)
 extraction_end_date = datetime.today()
 
-## Database Layers
+# Database Layers
 firestoreDB_layer = firestoreDB()
 bigQueryDB_layer = bigQueryDB()
 
@@ -133,7 +134,7 @@ def transform_SGX_data(**kwargs):
     # >> Initialise TickerExtractor with SGX_data_new
     # >> returns TickerExtractor: TickerExtractorLayer
 
-    ## Temporary patching
+    # Temporary patching
     sgx_data = ti.xcom_pull(task_ids="query_SGX_data_task")
     TickerExtractor_Layer = TickerExtractor()
 
@@ -206,7 +207,8 @@ def transform_YahooFin_data(**kwargs):
     # >> xcom.pull(DataFrame: YahooFin_news_data)
     yahoo_fin_data = ti.xcom_pull(task_ids="extract_YahooFin_data_task")
     yahooFinNewsTransform_layer = yahooFinNewsTransformer()
-    news_formatted = yahooFinNewsTransform_layer.tickerNewsFormat(yahoo_fin_data, start_date=extraction_start_date, end_date=extraction_end_date)
+    news_formatted = yahooFinNewsTransform_layer.tickerNewsFormat(
+        yahoo_fin_data, start_date=extraction_start_date, end_date=extraction_end_date)
     FinBERT_layer = FinBERT()
     yahoo_fin_data_sentiments = FinBERT_layer.FinBert_pipeline(
         news_formatted["message"])
@@ -336,26 +338,26 @@ def load_heatlists(**kwargs):
 
     heatlist_generated_date = datetime.now()
     heatlist_date = heatlist_generated_date.strftime("%d-%m-%Y")
-    heatlist_time = "Market Open"
+    heatlist_time = "Market_Open"
     if int(heatlist_generated_date.strftime("%H")) > 12:
-        heatlist_time = "Market Close"
+        heatlist_time = "Market_Close"
     heatlist_table_name = heatlist_date + " " + heatlist_time
 
     # Load Ticker Heatlist to GBQ - Replace if exist
-    if (bigQueryDB_layer.gbqCheckTableExist("Ticker_Heatlist."+heatlist_table_name)):
+    if (bigQueryDB_layer.gbqCheckTableExist("Ticker_Heatlist." + heatlist_table_name)):
         bigQueryDB_layer.gbqReplace(
-        ticker_heatlist, "Ticker_Heatlist" + "." + heatlist_table_name)
+            ticker_heatlist, "Ticker_Heatlist" + "." + heatlist_table_name)
     else:
         bigQueryDB_layer.gbqCreateNewTable(
-        ticker_heatlist, "Ticker_Heatlist", heatlist_table_name)   
+            ticker_heatlist, "Ticker_Heatlist", heatlist_table_name)
 
     # Load Industry Heatlist to GBQ - Replace if exist
-    if (bigQueryDB_layer.gbqCheckTableExist("Industry_Heatlist."+heatlist_table_name)):
+    if (bigQueryDB_layer.gbqCheckTableExist("Industry_Heatlist." + heatlist_table_name)):
         bigQueryDB_layer.gbqReplace(
-        industry_heatlist, "Industry_Heatlist" + "." + heatlist_table_name)
+            industry_heatlist, "Industry_Heatlist" + "." + heatlist_table_name)
     else:
         bigQueryDB_layer.gbqCreateNewTable(
-        industry_heatlist, "Industry_Heatlist", heatlist_table_name)  
+            industry_heatlist, "Industry_Heatlist", heatlist_table_name)
 
     # >> upload to Google Big Query
     return True
