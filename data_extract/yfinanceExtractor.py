@@ -12,22 +12,26 @@ class yfinanceExtractor:
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
         self.ticker_delisted = []  # List of Inactive Ticker Name String
-        self.ticker_with_status = pd.DataFrame()
-        self.historical_data = pd.DataFrame()
-        self.financial_statements = pd.DataFrame()
-        self.quarterly_financial_statements = pd.DataFrame()
-        self.isin = pd.DataFrame()
-        self.earnings_and_revenue = pd.DataFrame()
-        self.quarterly_earnings_and_revenue = pd.DataFrame()
-        self.majorHolders = pd.DataFrame()
-        self.basic_shares = pd.DataFrame()
-        self.stock_info = pd.DataFrame()
-        self.stock_industry = pd.DataFrame()
-        self.stock_calendar = pd.DataFrame()
-        self.stock_recommendation = pd.DataFrame()
-        self.stock_analysis = pd.DataFrame()
-        self.stock_mfh = pd.DataFrame()
-        self.stock_ih = pd.DataFrame()
+
+        # yFinance Ouput
+        self.yfinanceData = {
+            "ticker_status": pd.DataFrame(),
+            "historical_data": pd.DataFrame(),
+            "financial_statements": pd.DataFrame(),
+            "quarterly_financial_statements": pd.DataFrame(),
+            "isin": pd.DataFrame(),
+            "earnings_and_revenue": pd.DataFrame(),
+            "quarterly_earnings_and_revenue": pd.DataFrame(),
+            "majorHolders": pd.DataFrame(),
+            "basic_shares": pd.DataFrame(),
+            "stock_info": pd.DataFrame(),
+            "stock_industry": pd.DataFrame(),
+            "stock_calendar": pd.DataFrame(),
+            "stock_recommendation": pd.DataFrame(),
+            "stock_analysis": pd.DataFrame(),
+            "stock_mfh": pd.DataFrame(),
+            "stock_ih": pd.DataFrame()
+        }
 
         # Check on Ticker Active/Inactive
         self.checkTickers()
@@ -50,7 +54,7 @@ class yfinanceExtractor:
         dfTickers["Delisted"] = pd.Series(delisted)
 
         # Update Class Copy
-        self.ticker_with_status = dfTickers
+        self.yfinanceData["ticker_status"] = dfTickers
         self.ticker_active = [yf.Ticker(ticker) for ticker in activeTickers]
         self.ticker_delisted = delisted
 
@@ -86,7 +90,7 @@ class yfinanceExtractor:
         historical_data_df = historical_data_df.reset_index()
 
         # Store to Shared Data
-        self.historical_data = historical_data_df
+        self.yfinanceData["historical_data"] = historical_data_df
         return historical_data_df
 
     def getFinancialStatement(self):
@@ -111,7 +115,7 @@ class yfinanceExtractor:
         ).rename(columns={financial_statements_df.index.name: 'Date'})
 
         # Store to Shared Data
-        self.financial_statements = financial_statements_df
+        self.yfinanceData["financial_statements"] = financial_statements_df
         return financial_statements_df
 
     def getQuarterlyFinancialStatement(self):
@@ -136,7 +140,7 @@ class yfinanceExtractor:
         ).rename(columns={quarterly_financial_statements_df.index.name: 'Date'})
 
         # Store to Shared Data
-        self.quarterly_financial_statements = quarterly_financial_statements_df
+        self.yfinanceData["quarterly_financial_statements"] = quarterly_financial_statements_df
         return quarterly_financial_statements_df
 
     def getISINcode(self):
@@ -179,7 +183,7 @@ class yfinanceExtractor:
             'index': 'Year'})
 
         # Store to Shared Data
-        self.earnings_and_revenue = earnings_and_revenues_df
+        self.yfinanceData["earnings_and_revenue"] = earnings_and_revenues_df
         return earnings_and_revenues_df
 
     def getQuarterlyEarningsandRevenue(self):
@@ -205,7 +209,7 @@ class yfinanceExtractor:
         ).rename(columns={'index': 'Quarters'})
 
         # Store to Shared Data
-        self.quarterly_earnings_and_revenue = quarterly_earnings_and_revenues_df
+        self.yfinanceData["quarterly_earnings_and_revenue"] = quarterly_earnings_and_revenues_df
         return quarterly_earnings_and_revenues_df
 
     def getMajorHolders(self):
@@ -229,7 +233,7 @@ class yfinanceExtractor:
             drop=True)
 
         # Store to Shared Data
-        self.majorHolders = majorHolders_df
+        self.yfinanceData["majorHolders"] = majorHolders_df
         return majorHolders_df
 
     def getBasicShares(self):
@@ -249,7 +253,7 @@ class yfinanceExtractor:
                     [basic_shares_df, ticker_share])
         basic_shares_df = basic_shares_df.reset_index()
         # Store to Shared Data
-        self.basic_shares = basic_shares_df
+        self.yfinanceData["basic_shares"] = basic_shares_df
         return basic_shares_df
 
     def getStockInfo(self):
@@ -263,16 +267,17 @@ class yfinanceExtractor:
                     ticker.ticker)] = pd.Series(ticker.info)
         all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
         ).reset_index().rename(columns={'index': 'Tickers'})
-        self.stock_info = all_tickers_info
+        self.yfinanceData["stock_info"] = all_tickers_info
         return all_tickers_info
 
     def getStockIndustry(self):
-        if self.stock_info.empty:
+        if self.yfinanceData["stock_info"].empty:
             self.getStockInfo()
-        stock_industry = self.stock_info[["Tickers", "industry"]]
+        stock_info = self.yfinanceData["stock_info"]
+        stock_industry = stock_info[["Tickers", "industry"]]
 
         # Store to Shared Data
-        self.stock_industry = stock_industry
+        self.yfinanceData["stock_industry"] = stock_industry
         return stock_industry
 
     def getCalendar(self):
@@ -292,7 +297,7 @@ class yfinanceExtractor:
                     [stock_calendar_df, ticker_calendar])
         stock_calendar_df = stock_calendar_df.reset_index(drop=True)
         # Store to Shared Data
-        self.stock_calendar = stock_calendar_df
+        self.yfinanceData["stock_calendar"] = stock_calendar_df
         return stock_calendar_df
 
     def getRecommendations(self):
@@ -315,7 +320,7 @@ class yfinanceExtractor:
         recommendations_df = recommendations_df.reset_index()
 
         # Store to Shared Data
-        self.stock_recommendation = recommendations_df
+        self.yfinanceData["stock_recommendation"] = recommendations_df
         return recommendations_df
 
     def getAnalysis(self):
@@ -338,7 +343,7 @@ class yfinanceExtractor:
             'index': 'Period'})
 
         # Store to Shared Data
-        self.stock_analysis = analysis_df
+        self.yfinanceData["stock_analysis"] = analysis_df
         return analysis_df
 
     def getMutualFundHolders(self):
@@ -359,7 +364,7 @@ class yfinanceExtractor:
         mfh_pd = mfh_pd.reset_index(drop=True)
 
         # Store to Shared Data
-        self.stock_mfh = mfh_pd
+        self.yfinanceData["stock_mfh"] = mfh_pd
         return mfh_pd
 
     def getInstitutionalHolders(self):
@@ -380,6 +385,54 @@ class yfinanceExtractor:
         ih_pd = ih_pd.reset_index(drop=True)
 
         # Store to Shared Data
-        self.stock_ih = ih_pd
+        self.yfinanceData["stock_ih"] = ih_pd
 
         return ih_pd
+
+    def yfinanceQuery(self):
+        print("Query Historical Data")
+        self.getHistoricalData()
+        print("Historical Data Query Complete")
+        print("Query Financial Statement")
+        self.getFinancialStatement()
+        print("Financial Statement Query Complete")
+        print("Query Quarterly Financial Statement")
+        self.getQuarterlyFinancialStatement()
+        print("Quarterly Financial Statement Query Complete")
+        print("Query ISIN Code")
+        self.getISINcode()
+        print("ISIN Code Query Complete")
+        print("Query Earnings and Revenue")
+        self.getEarningsandRevenue()
+        print("Earnings and Revenue Query Complete")
+        print("Query Quarterly Earnings and Revenue")
+        self.getQuarterlyEarningsandRevenue()
+        print("Quarterly Earnings and Revenue Query Complete")
+        print("Query Major Holders")
+        self.getMajorHolders()
+        print("Major Holders Query Complete")
+        print("Query Basic Shares")
+        self.getBasicShares()
+        print("Basic Shares Query Complete")
+        print("Query Stock Info")
+        self.getStockInfo()
+        print("Stock Info Query Complete")
+        print("Extract Stock Industry")
+        self.getStockIndustry()
+        print("Stock Industry Extraction Complete")
+        print("Query Stock Calendar")
+        self.getCalendar()
+        print("Stock Calendar Query Complete")
+        print("Query Analyst Recommendations")
+        self.getRecommendations()
+        print("Analyst Recommendations Query Complete")
+        print("Query Stock Analysis")
+        self.getAnalysis()
+        print("Stock Analysis Query Complete")
+        print("Query Mutual Fund Holders")
+        self.getMutualFundHolders()
+        print("Mutual Fund Holders Query Complete")
+        print("Query Institutional Holders")
+        self.getInstitutionalHolders()
+        print("Institutional Holders Query Complete")
+        return self.yfinanceData
