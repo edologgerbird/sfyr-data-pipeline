@@ -233,9 +233,12 @@ def transform_YahooFin_data(**kwargs):
 ###################################
 
 def load_SGX_data(**kwargs):
+    ti = kwargs['ti']
     # >> xcom.pull(DataFrame: SGX_data_new)
+    SGX_data_to_upload = ti.xcom_pull(task_ids='transform_SGX_data_task')
     # >> upload to GBQ
-    return
+    bigQueryDB_layer = bigQueryDB()
+    bigQueryDB_layer.gbqReplace(SGX_data_to_upload, "SGX.Tickers")
 
 
 def load_SBR_data(**kwargs):
@@ -272,16 +275,16 @@ def load_yFinance_data(**kwargs):
     # >> xcomm.pull(dictionary of DataFrames: yFinance_data)
     # >> upload to Google BigQuery
     ti = kwargs['ti']
-    bigqueryDB_layer = bigQueryDB()
+    bigQueryDB_layer = bigQueryDB()
     yfinance_data_to_upload = ti.xcom_pull(
         task_ids='extract_yFinance_data_task')
     for datafield in yfinance_data_to_upload.keys():
         datasetTable = "yfinance." + datafield
-        if bigqueryDB_layer.gbqCheckDatasetExist(datasetTable):
-            bigqueryDB_layer.gbqAppend(
+        if bigQueryDB_layer.gbqCheckDatasetExist(datasetTable):
+            bigQueryDB_layer.gbqAppend(
                 yfinance_data_to_upload[datafield], datasetTable)
         else:
-            bigqueryDB_layer.gbqCreateNewTable(
+            bigQueryDB_layer.gbqCreateNewTable(
                 yfinance_data_to_upload[datafield], "yfinance", datafield)
 
     return True
