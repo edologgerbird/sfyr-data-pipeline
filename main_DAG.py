@@ -8,7 +8,7 @@ from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.SBRExtractor import SBRExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
-
+from data_extract.yfinanceExtractor import yfinanceExtractor
 
 # Transform Modules
 from data_transform.STIMovementExtractor import STIMovementExtractor
@@ -107,7 +107,13 @@ def extract_YahooFin_data(**kwargs):
 def extract_yFinance_data(**kwargs):
     # >> extract YahooFin_data
     # >> return dictionary of DataFrames: YahooFin_data
-    return
+    ti = kwargs['ti']
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")
+    yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
+    print("Initalise yfinance Data Query")
+    yfinanceExtractor_layer.yfinanceQuery()
+    print("yfinance Data Query Complete")
+    return yfinanceExtractor_layer.yfinanceData
 
 ########################################
 # 1B. Data Transformation Modules (1)
@@ -218,11 +224,8 @@ def transform_YahooFin_data(**kwargs):
     return yahoo_fin_data_transformed
 
 
-def transform_yFinance_data(**kwargs):
-    # >> xcom.pull(DataFrame: yFinance_data)
-    # >> Transform
-    # >> return list of dictionary: yFinance_data_transformed
-    return
+# def transform_yFinance_data(**kwargs):
+    # >> Depreciated
 
 
 ###################################
