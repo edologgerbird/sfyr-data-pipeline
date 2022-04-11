@@ -1,5 +1,7 @@
 from pendulum import datetime
-# from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
+from data_extract.yfinanceExtractor import yFinanceExtractor
+from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
+from data_extract.yfinanceExtractor import yFinanceExtractor
 from data_load.bigQueryAPI import bigQueryDB
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
@@ -10,7 +12,6 @@ import time
 import pandas as pd
 if __name__ == '__main__':
     start_time = time.time()
-    print(1111111)
     # ---- Test SGX Data Extraction ---- #
     # sgx_data_extractor_layer = SGXDataExtractor()
     # sgx_data_extractor_layer.load_SGX_data_from_source()
@@ -51,7 +52,7 @@ if __name__ == '__main__':
 
     # ---- Test yFinance Pipeline ---- #
     # data = bigQueryDB().getDataFields("SGX.Tickers").head()
-    # print(yFinanceExtractor(data).getHistoricalData(dt(2020, 5, 17, 23, 10)))
+    # print(yFinanceExtractor(data).getRecommendations())
 
     # ---- Test SGXDataExtractor---- #
     # sgx_layer = SGXDataExtractor()
