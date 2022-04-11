@@ -12,10 +12,10 @@ class yfinanceExtractor:
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
         self.ticker_delisted = []  # List of Inactive Ticker Name String
-        self.ticker_activeicker_with_status = pd.DataFrame()
 
         # yFinance Ouput
         self.yfinanceData = {
+            "ticker_status": pd.DataFrame(),
             "historical_data": pd.DataFrame(),
             "financial_statements": pd.DataFrame(),
             "quarterly_financial_statements": pd.DataFrame(),
@@ -54,7 +54,7 @@ class yfinanceExtractor:
         dfTickers["Delisted"] = pd.Series(delisted)
 
         # Update Class Copy
-        self.ticker_with_status = dfTickers
+        self.yfinanceData["ticker_status"] = dfTickers
         self.ticker_active = [yf.Ticker(ticker) for ticker in activeTickers]
         self.ticker_delisted = delisted
 
