@@ -47,14 +47,17 @@ global_start_date_excute_time = get_execute_time(datetime.now())
 extraction_start_date, extraction_end_date = get_extraction_schedule(
     datetime.now())
 
+# Query time
+query_time = global_start_date_excute_time - timedelta(days=1)
+
 # Testing Time
 # Time set for instant testing
 global_start_date_excute_time = datetime.now()
 global_end_date = global_start_date_excute_time
 
 # Test Time for data extraction
-extraction_start_date = datetime.today() - timedelta(days=21)
-extraction_end_date = datetime.today() - timedelta(days=14)
+extraction_start_date = datetime.today() - timedelta(days=7)
+extraction_end_date = datetime.today() - timedelta(days=0)
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
@@ -71,7 +74,7 @@ def extract_SGX_data(**kwargs):
     SGXDataExtractor_layer = SGXDataExtractor()
     SGXDataExtractor_layer.load_SGX_data_from_source()
     sgx_data = SGXDataExtractor_layer.get_SGX_data()
-    return sgx_data
+    return (sgx_data, SGXDataExtractor_layer)
 
 
 def extract_SBR_data(**kwargs):
@@ -115,20 +118,26 @@ def query_SGX_data(**kwargs):
     ti = kwargs['ti']
     # >> query recent SGX data from GBQ
     # >> return DataFrame: SGX_data
-    sgx_data = ti.xcom_pull(task_ids="extract_SGX_data_task")
+    bigQueryDB_layer = bigQueryDB()
+    sgx_data = bigQueryDB_layer.getDataFields("SGX.Tickers")
+    # sgx_data = ti.xcom_pull(task_ids="extract_SGX_data_task")
     return sgx_data
 
 
 def transform_SGX_data(**kwargs):
     ti = kwargs['ti']
-    # >> xcom.pull(DataFrame: SGX_data)
+    # >> xcom.pull(DataFrame: SGX_data_new, DataFrame: SGX_data_from_GBQ)
+    SGXDataExtractor_layer = ti.xcom_pull(task_ids="extract_SGX_data_task")[1]
+    SGX_data_from_source = ti.xcom_pull(task_ids="extract_SGX_data_task")[0]
+    SGX_data_from_GBQ = ti.xcom_pull(task_ids="query_SGX_data_task")
     # >> compares SGX_data extracted from SGX source and SGX_data queried from GBQ. New column to indicate "Active" or "Delisted"
     # >> Initialise TickerExtractor with SGX_data_new
     # >> returns TickerExtractor: TickerExtractorLayer
-
+    SGX_data_updated = SGXDataExtractor_layer.update_ticker_status(
+        SGX_data_from_source, SGX_data_from_GBQ)
     # Temporary patching
-    sgx_data = ti.xcom_pull(task_ids="query_SGX_data_task")
-    TickerExtractor_Layer = TickerExtractor()
+    # sgx_data = ti.xcom_pull(task_ids="query_SGX_data_task")
+    TickerExtractor_Layer = TickerExtractor(SGX_data_updated)
 
     return TickerExtractor_Layer
 
@@ -272,7 +281,7 @@ def query_SBR_data(**kwargs):
     firestoreDB_layer = firestoreDB()
     HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
     SBR_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
-        "SBR_data", global_start_date_minus_one)
+        "SBR_data", query_time)
     # >> return dictionary: SBR_news_Query_Results
     return SBR_query_for_heatlist
 
@@ -282,7 +291,7 @@ def query_tele_data(**kwargs):
     firestoreDB_layer = firestoreDB()
     HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
     tele_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
-        "Telegram_data", global_start_date_minus_one)
+        "Telegram_data", query_time)
     # >> return dictionary: tele_news_Query_Results
     return tele_query_for_heatlist
 
@@ -292,7 +301,7 @@ def query_YahooFin_news_data(**kwargs):
     firestoreDB_layer = firestoreDB()
     HeatListDataQuery_layer = HeatListQuery(firestoreDB_layer)
     yahoo_fin_query_for_heatlist = HeatListDataQuery_layer.query_pipeline(
-        "YahooFin_data", global_start_date_minus_one)
+        "YahooFin_data", query_time)
     # >> return dictionary: YahooFin_news_Query_Results
     return yahoo_fin_query_for_heatlist
 
@@ -336,6 +345,10 @@ def load_heatlists(**kwargs):
     generated_heatlist = ti.xcom_pull(task_ids='generate_heatlists_task')
     ticker_heatlist = generated_heatlist[0]
     industry_heatlist = generated_heatlist[1]
+
+    # For sample
+    ticker_heatlist.to_csv("ticker_heatlist_sample.csv", index=False)
+    industry_heatlist.to_csv("industry_heatlist_sample.csv", index=False)
 
     heatlist_generated_date = datetime.now()
     heatlist_date = heatlist_generated_date.strftime("%d-%m-%Y")
