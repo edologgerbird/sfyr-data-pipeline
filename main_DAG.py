@@ -347,8 +347,8 @@ def load_heatlists(**kwargs):
     industry_heatlist = generated_heatlist[1]
 
     # For sample
-    ticker_heatlist.to_csv("ticker_heatlist_sample.csv", index=False)
-    industry_heatlist.to_csv("industry_heatlist_sample.csv", index=False)
+    # ticker_heatlist.to_csv("ticker_heatlist_sample.csv", index=False)
+    # industry_heatlist.to_csv("industry_heatlist_sample.csv", index=False)
 
     heatlist_generated_date = datetime.now()
     heatlist_date = heatlist_generated_date.strftime("%d-%m-%Y")
