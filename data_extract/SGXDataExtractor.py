@@ -49,7 +49,7 @@ class SGXDataExtractor:
             return None
 
     # Checks scrapped data with ticker data from GBQ to update their 'active' status
-    def update_ticker_status(self):
+    def update_ticker_status(self, SGX_data_store, GBQ_SGX_ticker_df):
         # 4 Cases to consider
         # Case 1 - Newly listed tickers
         # Case 2 - Previously delisted tickers
@@ -57,11 +57,11 @@ class SGXDataExtractor:
         # Case 4 - Previously delisted tickers that are now active
 
         # Getting active SGX tickers dataframe
-        active_SGX_ticker_df = self.SGX_data_store
+        active_SGX_ticker_df = SGX_data_store
         active_SGX_ticker_list = active_SGX_ticker_df.ticker.to_list()
 
         # Getting SGX tickers dataframe from GBQ
-        GBQ_SGX_ticker_df = self.get_SGXData_from_GBQ()
+        # GBQ_SGX_ticker_df = self.get_SGXData_from_GBQ()
 
         if GBQ_SGX_ticker_df is None:
             self.updated_SGX_data_store = self.SGX_data_store
@@ -111,8 +111,8 @@ class SGXDataExtractor:
     def load_SGX_data_from_source(self):
         self.extract_SGX_json_data()
         self.populate_SGX_data()
-        self.update_ticker_status()
-        self.SGX_data_to_bg()
+        # self.update_ticker_status()
+        # self.SGX_data_to_bg()
 
     def get_SGX_data(self):
         self.extract_SGX_json_data()

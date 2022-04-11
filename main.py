@@ -9,7 +9,7 @@ from data_extract.SBRExtractor import SBRExtractor
 from matplotlib import ticker
 from datetime import datetime as dt
 import time
-
+import pandas as pd
 if __name__ == '__main__':
     start_time = time.time()
     # ---- Test SGX Data Extraction ---- #
@@ -51,7 +51,15 @@ if __name__ == '__main__':
     # print(industry_heatlist)
 
     # ---- Test yFinance Pipeline ---- #
-    data = bigQueryDB().getDataFields("SGX.Tickers").head()
-    print(yFinanceExtractor(data).getRecommendations())
+    # data = bigQueryDB().getDataFields("SGX.Tickers").head()
+    # print(yFinanceExtractor(data).getRecommendations())
+
+    # ---- Test SGXDataExtractor---- #
+    # sgx_layer = SGXDataExtractor()
+    # sgx_data = sgx_layer.get_SGX_data()
+    # gbq_data = sgx_layer.get_SGXData_from_GBQ()
+    # update = sgx_layer.update_ticker_status(sgx_data, gbq_data)
+    # print(update)
+    # update.to_csv("update.csv", index=False)
 
     print("--- %s seconds ---" % (time.time() - start_time))
