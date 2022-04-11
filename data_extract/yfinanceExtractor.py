@@ -7,7 +7,7 @@ import yfinance as yf
 class yFinanceExtractor:
     def __init__(self, sgxTickers):
         self.sgxTickers = sgxTickers
-        self.sgxTickers.company_code = self.sgxTickers.company_code.str[:] + ".SI"
+        self.sgxTickers.ticker = self.sgxTickers.ticker.str[:] + ".SI"
 
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
@@ -37,7 +37,7 @@ class yFinanceExtractor:
         delisted = []
 
         # Check if ticker exist
-        for ticker in self.sgxTickers["company_code"]:
+        for ticker in self.sgxTickers["ticker"]:
             length = yf.download(
                 ticker, period='max', interval='1d', timeout=None).shape[0]
             if length > 0:
@@ -214,7 +214,7 @@ class yFinanceExtractor:
         for ticker in self.ticker_active:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
                 ticker_majorHolders = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
+                    pd.Series({'Tickers': self.removeSI(ticker.ticker)}))
                 majorHolders_df = pd.concat(
                     [majorHolders_df, ticker_majorHolders])
 
@@ -222,9 +222,10 @@ class yFinanceExtractor:
                 ticker_majorHolders = ticker.major_holders[0].rename(
                     {0: '% of Shares Held by All Insider', 1: '% of Shares Held by Institutions', 2: '% of Float Held by Institutions', 3: 'Number of Institutions Holding Shares'})
                 ticker_majorHolders['Tickers'] = self.removeSI(ticker.ticker)
-                majorHolders_df = majorHolders_df.append(
-                    ticker_majorHolders)
-        majorHolders_df = majorHolders_df.reset_index(
+                ticker_majorHolders = ticker_majorHolders.transpose()
+                majorHolders_df = pd.concat(
+                    [majorHolders_df, ticker_majorHolders], axis=1)
+        majorHolders_df = majorHolders_df.transpose().reset_index(
             drop=True)
 
         # Store to Shared Data
@@ -246,7 +247,7 @@ class yFinanceExtractor:
                 ticker_share['Tickers'] = self.removeSI(ticker.ticker)
                 basic_shares_df = pd.concat(
                     [basic_shares_df, ticker_share])
-
+        basic_shares_df = basic_shares_df.reset_index()
         # Store to Shared Data
         self.basic_shares = basic_shares_df
         return basic_shares_df
@@ -289,7 +290,7 @@ class yFinanceExtractor:
                 ticker_calendar['Ticker'] = self.removeSI(ticker.ticker)
                 stock_calendar_df = pd.concat(
                     [stock_calendar_df, ticker_calendar])
-
+        stock_calendar_df = stock_calendar_df.reset_index(drop=True)
         # Store to Shared Data
         self.stock_calendar = stock_calendar_df
         return stock_calendar_df
