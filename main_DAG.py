@@ -56,8 +56,8 @@ global_start_date_excute_time = datetime.now()
 global_end_date = global_start_date_excute_time
 
 # Test Time for data extraction
-extraction_start_date = datetime.today() - timedelta(days=2)
-extraction_end_date = datetime.today() - timedelta(days=1)
+extraction_start_date = datetime.today() - timedelta(days=7)
+extraction_end_date = datetime.today() - timedelta(days=0)
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
@@ -345,6 +345,10 @@ def load_heatlists(**kwargs):
     generated_heatlist = ti.xcom_pull(task_ids='generate_heatlists_task')
     ticker_heatlist = generated_heatlist[0]
     industry_heatlist = generated_heatlist[1]
+
+    # For sample
+    ticker_heatlist.to_csv("ticker_heatlist_sample.csv", index=False)
+    industry_heatlist.to_csv("industry_heatlist_sample.csv", index=False)
 
     heatlist_generated_date = datetime.now()
     heatlist_date = heatlist_generated_date.strftime("%d-%m-%Y")
