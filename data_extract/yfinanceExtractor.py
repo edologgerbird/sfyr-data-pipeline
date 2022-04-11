@@ -4,7 +4,7 @@ import numpy as np
 import yfinance as yf
 
 
-class yFinanceExtractor:
+class yfinanceExtractor:
     def __init__(self, sgxTickers):
         self.sgxTickers = sgxTickers
         self.sgxTickers.ticker = self.sgxTickers.ticker.str[:] + ".SI"
