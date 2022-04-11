@@ -8,7 +8,7 @@ from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.SBRExtractor import SBRExtractor
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.yahooFinNewsExtractor import yahooFinNewsExtractor
-
+from data_extract.yfinanceExtractor import yfinanceExtractor
 
 # Transform Modules
 from data_transform.STIMovementExtractor import STIMovementExtractor
@@ -107,7 +107,13 @@ def extract_YahooFin_data(**kwargs):
 def extract_yFinance_data(**kwargs):
     # >> extract YahooFin_data
     # >> return dictionary of DataFrames: YahooFin_data
-    return
+    ti = kwargs['ti']
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")
+    yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
+    print("Initalise yfinance Data Query")
+    yfinanceExtractor_layer.yfinanceQuery()
+    print("yfinance Data Query Complete")
+    return yfinanceExtractor_layer.yfinanceData
 
 ########################################
 # 1B. Data Transformation Modules (1)
@@ -218,11 +224,8 @@ def transform_YahooFin_data(**kwargs):
     return yahoo_fin_data_transformed
 
 
-def transform_yFinance_data(**kwargs):
-    # >> xcom.pull(DataFrame: yFinance_data)
-    # >> Transform
-    # >> return list of dictionary: yFinance_data_transformed
-    return
+# def transform_yFinance_data(**kwargs):
+    # >> Depreciated
 
 
 ###################################
@@ -230,9 +233,12 @@ def transform_yFinance_data(**kwargs):
 ###################################
 
 def load_SGX_data(**kwargs):
+    ti = kwargs['ti']
     # >> xcom.pull(DataFrame: SGX_data_new)
+    SGX_data_to_upload = ti.xcom_pull(task_ids='transform_SGX_data_task')
     # >> upload to GBQ
-    return
+    bigQueryDB_layer = bigQueryDB()
+    bigQueryDB_layer.gbqReplace(SGX_data_to_upload, "SGX.Tickers")
 
 
 def load_SBR_data(**kwargs):
@@ -268,7 +274,20 @@ def load_YahooFin_news_data(**kwargs):
 def load_yFinance_data(**kwargs):
     # >> xcomm.pull(dictionary of DataFrames: yFinance_data)
     # >> upload to Google BigQuery
-    return
+    ti = kwargs['ti']
+    bigQueryDB_layer = bigQueryDB()
+    yfinance_data_to_upload = ti.xcom_pull(
+        task_ids='extract_yFinance_data_task')
+    for datafield in yfinance_data_to_upload.keys():
+        datasetTable = "yfinance." + datafield
+        if bigQueryDB_layer.gbqCheckDatasetExist(datasetTable):
+            bigQueryDB_layer.gbqAppend(
+                yfinance_data_to_upload[datafield], datasetTable)
+        else:
+            bigQueryDB_layer.gbqCreateNewTable(
+                yfinance_data_to_upload[datafield], "yfinance", datafield)
+
+    return True
 
 
 ########################################
@@ -390,6 +409,8 @@ default_args = {
     'email_on_failure': True,
     'email_on_retry': True,
     'retries': 0
+
+
 }
 
 dag = DAG('ETL_for_SGX_Stocks_Data',
@@ -457,9 +478,9 @@ transform_YahooFin_data_task = PythonOperator(task_id='transform_YahooFin_data_t
                                               python_callable=transform_YahooFin_data,
                                               provide_context=True, dag=dag)
 
-transform_yFinance_data_task = PythonOperator(task_id='transform_yFinance_data_task',
-                                              python_callable=transform_yFinance_data,
-                                              provide_context=True, dag=dag)
+# transform_yFinance_data_task = PythonOperator(task_id='transform_yFinance_data_task',
+#                                               python_callable=transform_yFinance_data,
+#                                               provide_context=True, dag=dag)
 
 
 # Does yFinance data need transforming?
@@ -537,7 +558,7 @@ transform_tele_data_task >> load_tele_data_task
 
 transform_SBR_data_task >> load_SBR_data_task
 
-extract_yFinance_data_task >> transform_yFinance_data_task >> load_yFinance_data_task
+extract_yFinance_data_task >> load_yFinance_data_task
 
 extract_YahooFin_data_task >> transform_YahooFin_data_task >> [
     load_YahooFin_data_task, query_YahooFin_data_task]
