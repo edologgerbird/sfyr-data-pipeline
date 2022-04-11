@@ -340,10 +340,16 @@ def generateHeatlists(**kwargs):
     SBR_query_for_heatlist = ti.xcom_pull(task_ids='query_SBR_data_task')
     tele_query_for_heatlist = ti.xcom_pull(task_ids='query_tele_data_task')
 
+    industry_data = ti.xcom_pull(task_ids='extract_yFinance_data_task')[
+        "stock_industry"]
+
+    sgx_data = ti.xcom_pull(task_ids='extract_SGX_data_task')
+
     query_documents_container = SBR_query_for_heatlist + \
         SBR_day_data_for_heatlist + tele_day_data_for_heatlist + tele_query_for_heatlist
     # >> Generate Ticker and Industry Heatlists
-    GenerateHeatlistsFromQuery_layer = GenerateHeatlistsFromQuery()
+    GenerateHeatlistsFromQuery_layer = GenerateHeatlistsFromQuery(
+        sgx_data, industry_data)
     ticker_heatlist, industry_heatlist = GenerateHeatlistsFromQuery_layer.HeatlistPipeline_execute(
         query_documents_container)
     # >> return DataFrame: Ticker Heatlist, DataFrame: Industry Heatlist
