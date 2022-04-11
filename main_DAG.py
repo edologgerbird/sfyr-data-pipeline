@@ -271,7 +271,20 @@ def load_YahooFin_news_data(**kwargs):
 def load_yFinance_data(**kwargs):
     # >> xcomm.pull(dictionary of DataFrames: yFinance_data)
     # >> upload to Google BigQuery
-    return
+    ti = kwargs['ti']
+    bigqueryDB_layer = bigQueryDB()
+    yfinance_data_to_upload = ti.xcom_pull(
+        task_ids='extract_yFinance_data_task')
+    for datafield in yfinance_data_to_upload.keys():
+        datasetTable = "yfinance." + datafield
+        if bigqueryDB_layer.gbqCheckDatasetExist(datasetTable):
+            bigqueryDB_layer.gbqAppend(
+                yfinance_data_to_upload[datafield], datasetTable)
+        else:
+            bigqueryDB_layer.gbqCreateNewTable(
+                yfinance_data_to_upload[datafield], "yfinance", datafield)
+
+    return True
 
 
 ########################################
@@ -393,6 +406,8 @@ default_args = {
     'email_on_failure': True,
     'email_on_retry': True,
     'retries': 0
+
+
 }
 
 dag = DAG('ETL_for_SGX_Stocks_Data',
@@ -460,9 +475,9 @@ transform_YahooFin_data_task = PythonOperator(task_id='transform_YahooFin_data_t
                                               python_callable=transform_YahooFin_data,
                                               provide_context=True, dag=dag)
 
-transform_yFinance_data_task = PythonOperator(task_id='transform_yFinance_data_task',
-                                              python_callable=transform_yFinance_data,
-                                              provide_context=True, dag=dag)
+# transform_yFinance_data_task = PythonOperator(task_id='transform_yFinance_data_task',
+#                                               python_callable=transform_yFinance_data,
+#                                               provide_context=True, dag=dag)
 
 
 # Does yFinance data need transforming?
@@ -540,7 +555,7 @@ transform_tele_data_task >> load_tele_data_task
 
 transform_SBR_data_task >> load_SBR_data_task
 
-extract_yFinance_data_task >> transform_yFinance_data_task >> load_yFinance_data_task
+extract_yFinance_data_task >> load_yFinance_data_task
 
 extract_YahooFin_data_task >> transform_YahooFin_data_task >> [
     load_YahooFin_data_task, query_YahooFin_data_task]
