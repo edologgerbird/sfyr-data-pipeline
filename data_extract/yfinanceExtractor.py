@@ -142,7 +142,7 @@ class yfinanceExtractor:
         ).rename(columns={quarterly_financial_statements_df.index.name: 'Date'})
 
         quarterly_financial_statements_df = quarterly_financial_statements_df.fillna(value=np.nan)
-        
+
         # Store to Shared Data
         self.yfinanceData["quarterly_financial_statements"] = quarterly_financial_statements_df
         return quarterly_financial_statements_df
@@ -350,6 +350,7 @@ class yfinanceExtractor:
 
         analysis_df = analysis_df.reset_index().rename(columns={
             'index': 'Period'})
+        analysis_df['Period'] = analysis_df['Period'].astype(str)
 
         # Store to Shared Data
         self.yfinanceData["stock_analysis"] = analysis_df
