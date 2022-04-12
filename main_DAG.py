@@ -280,7 +280,7 @@ def load_yFinance_data(**kwargs):
         task_ids='extract_yFinance_data_task')
     for datafield in yfinance_data_to_upload.keys():
         datasetTable = "yfinance." + datafield
-        if bigQueryDB_layer.gbqCheckDatasetExist(datasetTable):
+        if bigQueryDB_layer.gbqCheckTableExist(datasetTable):
             bigQueryDB_layer.gbqAppend(
                 yfinance_data_to_upload[datafield], datasetTable)
         else:
