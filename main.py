@@ -51,9 +51,8 @@ if __name__ == '__main__':
     # print(industry_heatlist)
 
     # ---- Test yFinance Pipeline ---- #
-    data = bigQueryDB().getDataFields("SGX.Tickers").head(10)
-    print(data)
-    #print(yfinanceExtractor(data).getRecommendations())
+    # data = bigQueryDB().getDataFields("SGX.Tickers").head(10)
+    # print(yfinanceExtractor(data).getRecommendations())
 
     # ---- Test SGXDataExtractor---- #
     # sgx_layer = SGXDataExtractor()
