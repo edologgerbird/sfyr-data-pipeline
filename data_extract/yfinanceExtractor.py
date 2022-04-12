@@ -276,6 +276,7 @@ class yfinanceExtractor:
         all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
         ).reset_index().rename(columns={'index': 'Tickers'})
 
+        all_tickers_info = all_tickers_info.convert_dtypes()
         self.yfinanceData["stock_info"] = all_tickers_info
         return all_tickers_info
 
@@ -349,6 +350,7 @@ class yfinanceExtractor:
 
         analysis_df = analysis_df.reset_index().rename(columns={
             'index': 'Period'})
+        analysis_df['Period'] = analysis_df['Period'].astype(str)
 
         # Store to Shared Data
         self.yfinanceData["stock_analysis"] = analysis_df
