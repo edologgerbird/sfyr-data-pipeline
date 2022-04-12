@@ -82,6 +82,9 @@ if __name__ == '__main__':
 
         datasetTable = "yfinance." + datafield
         print(yfinance_data_to_upload[datafield])
+
+        yfinance_data_to_upload[datafield] = yfinance_data_to_upload[datafield].convert_dtypes(
+        )
         if gbq_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
             gbq_layer.gbqAppend(
                 yfinance_data_to_upload[datafield], datasetTable)
