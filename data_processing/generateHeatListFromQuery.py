@@ -3,9 +3,10 @@ Generate Heatlists from Firestore Query Results
 '''
 from data_processing.HeatListGeneratorAPI import HeatListGenerator
 
+
 class GenerateHeatlistsFromQuery:
-    def __init__(self):
-        self.HeatListGenerator_layer = HeatListGenerator()
+    def __init__(self, sgx_data, industry_df):
+        self.HeatListGenerator_layer = HeatListGenerator(sgx_data, industry_df)
         print("Heat List Generator Initialised")
 
     def generate_heatlist(self, query_results):

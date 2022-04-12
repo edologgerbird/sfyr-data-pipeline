@@ -56,8 +56,8 @@ global_start_date_excute_time = datetime.now()
 global_end_date = global_start_date_excute_time
 
 # Test Time for data extraction
-extraction_start_date = datetime.today() - timedelta(days=7)
-extraction_end_date = datetime.today() - timedelta(days=0)
+extraction_start_date = datetime.today() - timedelta(days=2)
+extraction_end_date = datetime.today() - timedelta(days=1)
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
@@ -83,7 +83,7 @@ def extract_SBR_data(**kwargs):
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return sbr_raw_data
+    return sbr_raw_data.head()
 
 
 def extract_tele_data(**kwargs):
@@ -92,7 +92,7 @@ def extract_tele_data(**kwargs):
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return tele_data_raw
+    return tele_data_raw.head()
 
 
 def extract_YahooFin_data(**kwargs):
@@ -108,12 +108,12 @@ def extract_yFinance_data(**kwargs):
     # >> extract YahooFin_data
     # >> return dictionary of DataFrames: YahooFin_data
     ti = kwargs['ti']
-    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head()
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
-    yfinanceExtractor_layer.yfinanceQuery()
+    yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
     print("yfinance Data Query Complete")
-    return yfinanceExtractor_layer.yfinanceData
+    return yfinance_data
 
 ########################################
 # 1B. Data Transformation Modules (1)
@@ -145,7 +145,7 @@ def transform_SGX_data(**kwargs):
     # sgx_data = ti.xcom_pull(task_ids="query_SGX_data_task")
     TickerExtractor_Layer = TickerExtractor(SGX_data_updated)
 
-    return TickerExtractor_Layer
+    return (TickerExtractor_Layer, SGX_data_updated)
 
 
 def transform_SBR_data(**kwargs):
@@ -157,7 +157,8 @@ def transform_SBR_data(**kwargs):
 
     # >> TickerExtractor(DataFrame: SBR_news)
     #     >> xcom.pull(tickerExtractor: ticker_extractor_layer)
-    ticker_extractor_layer = ti.xcom_pull(task_ids="transform_SGX_data_task")
+    ticker_extractor_layer = ti.xcom_pull(
+        task_ids="transform_SGX_data_task")[0]
 
     SBR_data_with_tickers = ticker_extractor_layer.populate_ticker_occurences(
         SBR_data_raw["Title"] + " " + SBR_data_raw["Text"])
@@ -191,7 +192,8 @@ def transform_tele_data(**kwargs):
 
     # >> TickerExtractor(DataFrame: tele_news)
     #     >> xcom.pull(DataFrame: SGX Data_new)
-    ticker_extractor_layer = ti.xcom_pull(task_ids="transform_SGX_data_task")
+    ticker_extractor_layer = ti.xcom_pull(
+        task_ids="transform_SGX_data_task")[0]
     tele_data_with_tickers = ticker_extractor_layer.populate_ticker_occurences(
         tele_data_raw["message"])
 
@@ -235,7 +237,7 @@ def transform_YahooFin_data(**kwargs):
 def load_SGX_data(**kwargs):
     ti = kwargs['ti']
     # >> xcom.pull(DataFrame: SGX_data_new)
-    SGX_data_to_upload = ti.xcom_pull(task_ids='transform_SGX_data_task')
+    SGX_data_to_upload = ti.xcom_pull(task_ids='transform_SGX_data_task')[1]
     # >> upload to GBQ
     bigQueryDB_layer = bigQueryDB()
     bigQueryDB_layer.gbqReplace(SGX_data_to_upload, "SGX.Tickers")
@@ -343,7 +345,7 @@ def generateHeatlists(**kwargs):
     industry_data = ti.xcom_pull(task_ids='extract_yFinance_data_task')[
         "stock_industry"]
 
-    sgx_data = ti.xcom_pull(task_ids='extract_SGX_data_task')
+    sgx_data = ti.xcom_pull(task_ids='extract_SGX_data_task')[0]
 
     query_documents_container = SBR_query_for_heatlist + \
         SBR_day_data_for_heatlist + tele_day_data_for_heatlist + tele_query_for_heatlist
