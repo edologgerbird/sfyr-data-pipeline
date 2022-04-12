@@ -283,8 +283,6 @@ class yfinanceExtractor:
         stock_info = self.yfinanceData["stock_info"]
         stock_industry = stock_info[["Tickers", "industry"]]
 
-        stock_industry = stock_industry.astype(str) 
-
         # Store to Shared Data
         self.yfinanceData["stock_industry"] = stock_industry
         return stock_industry
