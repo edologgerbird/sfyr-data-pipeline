@@ -274,6 +274,8 @@ class yfinanceExtractor:
                     ticker.ticker)] = pd.Series(ticker.info)
         all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
         ).reset_index().rename(columns={'index': 'Tickers'})
+
+        all_tickers_info = all_tickers_info.convert_dtypes()
         self.yfinanceData["stock_info"] = all_tickers_info
         return all_tickers_info
 
