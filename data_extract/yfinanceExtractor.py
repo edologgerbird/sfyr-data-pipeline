@@ -114,6 +114,8 @@ class yfinanceExtractor:
         financial_statements_df = financial_statements_df.reset_index(
         ).rename(columns={financial_statements_df.index.name: 'Date'})
 
+        financial_statements_df = financial_statements_df.replace(to_replace=[None], value=np.nan, inplace=True)
+
         # Store to Shared Data
         self.yfinanceData["financial_statements"] = financial_statements_df
         return financial_statements_df
@@ -139,6 +141,7 @@ class yfinanceExtractor:
         quarterly_financial_statements_df = quarterly_financial_statements_df.reset_index(
         ).rename(columns={quarterly_financial_statements_df.index.name: 'Date'})
 
+        quarterly_financial_statements_df = quarterly_financial_statements_df.replace(to_replace=[None], value=np.nan, inplace=True)
         # Store to Shared Data
         self.yfinanceData["quarterly_financial_statements"] = quarterly_financial_statements_df
         return quarterly_financial_statements_df
@@ -208,6 +211,9 @@ class yfinanceExtractor:
         quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index(
         ).rename(columns={'index': 'Quarters'})
 
+        quarterly_earnings_and_revenues_df['Quarters'] = quarterly_earnings_and_revenues_df['Quarters'].astype(str)
+
+
         # Store to Shared Data
         self.yfinanceData["quarterly_earnings_and_revenue"] = quarterly_earnings_and_revenues_df
         return quarterly_earnings_and_revenues_df
@@ -275,6 +281,8 @@ class yfinanceExtractor:
             self.getStockInfo()
         stock_info = self.yfinanceData["stock_info"]
         stock_industry = stock_info[["Tickers", "industry"]]
+
+        stock_industry = stock_industry.astype(str) 
 
         # Store to Shared Data
         self.yfinanceData["stock_industry"] = stock_industry
