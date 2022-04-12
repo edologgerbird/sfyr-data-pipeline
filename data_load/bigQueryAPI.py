@@ -33,6 +33,7 @@ class bigQueryDB:
                 self.syncTables()
                 return True
             except Exception as err:
+                self.syncTables()
                 raise err
         else:
             raise Exception("Data File not Dataframe")
@@ -77,6 +78,7 @@ class bigQueryDB:
             self.syncDataset()
             return True
         except Exception as err:
+            self.syncDataset()
             raise err
 
     def gbqDeleteTable(self, datasetTable):
@@ -85,6 +87,7 @@ class bigQueryDB:
             self.syncTables()
             return True
         except Exception as err:
+            self.syncTables()
             raise err
 
     def gbqCheckDatasetExist(self, datasetName):
