@@ -322,6 +322,8 @@ def load_yFinance_data(**kwargs):
         task_ids='transform_yFinance_data_task')
 
     for datafield in yfinance_data_to_upload.keys():
+        print(f"Uploading {datafield} data")
+        print(yfinance_data_to_upload[datafield])
         datasetTable = "yfinance." + datafield
         if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
             bigQueryDB_layer.gbqAppend(
@@ -330,7 +332,7 @@ def load_yFinance_data(**kwargs):
             bigQueryDB_layer.gbqCreateNewTable(
                 yfinance_data_to_upload[datafield], "yfinance", datafield)
         else:
-            print("empty dataframe")
+            print("Empty Dataframe")
 
     return True
 

@@ -29,6 +29,7 @@ class bigQueryDB:
             try:
                 pandas_gbq.to_gbq(
                     data, datasetTable, project_id=self.project_id, credentials=self.credentials)
+                print(f"Table Succefully Created {datasetTable}")
                 # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
                 self.syncTables()
                 return True
@@ -47,6 +48,7 @@ class bigQueryDB:
                 try:
                     pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                       if_exists="append", credentials=self.credentials)
+                    print(f"Data Successfully Added to {datasetTable}")
                     return True
                 except Exception as err:
                     raise err
@@ -64,6 +66,7 @@ class bigQueryDB:
                 try:
                     pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                       if_exists="replace", credentials=self.credentials)
+                    print(f"Data Successfully Replaced at {datasetTable}")
                     return True
                 except Exception as err:
                     raise err
@@ -133,7 +136,7 @@ class bigQueryDB:
     def syncDataset(self):
         datasets = list(self.client.list_datasets())  # Make an API request.
         updatedDatasetList = []
-
+        print("Updating Datasets")
         if datasets:
             for dataset in datasets:
                 updatedDatasetList.append(dataset.dataset_id)
@@ -143,6 +146,7 @@ class bigQueryDB:
 
             with open(self.credUrl, 'w') as jsonFile:
                 json.dump(self.cred, jsonFile)
+            print("Dataset Succesfully Updated")
             return updatedDatasetList
 
         else:
@@ -159,6 +163,7 @@ class bigQueryDB:
         self.syncDataset()
 
         for dataset in self.dataset_id:
+            print(f"Updating Tables for {dataset}")
             tables = self.client.list_tables(dataset)  # Make an API request
             for table in tables:
                 updatedTableList.append(
@@ -169,6 +174,7 @@ class bigQueryDB:
         with open(self.credUrl, 'w') as jsonFile:
             json.dump(self.cred, jsonFile)
 
+        print("Tables Succesfully Updated")
         return updatedTableList
 
 
