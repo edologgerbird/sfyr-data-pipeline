@@ -58,6 +58,7 @@ if __name__ == '__main__':
     yfinance_data_to_upload = yfinanceExtractor(data).yfinanceQuery()
     for datafield in yfinance_data_to_upload.keys():
         print(datafield)
+        print(yfinance_data_to_upload[datafield])
         # Removing Spaces in Column Names - GBQ Limitation
         yfinance_data_to_upload[datafield].columns = yfinance_data_to_upload[datafield].columns.str.replace(
             ' ', '_')
