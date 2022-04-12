@@ -271,13 +271,26 @@ class yfinanceExtractor:
             if ticker.info is None:
                 all_tickers_dict[self.removeSI(ticker.ticker)] = pd.Series()
             else:
+                ticker_info = pd.Series(ticker.info)
+                # Handle List in companyOfficers
+                companyOfficer = ticker_info["companyOfficers"]
+                companyOfficerString = ','.join(str(e) for e in companyOfficer)
+                companyOfficerSeries = pd.Series(
+                    [companyOfficerString], index=["companyOfficers"])
+                cleaned_ticker_info = ticker_info.drop(
+                    labels="companyOfficers")
+                updated_ticker_info = cleaned_ticker_info.append(
+                    companyOfficerSeries)
                 all_tickers_dict[self.removeSI(
-                    ticker.ticker)] = pd.Series(ticker.info)
+                    ticker.ticker)] = pd.Series(updated_ticker_info)
+
         all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
         ).reset_index().rename(columns={'index': 'Tickers'})
 
-        all_tickers_info = all_tickers_info.convert_dtypes()
         self.yfinanceData["stock_info"] = all_tickers_info
+
+        all_tickers_info.to_csv("stockinfo.csv")
+
         return all_tickers_info
 
     def getStockIndustry(self):
@@ -433,9 +446,9 @@ class yfinanceExtractor:
         # print("Basic Shares Query Complete")
 
         # DOES NOT WORK - SCHEMA ISSUES
-        # print("Query Stock Info")
-        # self.getStockInfo()
-        # print("Stock Info Query Complete")
+        print("Query Stock Info")
+        self.getStockInfo()
+        print("Stock Info Query Complete")
 
         # print("Extract Stock Industry")
         # self.getStockIndustry()
