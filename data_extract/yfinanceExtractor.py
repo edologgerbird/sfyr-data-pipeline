@@ -297,6 +297,8 @@ class yfinanceExtractor:
             self.getStockInfo()
         stock_info = self.yfinanceData["stock_info"]
         stock_industry = stock_info[["Tickers", "industry"]]
+        stock_industry = stock_industry.rename(columns={"Tickers": "ticker"})
+
         # Store to Shared Data
         self.yfinanceData["stock_industry"] = stock_industry
         return stock_industry
@@ -412,6 +414,7 @@ class yfinanceExtractor:
         return ih_pd
 
     def yfinanceQuery(self):
+
         print("Query Historical Data")
         self.getHistoricalData()
         print("Historical Data Query Complete")
