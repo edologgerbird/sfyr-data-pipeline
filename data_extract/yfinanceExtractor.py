@@ -281,6 +281,7 @@ class yfinanceExtractor:
                     labels="companyOfficers")
                 updated_ticker_info = cleaned_ticker_info.append(
                     companyOfficerSeries)
+                # Store Updated Series
                 all_tickers_dict[self.removeSI(
                     ticker.ticker)] = pd.Series(updated_ticker_info)
 
@@ -288,8 +289,6 @@ class yfinanceExtractor:
         ).reset_index().rename(columns={'index': 'Tickers'})
 
         self.yfinanceData["stock_info"] = all_tickers_info
-
-        all_tickers_info.to_csv("stockinfo.csv")
 
         return all_tickers_info
 
@@ -413,65 +412,64 @@ class yfinanceExtractor:
         return ih_pd
 
     def yfinanceQuery(self):
-        # print("Query Historical Data")
-        # self.getHistoricalData()
-        # print("Historical Data Query Complete")
+        print("Query Historical Data")
+        self.getHistoricalData()
+        print("Historical Data Query Complete")
 
-        # print("Query Financial Statement")
-        # self.getFinancialStatement()
-        # print("Financial Statement Query Complete")
+        print("Query Financial Statement")
+        self.getFinancialStatement()
+        print("Financial Statement Query Complete")
 
-        # print("Query Quarterly Financial Statement")
-        # self.getQuarterlyFinancialStatement()
-        # print("Quarterly Financial Statement Query Complete")
+        print("Query Quarterly Financial Statement")
+        self.getQuarterlyFinancialStatement()
+        print("Quarterly Financial Statement Query Complete")
 
-        # print("Query ISIN Code")
-        # self.getISINcode()
-        # print("ISIN Code Query Complete")
+        print("Query ISIN Code")
+        self.getISINcode()
+        print("ISIN Code Query Complete")
 
-        # print("Query Earnings and Revenue")
-        # self.getEarningsandRevenue()
-        # print("Earnings and Revenue Query Complete")
+        print("Query Earnings and Revenue")
+        self.getEarningsandRevenue()
+        print("Earnings and Revenue Query Complete")
 
-        # print("Query Quarterly Earnings and Revenue")
-        # self.getQuarterlyEarningsandRevenue()
-        # print("Quarterly Earnings and Revenue Query Complete")
+        print("Query Quarterly Earnings and Revenue")
+        self.getQuarterlyEarningsandRevenue()
+        print("Quarterly Earnings and Revenue Query Complete")
 
-        # print("Query Major Holders")
-        # self.getMajorHolders()
-        # print("Major Holders Query Complete")
+        print("Query Major Holders")
+        self.getMajorHolders()
+        print("Major Holders Query Complete")
 
-        # print("Query Basic Shares")
-        # self.getBasicShares()
-        # print("Basic Shares Query Complete")
+        print("Query Basic Shares")
+        self.getBasicShares()
+        print("Basic Shares Query Complete")
 
-        # DOES NOT WORK - SCHEMA ISSUES
         print("Query Stock Info")
         self.getStockInfo()
         print("Stock Info Query Complete")
 
-        # print("Extract Stock Industry")
-        # self.getStockIndustry()
-        # print("Stock Industry Extraction Complete")
+        print("Extract Stock Industry")
+        self.getStockIndustry()
+        print("Stock Industry Extraction Complete")
 
-        # print("Query Stock Calendar")
-        # self.getCalendar()
-        # print("Stock Calendar Query Complete")
+        print("Query Stock Calendar")
+        self.getCalendar()
+        print("Stock Calendar Query Complete")
 
-        # print("Query Analyst Recommendations")
-        # self.getRecommendations()
-        # print("Analyst Recommendations Query Complete")
+        print("Query Analyst Recommendations")
+        self.getRecommendations()
+        print("Analyst Recommendations Query Complete")
 
-        # print("Query Stock Analysis")
-        # self.getAnalysis()
-        # print("Stock Analysis Query Complete")
+        print("Query Stock Analysis")
+        self.getAnalysis()
+        print("Stock Analysis Query Complete")
 
-        # print("Query Mutual Fund Holders")
-        # self.getMutualFundHolders()
-        # print("Mutual Fund Holders Query Complete")
+        print("Query Mutual Fund Holders")
+        self.getMutualFundHolders()
+        print("Mutual Fund Holders Query Complete")
 
-        # print("Query Institutional Holders")
-        # self.getInstitutionalHolders()
-        # print("Institutional Holders Query Complete")
+        print("Query Institutional Holders")
+        self.getInstitutionalHolders()
+        print("Institutional Holders Query Complete")
 
         return self.yfinanceData
