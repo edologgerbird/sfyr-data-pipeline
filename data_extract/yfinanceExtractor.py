@@ -210,8 +210,14 @@ class yfinanceExtractor:
                 quarterly_earnings_and_revenues_df = pd.concat(
                     [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
 
+        print(quarterly_earnings_and_revenues_df.columns)
+        print(quarterly_earnings_and_revenues_df)
+
         quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index(
-        ).rename(columns={'index': 'Quarters'})
+        ).rename(columns={'Quarter': 'Quarters'})
+
+        print(quarterly_earnings_and_revenues_df.columns)
+        print(quarterly_earnings_and_revenues_df)
 
         quarterly_earnings_and_revenues_df['Quarters'] = quarterly_earnings_and_revenues_df['Quarters'].astype(
             str)
