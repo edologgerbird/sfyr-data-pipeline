@@ -84,5 +84,3 @@ class FinBERT:
 # input_series = pd.Series([None])
 # FinBERT_layer.FinBert_pipeline(input_series)
 # print("--- %s seconds ---" % (time.time() - start_time))
-
-
