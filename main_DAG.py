@@ -328,8 +328,12 @@ def load_yFinance_data(**kwargs):
         print(yfinance_data_to_upload[datafield])
         datasetTable = "yfinance." + datafield
         if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
-            bigQueryDB_layer.gbqAppend(
-                yfinance_data_to_upload[datafield], datasetTable)
+            if datafield == "ticker_status":
+                bigQueryDB_layer.gbqReplace(
+                    yfinance_data_to_upload[datafield], datasetTable)
+            else:
+                bigQueryDB_layer.gbqAppend(
+                    yfinance_data_to_upload[datafield], datasetTable)
         elif not yfinance_data_to_upload[datafield].empty:
             bigQueryDB_layer.gbqCreateNewTable(
                 yfinance_data_to_upload[datafield], "yfinance", datafield)
