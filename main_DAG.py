@@ -83,7 +83,7 @@ def extract_SBR_data(**kwargs):
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return sbr_raw_data.head()
+    return sbr_raw_data
 
 
 def extract_tele_data(**kwargs):
@@ -92,7 +92,7 @@ def extract_tele_data(**kwargs):
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return tele_data_raw.head()
+    return tele_data_raw
 
 
 def extract_YahooFin_data(**kwargs):
@@ -108,7 +108,7 @@ def extract_yFinance_data(**kwargs):
     # >> extract yFinance_data
     # >> return dictionary of DataFrames: yFinance_data
     ti = kwargs['ti']
-    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head()
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head(15)
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
@@ -233,7 +233,7 @@ def transform_YahooFin_data(**kwargs):
 def transform_yFinance_data(**kwargs):
     ti = kwargs['ti']
     # >> xcom.pull(DataFrame: yFinance_data)
-    yFinance_data = ti.xcom_pull(task_ids="extract_yFinance_data")
+    yFinance_data = ti.xcom_pull(task_ids="extract_yFinance_data_task")
     for datafield in yFinance_data.keys():
         print(f"Transforming {datafield} for GBQ Upload")
 
@@ -250,7 +250,7 @@ def transform_yFinance_data(**kwargs):
                 newName = "_" + columnName
                 yfinance_formatted_columns[columnName] = newName
             elif "%" in columnName:
-                newName = columnName.str.replace('%', 'percentage')
+                newName = columnName.replace('%', 'percentage')
                 yfinance_formatted_columns[columnName] = newName
             else:
                 yfinance_formatted_columns[columnName] = columnName
@@ -328,8 +328,12 @@ def load_yFinance_data(**kwargs):
         print(yfinance_data_to_upload[datafield])
         datasetTable = "yfinance." + datafield
         if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
-            bigQueryDB_layer.gbqAppend(
-                yfinance_data_to_upload[datafield], datasetTable)
+            if datafield in ["ticker_status"]:
+                bigQueryDB_layer.gbqReplace(
+                    yfinance_data_to_upload[datafield], datasetTable)
+            else:
+                bigQueryDB_layer.gbqAppend(
+                    yfinance_data_to_upload[datafield], datasetTable)
         elif not yfinance_data_to_upload[datafield].empty:
             bigQueryDB_layer.gbqCreateNewTable(
                 yfinance_data_to_upload[datafield], "yfinance", datafield)
