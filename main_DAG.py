@@ -98,7 +98,6 @@ def extract_tele_data(**kwargs):
 def extract_YahooFin_data(**kwargs):
     # >> extracts YahooFin_data
     # >> return DataFrame: YahooFin_data
-    return pd.DataFrame()
     yahooFinNewsExtractor_layer = yahooFinNewsExtractor()
     # pending time periood
     yahooFinNews_data_raw = yahooFinNewsExtractor_layer.getSGXTickerNews()
