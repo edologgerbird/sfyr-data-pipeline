@@ -2,6 +2,7 @@ from datetime import datetime as dt
 import pandas as pd
 import numpy as np
 import yfinance as yf
+import time
 
 
 class yfinanceExtractor:
@@ -41,13 +42,19 @@ class yfinanceExtractor:
         delisted = []
 
         # Check if ticker exist
+        no_of_tickers = len(self.sgxTickers["ticker"])
+        counter = 1
         for ticker in self.sgxTickers["ticker"]:
+            print(
+                f">> ========== Current Progress: ticker {counter}/{no_of_tickers}")
+            time.sleep(0.23)
             length = yf.download(
                 ticker, period='max', interval='1d', timeout=None).shape[0]
             if length > 0:
                 activeTickers.append(ticker)
             else:
                 delisted.append(ticker)
+            counter += 1
 
         # Generate dataframe of existing and missing tickers
         dfTickers = pd.DataFrame({'Listed': activeTickers})
@@ -214,7 +221,12 @@ class yfinanceExtractor:
         print(quarterly_earnings_and_revenues_df)
 
         quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index(
-        ).rename(columns={'Quarter': 'Quarters'})
+        )
+
+        first_col_name = list(quarterly_earnings_and_revenues_df.columns)[0]
+
+        quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.rename(
+            columns={first_col_name: 'Quarters'})
 
         print(quarterly_earnings_and_revenues_df.columns)
         print(quarterly_earnings_and_revenues_df)

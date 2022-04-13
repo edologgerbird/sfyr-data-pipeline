@@ -83,7 +83,7 @@ def extract_SBR_data(**kwargs):
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return sbr_raw_data.head()
+    return sbr_raw_data
 
 
 def extract_tele_data(**kwargs):
@@ -92,7 +92,7 @@ def extract_tele_data(**kwargs):
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return tele_data_raw.head()
+    return tele_data_raw
 
 
 def extract_YahooFin_data(**kwargs):
@@ -108,7 +108,7 @@ def extract_yFinance_data(**kwargs):
     # >> extract yFinance_data
     # >> return dictionary of DataFrames: yFinance_data
     ti = kwargs['ti']
-    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head()
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head(15)
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
