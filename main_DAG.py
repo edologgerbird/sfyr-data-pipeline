@@ -98,6 +98,7 @@ def extract_tele_data(**kwargs):
 def extract_YahooFin_data(**kwargs):
     # >> extracts YahooFin_data
     # >> return DataFrame: YahooFin_data
+    return pd.DataFrame()
     yahooFinNewsExtractor_layer = yahooFinNewsExtractor()
     # pending time periood
     yahooFinNews_data_raw = yahooFinNewsExtractor_layer.getSGXTickerNews()
@@ -233,7 +234,7 @@ def transform_YahooFin_data(**kwargs):
 def transform_yFinance_data(**kwargs):
     ti = kwargs['ti']
     # >> xcom.pull(DataFrame: yFinance_data)
-    yFinance_data = ti.xcom_pull(task_ids="extract_yFinance_data")
+    yFinance_data = ti.xcom_pull(task_ids="extract_yFinance_data_task")
     for datafield in yFinance_data.keys():
         print(f"Transforming {datafield} for GBQ Upload")
 
@@ -250,7 +251,7 @@ def transform_yFinance_data(**kwargs):
                 newName = "_" + columnName
                 yfinance_formatted_columns[columnName] = newName
             elif "%" in columnName:
-                newName = columnName.str.replace('%', 'percentage')
+                newName = columnName.replace('%', 'percentage')
                 yfinance_formatted_columns[columnName] = newName
             else:
                 yfinance_formatted_columns[columnName] = columnName
