@@ -45,10 +45,10 @@ class bigQueryDB:
     # datasetTableName is to be in the form of datasetName.TableName
     def gbqAppend(self, data, datasetTable):
         # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
-        self.syncTables()
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
                 if not data.empty:
+                    self.syncTables()
                     try:
                         pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                           if_exists="append", credentials=self.credentials)
@@ -66,10 +66,11 @@ class bigQueryDB:
     # datasetTable is to be in the form of datasetName.TableName
     def gbqReplace(self, data, datasetTable):
         # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
-        self.syncTables()
+
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
                 if not data.empty:
+                    self.syncTables()
                     try:
                         pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                           if_exists="replace", credentials=self.credentials)
@@ -85,7 +86,6 @@ class bigQueryDB:
             raise Exception("Table Does not Exist")
 
     def gbqDeleteDataset(self, dataset):
-        self.syncDataset()
         try:
             self.client.delete_table(dataset, delete_contents=True)
             self.syncDataset()
