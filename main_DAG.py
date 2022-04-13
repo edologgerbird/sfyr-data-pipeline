@@ -81,6 +81,7 @@ def extract_SGX_data(**kwargs):
 def extract_SBR_data(**kwargs):
     # >> extracts SBR_data
     # >> return DataFrame: SBR_data
+    return pd.DataFrame()
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
         start_date=extraction_start_date, end_date=extraction_end_date)
@@ -90,6 +91,7 @@ def extract_SBR_data(**kwargs):
 def extract_tele_data(**kwargs):
     # >> extracts tele_data
     # >> return DataFrame: tele_data
+    return pd.DataFrame()
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
         start_date=extraction_start_date, end_date=extraction_end_date)
@@ -153,7 +155,7 @@ def transform_SGX_data(**kwargs):
 def transform_SBR_data(**kwargs):
 
     ti = kwargs['ti']
-
+    return
     # >> xcom.pull(DataFrame: SBR_news_data)
     SBR_data_raw = ti.xcom_pull(task_ids="extract_SBR_data_task")
 
@@ -188,7 +190,7 @@ def transform_SBR_data(**kwargs):
 def transform_tele_data(**kwargs):
 
     ti = kwargs['ti']
-
+    return
     # >> xcom.pull(DataFrame: tele_news_data)
     tele_data_raw = ti.xcom_pull(task_ids="extract_tele_data_task")
 
@@ -396,6 +398,7 @@ def query_YahooFin_news_data(**kwargs):
 
 def generateHeatlists(**kwargs):
     ti = kwargs['ti']
+    return
     # >> xcom.pull(
     #     dictionary: SBR_news_Query_Results,
     #     dictionary: tele_news_Query_Results,
