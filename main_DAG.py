@@ -105,8 +105,8 @@ def extract_YahooFin_data(**kwargs):
 
 
 def extract_yFinance_data(**kwargs):
-    # >> extract YahooFin_data
-    # >> return dictionary of DataFrames: YahooFin_data
+    # >> extract yFinance_data
+    # >> return dictionary of DataFrames: yFinance_data
     ti = kwargs['ti']
     sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head()
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
@@ -216,6 +216,8 @@ def transform_YahooFin_data(**kwargs):
     # >> xcom.pull(DataFrame: YahooFin_news_data)
     yahoo_fin_data = ti.xcom_pull(task_ids="extract_YahooFin_data_task")
     yahooFinNewsTransform_layer = yahooFinNewsTransformer()
+
+    # >> Transform to NoSQL Format
     news_formatted = yahooFinNewsTransform_layer.tickerNewsFormat(
         yahoo_fin_data, start_date=extraction_start_date, end_date=extraction_end_date)
     FinBERT_layer = FinBERT()
@@ -223,16 +225,56 @@ def transform_YahooFin_data(**kwargs):
         news_formatted["message"])
     yahoo_fin_data_transformed = yahooFinNewsTransform_layer.finBERTFormat(
         yahoo_fin_data_sentiments)
+
+    # >> return dictionary: yahoo_fin_data_transformed
     return yahoo_fin_data_transformed
 
 
-# def transform_yFinance_data(**kwargs):
-    # >> Depreciated
+def transform_yFinance_data(**kwargs):
+    ti = kwargs['ti']
+    # >> xcom.pull(DataFrame: yFinance_data)
+    yFinance_data = ti.xcom_pull(task_ids="extract_yFinance_data")
+    for datafield in yFinance_data.keys():
+        print(f"Transforming {datafield} for GBQ Upload")
 
+        # Removing Spaces in Column Names - GBQ Limitation
+        yFinance_data[datafield].columns = yFinance_data[datafield].columns.str.replace(
+            ' ', '_')
 
-###################################
-# 1C. Data Loading Modules (1)
-###################################
+        # Add "_" to start if Column Names start with a number - GBQ Limitation
+        # Replace "%" with Percentage - GBQ Limitation
+        yfinanace_data_columns = yFinance_data[datafield].columns.tolist()
+        yfinance_formatted_columns = {}
+        for columnName in yfinanace_data_columns:
+            if columnName[0].isdigit():
+                newName = "_" + columnName
+                yfinance_formatted_columns[columnName] = newName
+            elif "%" in columnName:
+                newName = columnName.str.replace('%', 'percentage')
+                yfinance_formatted_columns[columnName] = newName
+            else:
+                yfinance_formatted_columns[columnName] = columnName
+        print(yfinance_formatted_columns)
+
+        # Replacing Column Names
+        print(f"Replacing Column Names of {datafield}")
+        yFinance_data[datafield].rename(
+            columns=yfinance_formatted_columns, inplace=True)
+
+        # Convertion of dtypes
+        print(f"Conversion of Column Data Types for {datafield}")
+        yFinance_data[datafield] = yFinance_data[datafield].convert_dtypes(
+        )
+
+        print(f"Transformation of {datafield} Complete")
+
+    #  >> return dictionary: yFinance_data_transformed
+    return yFinance_data
+
+    ###################################
+    # 1C. Data Loading Modules (1)
+    ###################################
+
 
 def load_SGX_data(**kwargs):
     ti = kwargs['ti']
@@ -279,15 +321,20 @@ def load_yFinance_data(**kwargs):
     ti = kwargs['ti']
     bigQueryDB_layer = bigQueryDB()
     yfinance_data_to_upload = ti.xcom_pull(
-        task_ids='extract_yFinance_data_task')
+        task_ids='transform_yFinance_data_task')
+
     for datafield in yfinance_data_to_upload.keys():
+        print(f"Uploading {datafield} data")
+        print(yfinance_data_to_upload[datafield])
         datasetTable = "yfinance." + datafield
-        if bigQueryDB_layer.gbqCheckDatasetExist(datasetTable):
+        if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
             bigQueryDB_layer.gbqAppend(
                 yfinance_data_to_upload[datafield], datasetTable)
-        else:
+        elif not yfinance_data_to_upload[datafield].empty:
             bigQueryDB_layer.gbqCreateNewTable(
                 yfinance_data_to_upload[datafield], "yfinance", datafield)
+        else:
+            print("Empty Dataframe")
 
     return True
 
@@ -486,9 +533,9 @@ transform_YahooFin_data_task = PythonOperator(task_id='transform_YahooFin_data_t
                                               python_callable=transform_YahooFin_data,
                                               provide_context=True, dag=dag)
 
-# transform_yFinance_data_task = PythonOperator(task_id='transform_yFinance_data_task',
-#                                               python_callable=transform_yFinance_data,
-#                                               provide_context=True, dag=dag)
+transform_yFinance_data_task = PythonOperator(task_id='transform_yFinance_data_task',
+                                              python_callable=transform_yFinance_data,
+                                              provide_context=True, dag=dag)
 
 
 # Does yFinance data need transforming?
@@ -566,7 +613,7 @@ transform_tele_data_task >> load_tele_data_task
 
 transform_SBR_data_task >> load_SBR_data_task
 
-extract_yFinance_data_task >> load_yFinance_data_task
+extract_yFinance_data_task >> transform_yFinance_data_task >> load_yFinance_data_task
 
 extract_YahooFin_data_task >> transform_YahooFin_data_task >> [
     load_YahooFin_data_task, query_YahooFin_data_task]
