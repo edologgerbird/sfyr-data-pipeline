@@ -347,14 +347,14 @@ def load_yFinance_data(**kwargs):
         except Exception as e:
             traceback_info = traceback.format_exc()
             print(
-                f" =====================================>>>>>>> ERROR WITH {datafield}")
+                f">>>> ERROR WITH {datafield}")
             print(e)
             print(traceback_info)
             errors[datafield] = traceback_info
             continue
 
     errors_df = pd.DataFrame(errors.items())
-    errors_df.to_csv(f"error_.csv")
+    errors_df.to_csv(f"error_{datetime.now()}_.csv".replace(":", " "))
 
     return True
 
