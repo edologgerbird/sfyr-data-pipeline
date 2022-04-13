@@ -1,7 +1,6 @@
 import pandas as pd
 import re
 import json
-from data_load.bigQueryAPI import bigQueryDB
 
 
 class TickerExtractor:
@@ -16,8 +15,6 @@ class TickerExtractor:
 
         print("Querying SGX Data...")
         self.SGX_data = SGX_data
-        # self.SGX_data = bigQueryDB().getDataFields(self.datasetTable)
-        # self.SGX_data = pd.read_csv("csv_store/SGX_data.csv")  # Depreciated
         print("Successfully retrieved SGX Data")
         print("Initialising Mappers...")
         self.SGX_ticker_map_clean = {x: y for x, y in zip(

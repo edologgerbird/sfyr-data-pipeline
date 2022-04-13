@@ -1,11 +1,9 @@
 from matplotlib.pyplot import text
 import pandas as pd
 import numpy as np
-import tokenizers
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import gc
-import time
 
 
 class FinBERT:
@@ -77,10 +75,8 @@ class FinBERT:
 
 
 # Test
-# start_time = time.time()
 # # data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
 # # data["Title_Text"] = data["Title"] + " " + data["Text"]
 # FinBERT_layer = FinBERT()
 # input_series = pd.Series([None])
 # FinBERT_layer.FinBert_pipeline(input_series)
-# print("--- %s seconds ---" % (time.time() - start_time))
