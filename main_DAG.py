@@ -33,7 +33,8 @@ from datetime import datetime, timedelta
 import datetime as dt
 import pandas as pd
 from utils.utils import get_execute_time, get_extraction_schedule
-
+import traceback
+import sys
 
 ####################################################
 # 0. DEFINE GLOBAL VARIABLES
@@ -83,7 +84,7 @@ def extract_SBR_data(**kwargs):
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return sbr_raw_data
+    return sbr_raw_data.head(10)
 
 
 def extract_tele_data(**kwargs):
@@ -92,10 +93,11 @@ def extract_tele_data(**kwargs):
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return tele_data_raw
+    return tele_data_raw.head(10)
 
 
 def extract_YahooFin_data(**kwargs):
+    return pd.DataFrame()
     # >> extracts YahooFin_data
     # >> return DataFrame: YahooFin_data
     yahooFinNewsExtractor_layer = yahooFinNewsExtractor()
@@ -323,22 +325,36 @@ def load_yFinance_data(**kwargs):
     yfinance_data_to_upload = ti.xcom_pull(
         task_ids='transform_yFinance_data_task')
 
+    errors = dict()
+
     for datafield in yfinance_data_to_upload.keys():
-        print(f"Uploading {datafield} data")
-        print(yfinance_data_to_upload[datafield])
-        datasetTable = "yfinance." + datafield
-        if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
-            if datafield in ["ticker_status"]:
-                bigQueryDB_layer.gbqReplace(
-                    yfinance_data_to_upload[datafield], datasetTable)
+        try:
+            print(f"Uploading {datafield} data")
+            print(yfinance_data_to_upload[datafield])
+            datasetTable = "yfinance." + datafield
+            if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
+                if datafield in ["ticker_status"]:
+                    bigQueryDB_layer.gbqReplace(
+                        yfinance_data_to_upload[datafield], datasetTable)
+                else:
+                    bigQueryDB_layer.gbqAppend(
+                        yfinance_data_to_upload[datafield], datasetTable)
+            elif not yfinance_data_to_upload[datafield].empty:
+                bigQueryDB_layer.gbqCreateNewTable(
+                    yfinance_data_to_upload[datafield], "yfinance", datafield)
             else:
-                bigQueryDB_layer.gbqAppend(
-                    yfinance_data_to_upload[datafield], datasetTable)
-        elif not yfinance_data_to_upload[datafield].empty:
-            bigQueryDB_layer.gbqCreateNewTable(
-                yfinance_data_to_upload[datafield], "yfinance", datafield)
-        else:
-            print("Empty Dataframe")
+                print("Empty Dataframe")
+        except Exception as e:
+            traceback_info = traceback.format_exc()
+            print(
+                f" =====================================>>>>>>> ERROR WITH {datafield}")
+            print(e)
+            print(traceback_info)
+            errors[datafield] = traceback_info
+            continue
+
+    errors_df = pd.DataFrame(errors.items())
+    errors_df.to_csv(f"error_.csv")
 
     return True
 
