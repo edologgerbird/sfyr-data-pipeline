@@ -124,12 +124,20 @@ class yfinanceExtractor:
                 [financial_statements_df, financial_statements])
             counter += 1
         financial_statements_df = financial_statements_df.reset_index(
-        ).rename(columns={financial_statements_df.index.name: 'Date'})
+        ).rename(columns={financial_statements_df.columns[0]: 'Date'})
 
         # Remove Rows where column 1 is not a Date Object
-        financial_statements_df.drop(
-            financial_statements_df["-" not in financial_statements_df["Date"]].index)
+        print(financial_statements_df)
+        print(financial_statements_df.columns)
 
+        # financial_statements_df.drop(
+        #     financial_statements_df["-" not in financial_statements_df["Date"] | type(financial_statements_df["Date"]) is not pd.Timestamp].index, inplace=True)
+        financial_statements_df["Date"] = financial_statements_df["Date"].apply(
+            lambda x: x if type(x) != str else np.NaN)
+        financial_statements_df = financial_statements_df.dropna(subset=[
+                                                                 "Date"])
+        print('test test here here')
+        print(financial_statements_df)
         financial_statements_df = financial_statements_df.fillna(value=np.nan)
 
         # Store to Shared Data
@@ -160,7 +168,7 @@ class yfinanceExtractor:
                 [quarterly_financial_statements_df, financial_statements])
             counter += 1
         quarterly_financial_statements_df = quarterly_financial_statements_df.reset_index(
-        ).rename(columns={quarterly_financial_statements_df.index.name: 'Date'})
+        ).rename(columns={quarterly_financial_statements_df.columns[0]: 'Date'})
 
         quarterly_financial_statements_df = quarterly_financial_statements_df.fillna(
             value=np.nan)
