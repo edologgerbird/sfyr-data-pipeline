@@ -123,15 +123,14 @@ class yfinanceExtractor:
             financial_statements_df = pd.concat(
                 [financial_statements_df, financial_statements])
             counter += 1
+        print(financial_statements_df)
+
         financial_statements_df = financial_statements_df.reset_index(
-        ).rename(columns={financial_statements_df.columns[0]: 'Date'})
+        )
+        financial_statements_df = financial_statements_df.rename(
+            columns={financial_statements_df.columns[0]: 'Date'})
 
         # Remove Rows where column 1 is not a Date Object
-        print(financial_statements_df)
-        print(financial_statements_df.columns)
-
-        # financial_statements_df.drop(
-        #     financial_statements_df["-" not in financial_statements_df["Date"] | type(financial_statements_df["Date"]) is not pd.Timestamp].index, inplace=True)
         financial_statements_df["Date"] = financial_statements_df["Date"].apply(
             lambda x: x if type(x) != str else np.NaN)
         financial_statements_df = financial_statements_df.dropna(subset=[
@@ -167,8 +166,14 @@ class yfinanceExtractor:
             quarterly_financial_statements_df = pd.concat(
                 [quarterly_financial_statements_df, financial_statements])
             counter += 1
-        quarterly_financial_statements_df = quarterly_financial_statements_df.reset_index(
-        ).rename(columns={quarterly_financial_statements_df.columns[0]: 'Date'})
+        quarterly_financial_statements_df = quarterly_financial_statements_df.reset_index()
+        quarterly_financial_statements_df = quarterly_financial_statements_df.rename(
+            columns={quarterly_financial_statements_df.columns[0]: 'Date'})
+
+        quarterly_financial_statements_df["Date"] = quarterly_financial_statements_df["Date"].apply(
+            lambda x: x if type(x) != str else np.NaN)
+        quarterly_financial_statements_df = quarterly_financial_statements_df.dropna(subset=[
+            "Date"])
 
         quarterly_financial_statements_df = quarterly_financial_statements_df.fillna(
             value=np.nan)
@@ -272,7 +277,7 @@ class yfinanceExtractor:
 
             else:
                 ticker_majorHolders = ticker.major_holders[0].rename(
-                    {0: '% of Shares Held by All Insider', 1: '% of Shares Held by Institutions', 2: '% of Float Held by Institutions', 3: 'Number of Institutions Holding Shares'})
+                    {0: r'% of Shares Held by All Insider', 1: r'% of Shares Held by Institutions', 2: r'% of Float Held by Institutions', 3: 'Number of Institutions Holding Shares'})
                 ticker_majorHolders['Tickers'] = self.removeSI(ticker.ticker)
                 ticker_majorHolders = ticker_majorHolders.transpose()
                 majorHolders_df = pd.concat(
@@ -299,9 +304,14 @@ class yfinanceExtractor:
                 ticker_share['Tickers'] = self.removeSI(ticker.ticker)
                 basic_shares_df = pd.concat(
                     [basic_shares_df, ticker_share])
+        print(basic_shares_df)
         basic_shares_df = basic_shares_df.reset_index()
         # Store to Shared Data
+        print(basic_shares_df)
+        basic_shares_df = basic_shares_df.rename(
+            columns={basic_shares_df.columns[0]: "Year"})
         self.yfinanceData["basic_shares"] = basic_shares_df
+        print(basic_shares_df)
         return basic_shares_df
 
     def getStockInfo(self):
@@ -324,9 +334,18 @@ class yfinanceExtractor:
                 # Store Updated Series
                 all_tickers_dict[self.removeSI(
                     ticker.ticker)] = pd.Series(updated_ticker_info)
-
         all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
-        ).reset_index().rename(columns={'index': 'Tickers'})
+        )
+
+        all_tickers_info = all_tickers_info.reset_index()
+
+        all_tickers_info = all_tickers_info.rename(
+            columns={'index': 'Tickers'})
+
+        print(all_tickers_info)
+        print(all_tickers_info.columns)
+        for c in all_tickers_info.columns:
+            print(c)
 
         self.yfinanceData["stock_info"] = all_tickers_info
 
@@ -358,8 +377,13 @@ class yfinanceExtractor:
                 ticker_calendar['Ticker'] = self.removeSI(ticker.ticker)
                 stock_calendar_df = pd.concat(
                     [stock_calendar_df, ticker_calendar])
+        print(stock_calendar_df)
         stock_calendar_df = stock_calendar_df.reset_index(drop=True)
         # Store to Shared Data
+        print(stock_calendar_df)
+        for c in stock_calendar_df.columns:
+            print(c)
+
         self.yfinanceData["stock_calendar"] = stock_calendar_df
         return stock_calendar_df
 
