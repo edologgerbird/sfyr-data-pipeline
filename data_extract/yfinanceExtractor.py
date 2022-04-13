@@ -103,9 +103,13 @@ class yfinanceExtractor:
     def getFinancialStatement(self):
         # Retrieve financial statement (Financials, Balance Sheet and Cash flow)
         financial_statements_df = pd.DataFrame()
+        counter = 1
 
+        # get each financial statement
         for ticker in self.ticker_active:
-            # get each financial statement
+
+            print(
+                f">> ========== Overall Progress:{counter}/{len(self.ticker_active)} -  Extracting {ticker} ")
             pnl = ticker.financials
             balance_sheet = ticker.balancesheet
             cf = ticker.cashflow
@@ -118,8 +122,13 @@ class yfinanceExtractor:
             financial_statements['Tickers'] = self.removeSI(ticker.ticker)
             financial_statements_df = pd.concat(
                 [financial_statements_df, financial_statements])
+            counter += 1
         financial_statements_df = financial_statements_df.reset_index(
         ).rename(columns={financial_statements_df.index.name: 'Date'})
+
+        # Remove Rows where column 1 is not a Date Object
+        financial_statements_df.drop(
+            financial_statements_df["-" not in financial_statements_df["Date"]].index)
 
         financial_statements_df = financial_statements_df.fillna(value=np.nan)
 
@@ -130,9 +139,13 @@ class yfinanceExtractor:
     def getQuarterlyFinancialStatement(self):
         # Get quarterly financial statement (Financials, Balance Sheet, Cashflows)
         quarterly_financial_statements_df = pd.DataFrame()
+        counter = 1
 
         for ticker in self.ticker_active:
             # get each quarter financial statement
+            print(
+                f">> ========== Current Progress: ticker {counter}/{len(self.ticker_active)}")
+
             pnl = ticker.quarterly_financials
             balance_sheet = ticker.quarterly_balancesheet
             cf = ticker.quarterly_cashflow
@@ -145,6 +158,7 @@ class yfinanceExtractor:
             financial_statements['Tickers'] = self.removeSI(ticker.ticker)
             quarterly_financial_statements_df = pd.concat(
                 [quarterly_financial_statements_df, financial_statements])
+            counter += 1
         quarterly_financial_statements_df = quarterly_financial_statements_df.reset_index(
         ).rename(columns={quarterly_financial_statements_df.index.name: 'Date'})
 
@@ -434,15 +448,15 @@ class yfinanceExtractor:
     def yfinanceQuery(self):
 
         print("Query Historical Data")
-        self.getHistoricalData()
+        print(self.getHistoricalData())
         print("Historical Data Query Complete")
 
         print("Query Financial Statement")
-        self.getFinancialStatement()
+        print(self.getFinancialStatement())
         print("Financial Statement Query Complete")
 
         print("Query Quarterly Financial Statement")
-        self.getQuarterlyFinancialStatement()
+        print(self.getQuarterlyFinancialStatement())
         print("Quarterly Financial Statement Query Complete")
 
         print("Query ISIN Code")
@@ -450,11 +464,11 @@ class yfinanceExtractor:
         print("ISIN Code Query Complete")
 
         print("Query Earnings and Revenue")
-        self.getEarningsandRevenue()
+        print(self.getEarningsandRevenue())
         print("Earnings and Revenue Query Complete")
 
         print("Query Quarterly Earnings and Revenue")
-        self.getQuarterlyEarningsandRevenue()
+        print(self.getQuarterlyEarningsandRevenue())
         print("Quarterly Earnings and Revenue Query Complete")
 
         print("Query Major Holders")
@@ -466,7 +480,7 @@ class yfinanceExtractor:
         print("Basic Shares Query Complete")
 
         print("Query Stock Info")
-        self.getStockInfo()
+        print(self.getStockInfo())
         print("Stock Info Query Complete")
 
         print("Extract Stock Industry")
