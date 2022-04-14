@@ -186,7 +186,7 @@ class bigQueryDB:
         print("Tables Succesfully Updated")
         return updatedTableList
 
-    # Returns a dictionary
+    # Returns a list of schemaField
     def getTableSchema(self, datasetTable):
         queryString = "SELECT * FROM " + datasetTable
         query = "" + queryString + ""
@@ -196,6 +196,9 @@ class bigQueryDB:
         return schema
 
     def getTableColumns(self, datasetTable):
+        # --- Schema Field Attributes
+        # field_type: data type of column
+        # name: name of column
         schema = self.getTableSchema(datasetTable)
         column_names = [schemafield.name for schemafield in schema]
         data_type = [schemafield.field_type for schemafield in schema]
