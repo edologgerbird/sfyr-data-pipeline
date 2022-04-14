@@ -31,8 +31,8 @@ class TelegramExtractor:
         if (self.start_date is not None and self.end_date is not None and self.start_date > self.end_date):
             raise Exception('Start date input must be before end date input')
 
-        print('Extracting from:', self.start_date + timedelta(days=1),
-              'to:', self.end_date + timedelta(days=-1), '(inclusive)')
+        # print('Extracting from:', self.start_date + timedelta(days=1),
+        #       'to:', self.end_date + timedelta(days=-1), '(inclusive)')
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.connect_to_telegram_server())
