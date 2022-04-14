@@ -350,11 +350,17 @@ class yfinanceExtractor:
         all_tickers_info = all_tickers_info.rename(
             columns={'index': 'Tickers'})
 
+        for column in all_tickers_info.columns:
+            all_tickers_info[column] = all_tickers_info[column].apply(lambda x: str(x) if ((str(x)+" ")[
+                0] in ["{", "["]) else x)
+
         print(all_tickers_info)
         print(all_tickers_info.columns)
         for c in all_tickers_info.columns:
             print(c)
-
+        print("DTYPES HERE - all ticker info")
+        print(all_tickers_info.dtypes)
+        all_tickers_info.to_csv("all_ticker.csv")
         self.yfinanceData["stock_info"] = all_tickers_info
 
         return all_tickers_info
