@@ -47,7 +47,7 @@ class yfinanceExtractor:
         counter = 1
         for ticker in self.sgxTickers["ticker"]:
             print(
-                f">> ========== Current Progress: ticker {counter}/{no_of_tickers}")
+                f">> ========== Extracting {ticker} Overall Progress: ticker {counter}/{no_of_tickers}")
             time.sleep(0.23)
             length = yf.download(
                 ticker, period='max', interval='1d', timeout=None).shape[0]
@@ -74,7 +74,10 @@ class yfinanceExtractor:
     def getHistoricalData(self, start_date=dt.now()):
         # Listed Tickers' historical market data
         historical_data_df = pd.DataFrame()
+        counter = 1
         for ticker in self.ticker_active:
+            print(
+                f">> ========== Extracting {ticker} Overall Progress: ticker {counter}/{len(self.ticker_active)}")
             if start_date is None:
                 tickerHistoricalData = yf.download(
                     ticker.ticker, period='max', interval='1d', timeout=None)
@@ -91,6 +94,8 @@ class yfinanceExtractor:
                     tickerHistoricalData["Market Status"] = "Market_Open"
                 else:
                     tickerHistoricalData["Market Status"] = "Market_Closed"
+
+            counter += 1
 
             historical_data_df = pd.concat(
                 [historical_data_df, tickerHistoricalData])
@@ -497,6 +502,7 @@ class yfinanceExtractor:
 
     def yfinanceQuery(self):
 
+<<<<<<< HEAD
         print("Query Historical Data")
         self.getHistoricalData()
         print("Historical Data Query Complete")
@@ -504,15 +510,25 @@ class yfinanceExtractor:
         print("Query Financial Statement")
         self.getFinancialStatement()
         print("Financial Statement Query Complete")
+=======
+        print(">> ========== START: Historical Data Query")
+        print(self.getHistoricalData())
+        print(">> ========== COMPLETE: Historical Data Query")
 
-        print("Query Quarterly Financial Statement")
+        print(">> ========== START: Financial Statement Query")
+        print(self.getFinancialStatement())
+        print(">> ========== COMPLETE: Financial Statement Query")
+>>>>>>> 4407269482bddd7640ad1dd6dfc139da7aa52bee
+
+        print(">> ========== START: Quarterly Financial Statement Query")
         print(self.getQuarterlyFinancialStatement())
-        print("Quarterly Financial Statement Query Complete")
+        print(">> ========== COMPLETE: Quarterly Financial Statement Query")
 
-        print("Query ISIN Code")
+        print(">> ========== START: ISIN Code Query")
         self.getISINcode()
-        print("ISIN Code Query Complete")
+        print(">> ========== COMPLETE: ISIN Code Query")
 
+<<<<<<< HEAD
         print("Query Earnings and Revenue")
         self.getEarningsandRevenue()
         print("Earnings and Revenue Query Complete")
@@ -520,41 +536,56 @@ class yfinanceExtractor:
         print("Query Quarterly Earnings and Revenue")
         self.getQuarterlyEarningsandRevenue()
         print("Quarterly Earnings and Revenue Query Complete")
+=======
+        print(">> ========== START: Earnings and Revenue Query")
+        print(self.getEarningsandRevenue())
+        print(">> ========== COMPLETE: Earnings and Revenue Query")
 
-        print("Query Major Holders")
+        print(">> ========== START: Quarterly Earnings and Revenue Query")
+        print(self.getQuarterlyEarningsandRevenue())
+        print(">> ========== COMPELTE: Quarterly Earnings and Revenue Query")
+>>>>>>> 4407269482bddd7640ad1dd6dfc139da7aa52bee
+
+        print(">> ========== START: Major Holders Query")
         self.getMajorHolders()
-        print("Major Holders Query Complete")
+        print(">> ========== COMPLETE: Major Holders Query")
 
-        print("Query Basic Shares")
+        print(">> ========== START: Basic Shares Query")
         self.getBasicShares()
-        print("Basic Shares Query Complete")
+        print(">> ========== COMPLETE: Basic Shares Query")
 
+<<<<<<< HEAD
         print("Query Stock Info")
         self.getStockInfo()
         print("Stock Info Query Complete")
+=======
+        print(">> ========== START: Stock Info Query")
+        print(self.getStockInfo())
+        print(">> ========== COMPLETE: Stock Info Query")
+>>>>>>> 4407269482bddd7640ad1dd6dfc139da7aa52bee
 
-        print("Extract Stock Industry")
+        print(">> ========== START: Stock Industry Extraction")
         self.getStockIndustry()
-        print("Stock Industry Extraction Complete")
+        print(">> ========== COMPLETE: Stock Industry Extraction")
 
-        print("Query Stock Calendar")
+        print(">> ========== START: Stock Calendar Query")
         self.getCalendar()
-        print("Stock Calendar Query Complete")
+        print(">> ========== COMPLETE: Stock Calendar Query")
 
-        print("Query Analyst Recommendations")
+        print(">> ========== START: Analyst Recommendations Query")
         self.getRecommendations()
-        print("Analyst Recommendations Query Complete")
+        print(">> ========== COMPLETE: Analyst Recommendations Query")
 
-        print("Query Stock Analysis")
+        print(">> ========== START: Stock Analysis Query")
         self.getAnalysis()
-        print("Stock Analysis Query Complete")
+        print(">> ========== COMPLETE: Stock Analysis Query")
 
-        print("Query Mutual Fund Holders")
+        print(">> ========== START: Mutual Fund Holders Query")
         self.getMutualFundHolders()
-        print("Mutual Fund Holders Query Complete")
+        print(">> ========== COMPLETE: Mutual Fund Holders Query")
 
-        print("Query Institutional Holders")
+        print(">> ========== START: Institutional Holders Querys")
         self.getInstitutionalHolders()
-        print("Institutional Holders Query Complete")
+        print(">> ========== COMPLETE: Institutional Holders Query")
 
         return self.yfinanceData
