@@ -74,7 +74,7 @@ def extract_SGX_data(**kwargs):
     # >> return DataFrame: SGX_data
     SGXDataExtractor_layer = SGXDataExtractor()
     SGXDataExtractor_layer.load_SGX_data_from_source()
-    sgx_data = SGXDataExtractor_layer.get_SGX_data().head(15)
+    sgx_data = SGXDataExtractor_layer.get_SGX_data().head(30)
     return (sgx_data, SGXDataExtractor_layer)
 
 
@@ -403,7 +403,6 @@ def query_YahooFin_news_data(**kwargs):
 
 def generateHeatlists(**kwargs):
     ti = kwargs['ti']
-    return
     # >> xcom.pull(
     #     dictionary: SBR_news_Query_Results,
     #     dictionary: tele_news_Query_Results,
