@@ -269,6 +269,12 @@ def transform_yFinance_data(**kwargs):
         yFinance_data[datafield] = yFinance_data[datafield].loc[:,
                                                                 ~yFinance_data[datafield].columns.duplicated()]
 
+        # cast dict and lists to string type
+
+        # for column in yFinance_data[datafield].columns:
+        #     yFinance_data[datafield][column] = yFinance_data[datafield][column].apply(
+        #         lambda x: str(x) if (type(x) == dict or type(x) == list) else x)
+
         print(f"Transformation of {datafield} Complete")
 
     #  >> return dictionary: yFinance_data_transformed
