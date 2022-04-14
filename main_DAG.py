@@ -112,7 +112,7 @@ def extract_yFinance_data(**kwargs):
     # >> extract yFinance_data
     # >> return dictionary of DataFrames: yFinance_data
     ti = kwargs['ti']
-    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head(15)
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head(30)
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
@@ -236,6 +236,7 @@ def transform_YahooFin_data(**kwargs):
 
 def transform_yFinance_data(**kwargs):
     ti = kwargs['ti']
+
     # >> xcom.pull(DataFrame: yFinance_data)
     yFinance_data = ti.xcom_pull(task_ids="extract_yFinance_data_task")
     for datafield in yFinance_data.keys():
@@ -408,7 +409,7 @@ def query_YahooFin_news_data(**kwargs):
 
 def generateHeatlists(**kwargs):
     ti = kwargs['ti']
-    return
+    # return
     # >> xcom.pull(
     #     dictionary: SBR_news_Query_Results,
     #     dictionary: tele_news_Query_Results,

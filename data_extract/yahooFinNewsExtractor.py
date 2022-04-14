@@ -20,8 +20,7 @@ class yahooFinNewsExtractor:
                 tickerNews = news.get_yf_rss(ticker)
             if tickerNews:
                 output.append([ticker, tickerNews])
-        output = pd.DataFrame(output)
-        output.columns = ["Ticker", "News"]
+        output = pd.DataFrame(output, columns=["Ticker", "News"])
         return output
 
     def getSGXTickerNews(self):
