@@ -15,11 +15,11 @@ class HeatListGenerator:
         print("Querying SGX Data...")
         self.sgx_data = sgx_data
         self.sgx_data_mapper = {x: y for x, y in zip(
-            self.sgx_data["ticker"], self.sgx_data["company_name"])}
+            self.sgx_data["Tickers"], self.sgx_data["company_name"])}
 
         self.industry_df = industry_df
         self.industry_mapper = {x: y for x, y in zip(
-            self.industry_df["ticker"], self.industry_df["industry"])}
+            self.industry_df["Tickers"], self.industry_df["industry"])}
 
         self.ticker_heat_list = dict()
         self.industry_heat_list = dict()
@@ -60,7 +60,7 @@ class HeatListGenerator:
         return df
 
     def generateHeatScoreFromRes(self, dict_res):
-        ticker_list = [ticker for sublist in [x["tickers"]
+        ticker_list = [ticker for sublist in [x["Tickers"]
                                               for x in self.dict_query] for ticker in sublist]
         for ticker in ticker_list:
             if ticker not in self.ticker_heat_list:
@@ -91,7 +91,8 @@ class HeatListGenerator:
             self.generateHeatScoreFromRes(res)
         ticker_heat_list, industry_heat_list = self.getHeatListNormalised()
         ticker_heat_list.reset_index(inplace=True)
-        ticker_heat_list = ticker_heat_list.rename(columns={'index': 'ticker'})
+        ticker_heat_list = ticker_heat_list.rename(
+            columns={'index': 'Tickers'})
         ticker_heat_list["company"] = ticker_heat_list['ticker'].apply(
             lambda x: self.tickers_present[x])
 

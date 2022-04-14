@@ -502,7 +502,6 @@ class yfinanceExtractor:
 
     def yfinanceQuery(self):
 
-<<<<<<< HEAD
         print("Query Historical Data")
         self.getHistoricalData()
         print("Historical Data Query Complete")
@@ -510,15 +509,6 @@ class yfinanceExtractor:
         print("Query Financial Statement")
         self.getFinancialStatement()
         print("Financial Statement Query Complete")
-=======
-        print(">> ========== START: Historical Data Query")
-        print(self.getHistoricalData())
-        print(">> ========== COMPLETE: Historical Data Query")
-
-        print(">> ========== START: Financial Statement Query")
-        print(self.getFinancialStatement())
-        print(">> ========== COMPLETE: Financial Statement Query")
->>>>>>> 4407269482bddd7640ad1dd6dfc139da7aa52bee
 
         print(">> ========== START: Quarterly Financial Statement Query")
         print(self.getQuarterlyFinancialStatement())
@@ -528,7 +518,6 @@ class yfinanceExtractor:
         self.getISINcode()
         print(">> ========== COMPLETE: ISIN Code Query")
 
-<<<<<<< HEAD
         print("Query Earnings and Revenue")
         self.getEarningsandRevenue()
         print("Earnings and Revenue Query Complete")
@@ -536,15 +525,6 @@ class yfinanceExtractor:
         print("Query Quarterly Earnings and Revenue")
         self.getQuarterlyEarningsandRevenue()
         print("Quarterly Earnings and Revenue Query Complete")
-=======
-        print(">> ========== START: Earnings and Revenue Query")
-        print(self.getEarningsandRevenue())
-        print(">> ========== COMPLETE: Earnings and Revenue Query")
-
-        print(">> ========== START: Quarterly Earnings and Revenue Query")
-        print(self.getQuarterlyEarningsandRevenue())
-        print(">> ========== COMPELTE: Quarterly Earnings and Revenue Query")
->>>>>>> 4407269482bddd7640ad1dd6dfc139da7aa52bee
 
         print(">> ========== START: Major Holders Query")
         self.getMajorHolders()
@@ -554,15 +534,9 @@ class yfinanceExtractor:
         self.getBasicShares()
         print(">> ========== COMPLETE: Basic Shares Query")
 
-<<<<<<< HEAD
         print("Query Stock Info")
         self.getStockInfo()
         print("Stock Info Query Complete")
-=======
-        print(">> ========== START: Stock Info Query")
-        print(self.getStockInfo())
-        print(">> ========== COMPLETE: Stock Info Query")
->>>>>>> 4407269482bddd7640ad1dd6dfc139da7aa52bee
 
         print(">> ========== START: Stock Industry Extraction")
         self.getStockIndustry()
