@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import time
+from functools import reduce
 
 
 class yfinanceExtractor:
@@ -101,49 +102,60 @@ class yfinanceExtractor:
         return historical_data_df
 
     def getFinancialStatement(self):
-        # Retrieve financial statement (Financials, Balance Sheet and Cash flow)
         financial_statements_df = pd.DataFrame()
         counter = 1
-
-        # get each financial statement
         for ticker in self.ticker_active:
-
             print(
                 f">> ========== Overall Progress:{counter}/{len(self.ticker_active)} -  Extracting {ticker} ")
-            pnl = ticker.financials
-            balance_sheet = ticker.balancesheet
-            cf = ticker.cashflow
+            profit_and_loss = ticker.financials.T.rename_axis(
+                'Date').reset_index()
 
-            # concatenate into one dataframe
-            financial_statements = pd.concat(
-                [pnl, balance_sheet, cf], axis=1).transpose()
+            balance_sheet = ticker.balance_sheet.T.rename_axis(
+                'Date').reset_index()
 
-            # Add ticker to dataframe
-            financial_statements['Tickers'] = self.removeSI(ticker.ticker)
-            financial_statements_df = pd.concat(
-                [financial_statements_df, financial_statements])
+            cashflow = ticker.cashflow.T.rename_axis(
+                'Date').reset_index()
+
+            financial_statements = reduce(lambda left_table, right_table: pd.merge(
+                left_table, right_table, on='Date'), [profit_and_loss, balance_sheet, cashflow])
+            financial_statements = financial_statements.fillna(np.NaN)
+            # print(financial_statements)
+            if type(financial_statements["Date"].values[0]) != str:
+                financial_statements_df = pd.concat(
+                    [financial_statements_df, financial_statements])
             counter += 1
-        print(financial_statements_df)
-
-        financial_statements_df = financial_statements_df.reset_index(
-        )
-        financial_statements_df = financial_statements_df.rename(
-            columns={financial_statements_df.columns[0]: 'Date'})
-
-        # Remove Rows where column 1 is not a Date Object
-        financial_statements_df["Date"] = financial_statements_df["Date"].apply(
-            lambda x: x if type(x) != str else np.NaN)
-        financial_statements_df = financial_statements_df.dropna(subset=[
-                                                                 "Date"])
-        print('test test here here')
-        print(financial_statements_df)
-        financial_statements_df = financial_statements_df.fillna(value=np.nan)
-
-        # Store to Shared Data
+            print(financial_statements_df)
         self.yfinanceData["financial_statements"] = financial_statements_df
         return financial_statements_df
 
     def getQuarterlyFinancialStatement(self):
+        quarterly_financial_statements_df = pd.DataFrame()
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f">> ========== Overall Progress:{counter}/{len(self.ticker_active)} -  Extracting {ticker} ")
+            profit_and_loss = ticker.quarterly_financials.T.rename_axis(
+                'Date').reset_index()
+
+            balance_sheet = ticker.quarterly_balancesheet.T.rename_axis(
+                'Date').reset_index()
+
+            cashflow = ticker.quarterly_cashflow.T.rename_axis(
+                'Date').reset_index()
+
+            financial_statements = reduce(lambda left_table, right_table: pd.merge(
+                left_table, right_table, on='Date'), [profit_and_loss, balance_sheet, cashflow])
+            financial_statements = financial_statements.fillna(np.NaN)
+            # print(financial_statements)
+            if type(financial_statements["Date"].values[0]) != str:
+                quarterly_financial_statements_df = pd.concat(
+                    [quarterly_financial_statements_df, financial_statements])
+            counter += 1
+            print(quarterly_financial_statements_df)
+        self.yfinanceData["quarterly_financial_statements"] = quarterly_financial_statements_df
+        return quarterly_financial_statements_df
+
+    def getQuarterlyFinancialStatement_old(self):
         # Get quarterly financial statement (Financials, Balance Sheet, Cashflows)
         quarterly_financial_statements_df = pd.DataFrame()
         counter = 1
@@ -267,33 +279,25 @@ class yfinanceExtractor:
 
     def getMajorHolders(self):
         # Get Major Holders
-        majorHolders_df = pd.DataFrame()
+        majorHolders_df = pd.DataFrame(columns=["Tickers", '% of Shares Held by All Insider', '% of Shares Held by Institutions',
+                                       '% of Float Held by Institutions', 'Number of Institutions Holding Shares'])
         for ticker in self.ticker_active:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
-                ticker_majorHolders = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)}))
-                majorHolders_df = pd.concat(
-                    [majorHolders_df, ticker_majorHolders])
-
+                ticker_majorHolders = pd.DataFrame(columns=["Tickers"])
+                ticker_majorHolders["Tickers"] = self.removeSI(ticker.ticker)
+                majorHolders_df = majorHolders_df.merge(
+                    ticker_majorHolders, how="outer", on=["Tickers"])
+                print(majorHolders_df)
             else:
-                print(ticker.major_holders)
-                ticker_majorHolders = ticker.major_holders[0].rename(
-                    {0: r'% of Shares Held by All Insider', 1: r'% of Shares Held by Institutions', 2: r'% of Float Held by Institutions', 3: 'Number of Institutions Holding Shares'})
-                ticker_majorHolders['Tickers'] = self.removeSI(ticker.ticker)
-                print(ticker_majorHolders)
-                ticker_majorHolders = ticker_majorHolders.transpose()
-                majorHolders_df = pd.concat(
-                    [majorHolders_df, ticker_majorHolders], axis=1)
-
-        print(majorHolders_df)
-        majorHolders_df = majorHolders_df.transpose()
-        majorHolders_df = majorHolders_df.reset_index(drop=True)
-        print(majorHolders_df)
-        print("DTYPES HERE")
-        print(majorHolders_df.dtypes)
-        # Store to Shared Data
-        # if majorHolders_df.columns.values[-1] == majorHolders_df.columns.values[-2]:
-        #     del majorHolders_df[majorHolders_df.columns.values[-1]]
+                # print(ticker.major_holders)
+                ticker_majorHolders = ticker.major_holders.set_index(1)
+                # print(ticker_majorHolders)
+                ticker_majorHolders = ticker_majorHolders.T
+                ticker_majorHolders["Tickers"] = self.removeSI(ticker.ticker)
+                # print(ticker_majorHolders)
+                majorHolders_df = majorHolders_df.merge(
+                    ticker_majorHolders, how="outer", on=list(ticker_majorHolders.columns))
+                print(majorHolders_df)
         self.yfinanceData["majorHolders"] = majorHolders_df
         return majorHolders_df
 
@@ -322,6 +326,12 @@ class yfinanceExtractor:
         print(basic_shares_df)
         return basic_shares_df
 
+    def cast_dict_to_string(self, entry):
+        if len(str(entry)) > 0 and str(entry)[0] in ["{", "["]:
+            return str(entry)
+        else:
+            return entry
+
     def getStockInfo(self):
         # Get stock information
         all_tickers_dict = {}
@@ -329,19 +339,11 @@ class yfinanceExtractor:
             if ticker.info is None:
                 all_tickers_dict[self.removeSI(ticker.ticker)] = pd.Series()
             else:
+                print(ticker.info)
                 ticker_info = pd.Series(ticker.info)
-                # Handle List in companyOfficers
-                companyOfficer = ticker_info["companyOfficers"]
-                companyOfficerString = ','.join(str(e) for e in companyOfficer)
-                companyOfficerSeries = pd.Series(
-                    [companyOfficerString], index=["companyOfficers"])
-                cleaned_ticker_info = ticker_info.drop(
-                    labels="companyOfficers")
-                updated_ticker_info = cleaned_ticker_info.append(
-                    companyOfficerSeries)
-                # Store Updated Series
+                print(ticker_info)
                 all_tickers_dict[self.removeSI(
-                    ticker.ticker)] = pd.Series(updated_ticker_info)
+                    ticker.ticker)] = pd.Series(ticker_info)
         all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
         )
 
@@ -351,8 +353,10 @@ class yfinanceExtractor:
             columns={'index': 'Tickers'})
 
         for column in all_tickers_info.columns:
-            all_tickers_info[column] = all_tickers_info[column].apply(lambda x: str(x) if ((str(x)+" ")[
-                0] in ["{", "["]) else x)
+            # all_tickers_info[column] = all_tickers_info[column].apply(lambda x: str(x) if ((str(x)+" ")[
+            #     0] in ["{", "["]) else x)
+            all_tickers_info[column] = all_tickers_info[column].apply(
+                self.cast_dict_to_string)
 
         print(all_tickers_info)
         print(all_tickers_info.columns)
@@ -494,11 +498,11 @@ class yfinanceExtractor:
     def yfinanceQuery(self):
 
         print("Query Historical Data")
-        print(self.getHistoricalData())
+        self.getHistoricalData()
         print("Historical Data Query Complete")
 
         print("Query Financial Statement")
-        print(self.getFinancialStatement())
+        self.getFinancialStatement()
         print("Financial Statement Query Complete")
 
         print("Query Quarterly Financial Statement")
@@ -510,11 +514,11 @@ class yfinanceExtractor:
         print("ISIN Code Query Complete")
 
         print("Query Earnings and Revenue")
-        print(self.getEarningsandRevenue())
+        self.getEarningsandRevenue()
         print("Earnings and Revenue Query Complete")
 
         print("Query Quarterly Earnings and Revenue")
-        print(self.getQuarterlyEarningsandRevenue())
+        self.getQuarterlyEarningsandRevenue()
         print("Quarterly Earnings and Revenue Query Complete")
 
         print("Query Major Holders")
@@ -526,7 +530,7 @@ class yfinanceExtractor:
         print("Basic Shares Query Complete")
 
         print("Query Stock Info")
-        print(self.getStockInfo())
+        self.getStockInfo()
         print("Stock Info Query Complete")
 
         print("Extract Stock Industry")
