@@ -111,7 +111,7 @@ class bigQueryDB:
         gbqTables = self.getTables()
         return datasetTable in gbqTables
 
-    def gbdQueryAPI(self, query):
+    def gbqQueryAPI(self, query):
         try:
             df = pandas_gbq.read_gbq(
                 query, project_id=self.project_id, credentials=self.credentials)
@@ -123,7 +123,7 @@ class bigQueryDB:
     # queryString takes in SQL Queries
     def getDataQuery(self, queryString):
         sql = ""+queryString+""
-        return self.gbdQueryAPI(sql)
+        return self.gbqQueryAPI(sql)
 
     def getDataFields(self, datasetTable, *fields):
         fieldString = ""
@@ -135,10 +135,9 @@ class bigQueryDB:
             fieldString = "*"
         queryString = "SELECT " + fieldString + " FROM " + datasetTable
         sql = "" + queryString + ""
-        return self.gbdQueryAPI(sql)
+        return self.gbqQueryAPI(sql)
 
     # Returns all datasetName as a list
-
     def getDataset(self):
         return self.syncDataset()
 
@@ -186,6 +185,21 @@ class bigQueryDB:
 
         print("Tables Succesfully Updated")
         return updatedTableList
+
+    # Returns a dictionary
+    def getTableSchema(self, datasetTable):
+        queryString = "SELECT * FROM " + datasetTable
+        query = "" + queryString + ""
+        query_job = self.client.query(query)
+        result = query_job.result()
+        schema = result.schema
+        return schema
+
+    def getTableColumns(self, datasetTable):
+        schema = self.getTableSchema(datasetTable)
+        column_names = [schemafield.name for schemafield in schema]
+        data_type = [schemafield.field_type for schemafield in schema]
+        return [column_names, data_type]
 
 
 #------- Unit Test Codes -----------#
