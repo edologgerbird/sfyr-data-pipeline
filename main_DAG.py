@@ -404,10 +404,7 @@ def query_YahooFin_news_data(**kwargs):
 
 def generateHeatlists(**kwargs):
     ti = kwargs['ti']
-<<<<<<< HEAD
     # return
-=======
->>>>>>> 4407269482bddd7640ad1dd6dfc139da7aa52bee
     # >> xcom.pull(
     #     dictionary: SBR_news_Query_Results,
     #     dictionary: tele_news_Query_Results,
