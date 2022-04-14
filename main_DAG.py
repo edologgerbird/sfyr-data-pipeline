@@ -270,6 +270,10 @@ def transform_yFinance_data(**kwargs):
         yFinance_data[datafield] = yFinance_data[datafield].convert_dtypes(
         )
 
+        # Remove Potential Duplicated Columns
+        yFinance_data[datafield] = yFinance_data[datafield].loc[:,
+                                                                ~yFinance_data[datafield].columns.duplicated()]
+
         print(f"Transformation of {datafield} Complete")
 
     #  >> return dictionary: yFinance_data_transformed
@@ -330,30 +334,30 @@ def load_yFinance_data(**kwargs):
     errors = dict()
 
     for datafield in yfinance_data_to_upload.keys():
-        try:
-            print(f"Uploading {datafield} data")
-            print(yfinance_data_to_upload[datafield])
-            datasetTable = "yfinance." + datafield
-            if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
-                if datafield in ["ticker_status"]:
-                    bigQueryDB_layer.gbqReplace(
-                        yfinance_data_to_upload[datafield], datasetTable)
-                else:
-                    bigQueryDB_layer.gbqAppend(
-                        yfinance_data_to_upload[datafield], datasetTable)
-            elif not yfinance_data_to_upload[datafield].empty:
-                bigQueryDB_layer.gbqCreateNewTable(
-                    yfinance_data_to_upload[datafield], "yfinance", datafield)
+        # try:
+        print(f"Uploading {datafield} data")
+        print(yfinance_data_to_upload[datafield])
+        datasetTable = "yfinance." + datafield
+        if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
+            if datafield in ["ticker_status"]:
+                bigQueryDB_layer.gbqReplace(
+                    yfinance_data_to_upload[datafield], datasetTable)
             else:
-                print("Empty Dataframe")
-        except Exception as e:
-            traceback_info = traceback.format_exc()
-            print(
-                f">>>> ERROR WITH {datafield}")
-            print(e)
-            print(traceback_info)
-            errors[datafield] = traceback_info
-            continue
+                bigQueryDB_layer.gbqAppend(
+                    yfinance_data_to_upload[datafield], datasetTable)
+        elif not yfinance_data_to_upload[datafield].empty:
+            bigQueryDB_layer.gbqCreateNewTable(
+                yfinance_data_to_upload[datafield], "yfinance", datafield)
+        else:
+            print("Empty Dataframe")
+        # except Exception as e:
+        #     traceback_info = traceback.format_exc()
+        #     print(
+        #         f">>>> ERROR WITH {datafield}")
+        #     print(e)
+        #     print(traceback_info)
+        #     errors[datafield] = traceback_info
+        #     continue
 
     errors_df = pd.DataFrame(errors.items())
     errors_df.to_csv(f"error_{datetime.now()}_.csv".replace(":", " "))

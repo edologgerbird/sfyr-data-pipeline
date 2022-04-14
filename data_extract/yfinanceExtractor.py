@@ -276,16 +276,24 @@ class yfinanceExtractor:
                     [majorHolders_df, ticker_majorHolders])
 
             else:
+                print(ticker.major_holders)
                 ticker_majorHolders = ticker.major_holders[0].rename(
                     {0: r'% of Shares Held by All Insider', 1: r'% of Shares Held by Institutions', 2: r'% of Float Held by Institutions', 3: 'Number of Institutions Holding Shares'})
                 ticker_majorHolders['Tickers'] = self.removeSI(ticker.ticker)
+                print(ticker_majorHolders)
                 ticker_majorHolders = ticker_majorHolders.transpose()
                 majorHolders_df = pd.concat(
                     [majorHolders_df, ticker_majorHolders], axis=1)
-        majorHolders_df = majorHolders_df.transpose().reset_index(
-            drop=True)
 
+        print(majorHolders_df)
+        majorHolders_df = majorHolders_df.transpose()
+        majorHolders_df = majorHolders_df.reset_index(drop=True)
+        print(majorHolders_df)
+        print("DTYPES HERE")
+        print(majorHolders_df.dtypes)
         # Store to Shared Data
+        # if majorHolders_df.columns.values[-1] == majorHolders_df.columns.values[-2]:
+        #     del majorHolders_df[majorHolders_df.columns.values[-1]]
         self.yfinanceData["majorHolders"] = majorHolders_df
         return majorHolders_df
 
