@@ -483,12 +483,10 @@ def load_heatlists(**kwargs):
 default_args = {
     'owner': 'is3107_g7',
     'depends_on_past': False,
-    'email': ['is3107_g7@gmail.com'],
+    'email': ['is3107.g7@gmail.com'],
     'email_on_failure': True,
     'email_on_retry': True,
     'retries': 0
-
-
 }
 
 dag = DAG('ETL_for_SGX_Stocks_Data',

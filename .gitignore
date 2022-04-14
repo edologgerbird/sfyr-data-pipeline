@@ -131,6 +131,7 @@ dmypy.json
 # Project Env
 projEnv/
 is3107_proj/
+is3107_g7/
 
 # folders
 archive/
