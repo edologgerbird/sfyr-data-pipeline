@@ -40,11 +40,11 @@ _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, 
 
 ## Authors:
 
-- Loh Hong Tak Edmund (A0199943H)
-- Ng Ting You (A0201672N)
-- Tan Yi Bing (A0204181U)
-- Wong Zhou Wai (A0201509R)
-- Yap Hui Yi (A0203707M)
+- Loh Hong Tak Edmund
+- Ng Ting You
+- Tan Yi Bing
+- Wong Zhou Wai
+- Yap Hui Yi
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
