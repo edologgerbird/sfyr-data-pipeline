@@ -80,9 +80,7 @@ We recommend setting up a virtual machine and virtual environment to run this pr
 
 ### _1. Oracle Virtual Machine_
 
-To set up a VM Virtual Box, please follow the steps detailed here.
-
-The VM image file is located here.
+To set up a VM Virtual Box, please follow the steps detailed [here](https://github.com/edologgerbird/is3107_g7/blob/test/edo-DAG/installation_guide/VM%20Installation%20Instructions.pdf).
 
 <br>
 
