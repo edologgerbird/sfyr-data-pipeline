@@ -176,6 +176,6 @@ If you would like to reqeuest a feature or report a bug, please contact us at is
 
 ## Acknowledgement
 
-The group would like to thank Assistant Professor Frank Xing, Dr Gao Yu Ting and Mr Quek Jian Hong Joel of the National University of Singapore for the opportunity to embark on this project.
+We would like to thank Assistant Professor Frank Xing, Dr Gao Yu Ting and Mr Quek Jian Hong Joel of the National University of Singapore for the opportunity to embark on this project.
 
 We would also like to thank Nescafe and Redbull for providing us with the caffeine required to complete this project.
