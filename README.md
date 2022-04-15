@@ -68,8 +68,6 @@ Make sure you have installed all of the following on your development machine:
 - Python 3.8 onwards
 - Linux Virtual Machine (Highly recommended for running Airflow). Pipeline tested on Oracle VM Virtual Box
 
-<br>
-
 ### **Installation**
 
 We recommend setting up a virtual machine and virtual environment to run this project.
@@ -83,6 +81,8 @@ We recommend setting up a virtual machine and virtual environment to run this pr
 To set up a VM Virtual Box, please follow the steps detailed [here](https://github.com/edologgerbird/is3107_g7/blob/test/edo-DAG/installation_guide/VM%20Installation%20Instructions.pdf).
 
 <br>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _2. Python Virtual Environment_
 
@@ -103,6 +103,8 @@ pip install -r requirements.txt
 ```
 
 <br>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _3. Setting Up Airflow_
 
@@ -151,8 +153,6 @@ dagbag_import_timeout = 100    #Prevents timeout when downloading FinBERT
 load_examples = False    # OPTIONAL: Skips loading of DAG Examples
 ```
 
-<br>
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _5. Setting Up Databases Access and Error Email Alerts_
@@ -181,7 +181,7 @@ This data pipeline makes use of Google Cloud Suite of products our data warehous
   </li>
 </ol>
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<br>
 
 **Update Crediential JSON Key Files**
 
@@ -191,7 +191,7 @@ Place the Google Authentication Crediential JSON Key files in `utils/` .
 
 Update `utils/serviceAccount.json` with the name of the credential files.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<br>
 
 **Set-up Airflow Email Alerts**
 
@@ -200,8 +200,7 @@ The current implementation of Airflow Email Alerts uses Gmail SMTP Service throu
 > ❗ **Keep your SMTP Password Safe!**
 
 1. Generate your Gmail SMTP Password [here](https://support.google.com/mail/answer/185833?hl=)
-
-Edit the `airflow.cfg` file (located in the airflow directory) with the following information:
+2. Edit the `airflow.cfg` file (located in the airflow directory) with the following information:
 
 ```python
 # Assumes the usage of Gmail as SMTP Server
@@ -235,13 +234,9 @@ Before setting up the alerts on Google Cloud Monitoring, users will have to set-
 5. Copy and save the Telegram bot's access token for later steps.
 6. Add the bot to your alert channel and enable access to send messages
 
-<br>
-
 After this is completed, we will have to set-up a new Alert Webhooks on [Google Cloud Monitoring](https://console.cloud.google.com/monitoring/alerting/notifications).
 
 <img src="read_me_files/web_hooks_set-up.png" alt="Web Hook Set-up">
-
-<br>
 
 The webhook should utilise the Telegram WebHook API and you can define custom Notification Messages by editing the `message_encoded_in_http` field
 
@@ -273,6 +268,10 @@ One notification per 10 minutes
 # Incident autoclose duration
 30 minutes
 ```
+<br>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 
 ## Usage
 
