@@ -172,7 +172,7 @@ To configure error alert...
 
 ## Contact
 
-If you would like to reqeuest a feature or report a bug, please contact us at is3107_g7@gmail.com.
+If you would like to reqeuest a feature or report a bug, please contact us at is3107.g7@gmail.com.
 
 ## Acknowledgement
 
