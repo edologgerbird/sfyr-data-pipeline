@@ -16,17 +16,16 @@
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#authors">Authors</a></li>
-    <li><a href="#codes-and-resources-used">Codes and Resources Used</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#authors">Authors</a></li>
+<li><a href="#codes-and-resources-used">Codes and Resources Used</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#contact">Contact</a></li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
+</ol>
 
 <br />
 
