@@ -21,7 +21,6 @@ class yfinanceExtractor:
             "historical_data": pd.DataFrame(),
             "financial_statements": pd.DataFrame(),
             "quarterly_financial_statements": pd.DataFrame(),
-            "isin": pd.DataFrame(),
             "earnings_and_revenue": pd.DataFrame(),
             "quarterly_earnings_and_revenue": pd.DataFrame(),
             "majorHolders": pd.DataFrame(),
@@ -198,23 +197,6 @@ class yfinanceExtractor:
         # Store to Shared Data
         self.yfinanceData["quarterly_financial_statements"] = quarterly_financial_statements_df
         return quarterly_financial_statements_df
-
-    def getISINcode(self):
-        # Get ISIN code (International Securities Identification Number)
-        isin_dict = {}
-        for ticker in self.ticker_active:
-            try:
-                isin = ticker.isin
-                isin_dict[self.removeSI(ticker.ticker)] = isin
-            except:
-                isin_dict[self.removeSI(ticker.ticker)] = np.nan
-
-        isin_df = pd.DataFrame(list(isin_dict.items()), columns=[
-                               'Tickers', 'ISIN'])
-
-        # Store to Shared Data
-        self.isin = isin_df
-        return isin_df
 
     def getEarningsandRevenue(self):
         # Get Earnings and Revenue
@@ -436,7 +418,8 @@ class yfinanceExtractor:
                     ticker.ticker)
                 recommendations_df = pd.concat(
                     [recommendations_df, ticker_recommendations])
-        recommendations_df = recommendations_df.reset_index()
+        recommendations_df = recommendations_df.reset_index().rename(columns={
+            'index': 'Date'})
 
         # Store to Shared Data
         self.yfinanceData["stock_recommendation"] = recommendations_df
@@ -532,12 +515,6 @@ class yfinanceExtractor:
         # except:
         #     failed.append("Quaterly Financial Statement")
 
-        # try:
-        #     print(">> ========== START: ISIN Code Query")
-        #     self.getISINcode()
-        #     print(">> ========== COMPLETE: ISIN Code Query")
-        # except:
-        #     failed.append("ISIN Code")
 
         # try:
         #     print("Query Earnings and Revenue")

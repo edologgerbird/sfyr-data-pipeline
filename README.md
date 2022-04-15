@@ -16,17 +16,17 @@
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#authors">Authors</a></li>
-    <li><a href="#codes-and-resources-used">Codes and Resources Used</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+
+### Table of Contents
+
+<ol>
+<li><a href="#authors">Authors</a></li>
+<li><a href="#codes-and-resources-used">Codes and Resources Used</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#contact">Contact</a></li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
+</ol>
 
 <br />
 
@@ -300,6 +300,8 @@ By default, the DAG is scheduled to execute twice a day, at 0930HRS and 2130HRS 
 ## Contact
 
 If you would like to reqeuest a feature or report a bug, please contact us at is3107.g7@gmail.com.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Acknowledgement
 
