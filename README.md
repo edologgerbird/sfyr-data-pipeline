@@ -276,11 +276,12 @@ One notification per 10 minutes
 Initialise Airflow in your Virtual Machine via the following commands:
 
 ```sh
-airflow scheduler
-airflow webserver
+airflow scheduler -D
+airflow webserver -D
 ```
 
-By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080).
+By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080). 
+Both processes are running as Daemon Processes. Alternatively, users can set-up Systemd by following [https://airflow.apache.org/docs/apache-airflow/stable/howto/run-with-systemd.html](this guide).
 
 ### _2. Activating DAG Task_
 
