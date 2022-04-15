@@ -1,7 +1,7 @@
 <br />
 <div align="center">
   <a>
-    <img src="read_me_files/sfyr_logo.png" alt="Logo">
+    <img src="read_me_files/sfyr_logo.png" alt="Logo" width="150" height="150">
   </a>
 
   <h3 align="center">SFYR</h3>
