@@ -1,7 +1,8 @@
 <br />
 <div align="center">
-  
+  <a>
     <img src="read_me_files/syfr_logo.png" alt="Logo" width="80" height="80">
+  </a>
 
   <h3 align="center">SFYR</h3>
 
@@ -9,6 +10,7 @@
     Investing Intelligence
     <br />
     <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>Explore the docs »</strong></a>
+    <br />
   </p>
 </div>
 
