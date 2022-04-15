@@ -285,13 +285,16 @@ class yfinanceExtractor:
     def getMajorHolders(self):
         # Get Major Holders
         majorHolders_df = pd.DataFrame(columns=["Tickers", '% of Shares Held by All Insider', '% of Shares Held by Institutions',
-                                       '% of Float Held by Institutions', 'Number of Institutions Holding Shares'])
+                                       '% of Float Held by Institutions', 'Number of Institutions Holding Shares'], dtype="string")
         for ticker in self.ticker_active:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
-                ticker_majorHolders = pd.DataFrame(columns=["Tickers"])
+                ticker_majorHolders = pd.DataFrame(
+                    columns=["Tickers"], dtype="string")
                 ticker_majorHolders["Tickers"] = self.removeSI(ticker.ticker)
-                ticker_majorHolders["Tickers"] = ticker_majorHolders["Tickers"].astype(
-                    str)
+                ticker_majorHolders[:] = ticker_majorHolders[:].astype(
+                    'string')
+                print(majorHolders_df.dtypes)
+
                 majorHolders_df = majorHolders_df.merge(
                     ticker_majorHolders, how="outer", on=["Tickers"])
                 print(majorHolders_df)
@@ -302,9 +305,13 @@ class yfinanceExtractor:
                 ticker_majorHolders = ticker_majorHolders.T
                 ticker_majorHolders["Tickers"] = self.removeSI(ticker.ticker)
                 # print(ticker_majorHolders)
+                ticker_majorHolders[:] = ticker_majorHolders[:].astype(
+                    'string')
+                print(majorHolders_df.dtypes)
                 majorHolders_df = majorHolders_df.merge(
                     ticker_majorHolders, how="outer", on=list(ticker_majorHolders.columns))
                 print(majorHolders_df)
+                print(majorHolders_df.dtypes)
         self.yfinanceData["majorHolders"] = majorHolders_df
         return majorHolders_df
 
