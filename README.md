@@ -138,4 +138,4 @@ airflow webserver
 
 ```
 
-By default, Airflow should be hosted on `http://localhost:8080`
+By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080)
