@@ -86,6 +86,8 @@ The VM image file is located here.
 
 <br>
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ### _2. Python Virtual Environment_
 
 > ⚠️ **This step should be run within the Linux Virtual Machine**
@@ -105,6 +107,8 @@ pip install -r requirements.txt
 ```
 
 <br>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _3. Setting Up Airflow_
 
