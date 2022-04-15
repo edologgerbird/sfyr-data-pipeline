@@ -17,7 +17,8 @@
 
 <!-- TABLE OF CONTENTS -->
 
-<summary>Table of Contents</summary>
+### Table of Contents
+
 <ol>
 <li><a href="#authors">Authors</a></li>
 <li><a href="#codes-and-resources-used">Codes and Resources Used</a></li>
