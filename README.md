@@ -170,9 +170,13 @@ By default, the DAG is scheduled to execute twice a day, at 0930HRS and 2130HRS 
 
 To configure error alert...
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Contact
 
 If you would like to reqeuest a feature or report a bug, please contact us at is3107.g7@gmail.com.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Acknowledgement
 
