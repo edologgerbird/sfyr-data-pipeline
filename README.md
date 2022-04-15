@@ -54,13 +54,13 @@ Make sure you have installed all of the following on your development machine:
 
 We recommend setting up a virtual machine and virtual environment to run this project.
 
-### _1. Virtual Machine_
+### _1. Oracle Virtual Machine_
 
 To set up a VM Virtual Box, please follow the steps detailed here.
 
 The VM image file is located here.
 
-### _2. Virtual Python Environment_
+### _2. Python Virtual Environment_
 
 shell commnands
 
@@ -78,6 +78,21 @@ The requirements.txt file contains Python libraries that your notebooks depend o
 
 ### _3. Setting Up Airflow_
 
+Install Airflow in your Virtual Machine and Virtual Environment
+
+```sh
+
+export AIRFLOW_HOME=~/airflow
+
+AIRFLOW_VERSION=2.2.3
+PYTHON_VERSION="$(python --version | cut -d " " -f 2 | cut -d "." -f 1-2)"
+
+CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+
+pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+
+```
+
 Edit the airflow.cfg config file with the following rules:
 
 ```python
@@ -86,6 +101,19 @@ dags_folder = /home/airflow/is3107_g7
 enable_xcom_pickling = True
 
 load_examples = False
+```
+
+Create Airflow Admin Account using the following commands in Shell:
+
+```sh
+airflow db init
+airflow users create \
+--username <USERNAME> \
+--firstname <YOUR NAME> \
+--lastname <YOUR NAME> \
+--role Admin \
+--email <YOUR EMAIL>
+
 ```
 
 ### _4. Setting Up Databases Access_
@@ -99,3 +127,7 @@ Update `utils/serviceAccount.json` with the name of the credential files.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Usage
+
+### _1. Initialising Airflow Instance_
+
+Initialise Airflow in your Virtual Machine via the following commands:
