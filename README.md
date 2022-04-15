@@ -68,7 +68,7 @@ Make sure you have installed all of the following on your development machine:
 - Python 3.8 onwards
 - Linux Virtual Machine (Highly recommended for running Airflow). Pipeline tested on Oracle VM Virtual Box
 
-### **Installation**
+## **Installation**
 
 We recommend setting up a virtual machine and virtual environment to run this project.
 
