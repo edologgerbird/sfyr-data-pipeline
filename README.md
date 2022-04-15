@@ -10,11 +10,11 @@
   <p align="center">
     Investing Intelligence
     <br />
-    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Full Project Report»</strong></a>
+    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Full Project Report »</strong></a>
     <br />
-    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Project Video Demonstration»</strong></a>
+    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Project Video Demonstration »</strong></a>
     <br />
-    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Project API Documentation»</strong></a>
+    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Project API Documentation »</strong></a>
     <br />
   </p>
 </div>
