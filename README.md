@@ -131,3 +131,11 @@ Update `utils/serviceAccount.json` with the name of the credential files.
 ### _1. Initialising Airflow Instance_
 
 Initialise Airflow in your Virtual Machine via the following commands:
+
+```sh
+airflow scheduler
+airflow webserver
+
+```
+
+By default, Airflow should be hosted on `http://localhost:8080`
