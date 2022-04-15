@@ -1,11 +1,9 @@
 from matplotlib.pyplot import text
 import pandas as pd
 import numpy as np
-import tokenizers
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 import gc
-import time
 
 
 class FinBERT:
@@ -14,7 +12,7 @@ class FinBERT:
         self.tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
         self.model = AutoModelForSequenceClassification.from_pretrained(
             "ProsusAI/finbert")
-        self.batch_size = 10
+        self.batch_size = 1
         print("FinBERT model initialised")
 
     def load_text_data(self, text_series):
@@ -62,8 +60,13 @@ class FinBERT:
         for chunk in chunks:
             print(f"==== Chunk {chunk_counter} / {total_chunks}")
             text_list = self.load_text_data(chunk)
-            tokenized = self.tokenize_text(text_list)
-            predictions = self.predict_sentiments(text_list, tokenized)
+            if not text_list[0]:
+                predictions = pd.DataFrame(
+                    columns=["Text", "Positive", "Negative", "Neutral"])
+                predictions.loc[len(predictions)] = 0
+            else:
+                tokenized = self.tokenize_text(text_list)
+                predictions = self.predict_sentiments(text_list, tokenized)
 
             predictions_mega = pd.concat([predictions_mega, predictions])
             gc.collect()
@@ -72,9 +75,8 @@ class FinBERT:
 
 
 # Test
-# start_time = time.time()
-# data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
-# data["Title_Text"] = data["Title"] + " " + data["Text"]
+# # data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
+# # data["Title_Text"] = data["Title"] + " " + data["Text"]
 # FinBERT_layer = FinBERT()
-# FinBERT_layer.FinBert_pipeline(data["Title_Text"])
-# print("--- %s seconds ---" % (time.time() - start_time))
+# input_series = pd.Series([None])
+# FinBERT_layer.FinBert_pipeline(input_series)

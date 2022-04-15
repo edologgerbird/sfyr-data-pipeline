@@ -131,6 +131,7 @@ dmypy.json
 # Project Env
 projEnv/
 is3107_proj/
+is3107_g7/
 
 # folders
 archive/
@@ -161,6 +162,7 @@ test/
 csv_store/
 *.csv
 *.session
+*.session-journal
 None.session
 
 ### Creds ###

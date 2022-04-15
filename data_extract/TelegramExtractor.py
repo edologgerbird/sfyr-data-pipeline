@@ -20,15 +20,19 @@ class TelegramExtractor:
     def extract_telegram_messages(self, start_date=None, end_date=datetime.now()):
 
         # +- 1 day is to include the date itself in scraping of messages
-        self.start_date = parse(start_date, dayfirst=True) + \
+        # self.start_date = parse(start_date, dayfirst=True) + \
+        #     timedelta(days=-1) if (start_date is not None) else None
+        # self.end_date = parse(end_date, dayfirst=True) + timedelta(days=1)
+
+        self.start_date = start_date + \
             timedelta(days=-1) if (start_date is not None) else None
-        self.end_date = parse(end_date, dayfirst=True) + timedelta(days=1)
+        self.end_date = end_date + timedelta(days=1)
 
         if (self.start_date is not None and self.end_date is not None and self.start_date > self.end_date):
             raise Exception('Start date input must be before end date input')
 
-        print('Extracting from:', self.start_date + timedelta(days=1),
-              'to:', self.end_date + timedelta(days=-1), '(inclusive)')
+        # print('Extracting from:', self.start_date + timedelta(days=1),
+        #       'to:', self.end_date + timedelta(days=-1), '(inclusive)')
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.connect_to_telegram_server())
