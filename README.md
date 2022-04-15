@@ -68,21 +68,18 @@ Make sure you have installed all of the following on your development machine:
 - Python 3.8 onwards
 - Linux Virtual Machine (Highly recommended for running Airflow). Pipeline tested on Oracle VM Virtual Box
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## **Installation**
 
 We recommend setting up a virtual machine and virtual environment to run this project.
 
 <br>
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 ### _1. Oracle Virtual Machine_
 
 To set up a VM Virtual Box, please follow the steps detailed [here](https://github.com/edologgerbird/is3107_g7/blob/test/edo-DAG/installation_guide/VM%20Installation%20Instructions.pdf).
 
-<br>
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _2. Python Virtual Environment_
 
@@ -101,8 +98,6 @@ The requirements.txt file contains Python libraries that your notebooks depend o
 ```sh
 pip install -r requirements.txt
 ```
-
-<br>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -134,8 +129,6 @@ airflow users create \
 --role Admin \
 --email <YOUR EMAIL>
 ```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _4. Editing Airflow Configs_
 
@@ -271,7 +264,6 @@ One notification per 10 minutes
 <br>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 ## Usage
 
