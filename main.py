@@ -48,7 +48,7 @@ if __name__ == '__main__':
     # print(schema)
 
     # ---- Test yFinance Pipeline ---- #
-    data = bigQueryDB().getDataFields("SGX.Tickers").head(10)
+    data = bigQueryDB().getDataFields("SGX.Tickers")
     gbq_layer = bigQueryDB()
     yfinance_data_to_upload = yfinanceExtractor(data).yfinanceQuery()
     # for datafield in yfinance_data_to_upload.keys():

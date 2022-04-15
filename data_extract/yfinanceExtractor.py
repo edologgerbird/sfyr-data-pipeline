@@ -290,6 +290,8 @@ class yfinanceExtractor:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
                 ticker_majorHolders = pd.DataFrame(columns=["Tickers"])
                 ticker_majorHolders["Tickers"] = self.removeSI(ticker.ticker)
+                ticker_majorHolders["Tickers"] = ticker_majorHolders["Tickers"].astype(
+                    str)
                 majorHolders_df = majorHolders_df.merge(
                     ticker_majorHolders, how="outer", on=["Tickers"])
                 print(majorHolders_df)
@@ -561,5 +563,8 @@ class yfinanceExtractor:
         print(">> ========== START: Institutional Holders Querys")
         self.getInstitutionalHolders()
         print(">> ========== COMPLETE: Institutional Holders Query")
+
+        for name, df in self.yfinanceData.items():
+            df.to_csv(f"output_store/{name}.csv", index=False)
 
         return self.yfinanceData
