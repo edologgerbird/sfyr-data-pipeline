@@ -49,19 +49,19 @@ class SGXDataExtractor:
             return None
 
     # Checks scrapped data with ticker data from GBQ to update their 'active' status
-    def update_ticker_status(self):
+    def update_ticker_status(self, SGX_data_store, GBQ_SGX_ticker_df):
         # 4 Cases to consider
         # Case 1 - Newly listed tickers
         # Case 2 - Previously delisted tickers
-        # Case 3 - Newly delisted tickers 
+        # Case 3 - Newly delisted tickers
         # Case 4 - Previously delisted tickers that are now active
- 
-        #Getting active SGX tickers dataframe
-        active_SGX_ticker_df = self.SGX_data_store 
-        active_SGX_ticker_list = active_SGX_ticker_df.company_code.to_list()
-        
-        #Getting SGX tickers dataframe from GBQ
-        GBQ_SGX_ticker_df = self.get_SGXData_from_GBQ() 
+
+        # Getting active SGX tickers dataframe
+        active_SGX_ticker_df = SGX_data_store
+        active_SGX_ticker_list = active_SGX_ticker_df.ticker.to_list()
+
+        # Getting SGX tickers dataframe from GBQ
+        # GBQ_SGX_ticker_df = self.get_SGXData_from_GBQ()
 
         if GBQ_SGX_ticker_df is None:
             self.updated_SGX_data_store = self.SGX_data_store
@@ -74,16 +74,20 @@ class SGXDataExtractor:
         active_GBQ_ticker_list = active_GBQ_ticker_df.ticker.to_list()
 
         # This list contains either active tickers from SGX only or active tickers from GBQ only
-        active_SGX_xor_active_GBQ_list = list(set(active_SGX_ticker_list) ^ set(active_GBQ_ticker_list))
+        active_SGX_xor_active_GBQ_list = list(
+            set(active_SGX_ticker_list) ^ set(active_GBQ_ticker_list))
 
-        #Merges all tickers from SGX data store (all active - case 1 considered) and delisted GBQ dataframe (contains previously delisted tickers - case 2 is considered)
-        #By dropping duplicates and keeping only the active one, case 4 is considered
-        unique_columns = ["company_name", "company_code", "trading_time", "type", "listing_board"]
-        updated_SGX_data = pd.concat([active_SGX_ticker_df, delisted_GBQ_ticker_df]).drop_duplicates(subset = unique_columns, keep = 'first')
-        
+        # Merges all tickers from SGX data store (all active - case 1 considered) and delisted GBQ dataframe (contains previously delisted tickers - case 2 is considered)
+        # By dropping duplicates and keeping only the active one, case 4 is considered
+        unique_columns = ["company_name", "ticker",
+                          "trading_time", "type", "listing_board"]
+        updated_SGX_data = pd.concat([active_SGX_ticker_df, delisted_GBQ_ticker_df]).drop_duplicates(
+            subset=unique_columns, keep='first')
+
         for ticker in active_SGX_xor_active_GBQ_list:
-            if ticker not in active_SGX_ticker_list:  #Changing status for newly delisted tickers - case 3 is considered
-                newly_delisted_entry = active_GBQ_ticker_df.loc[active_GBQ_ticker_df['company_code'] == ticker].copy()
+            if ticker not in active_SGX_ticker_list:  # Changing status for newly delisted tickers - case 3 is considered
+                newly_delisted_entry = active_GBQ_ticker_df.loc[active_GBQ_ticker_df['ticker'] == ticker].copy(
+                )
 
                 newly_delisted_entry['active'] = False
                 updated_SGX_data = pd.concat(
@@ -107,8 +111,8 @@ class SGXDataExtractor:
     def load_SGX_data_from_source(self):
         self.extract_SGX_json_data()
         self.populate_SGX_data()
-        self.update_ticker_status()
-        self.SGX_data_to_bg()
+        # self.update_ticker_status()
+        # self.SGX_data_to_bg()
 
     def get_SGX_data(self):
         self.extract_SGX_json_data()

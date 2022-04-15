@@ -6,23 +6,18 @@ Input: {'tickers': [], 'sentiments': {
 Output: Frequency distribution of Tickers
 '''
 import pandas as pd
-import json
 import numpy as np
-from data_load.bigQueryAPI import bigQueryDB
 
 
 class HeatListGenerator:
-    def __init__(self):
-        # self.df = df.rename(columns={df.columns[0]: "text", df.columns[1]: "tickers",
-        #                     df.columns[2]: "positive", df.columns[3]: "negative", df.columns[4]: "neutral"})
+    def __init__(self, sgx_data, industry_df):
         self.datasetTable = "SGX.Tickers"
         print("Querying SGX Data...")
-        self.sgx_data = bigQueryDB().getDataFields(self.datasetTable)
+        self.sgx_data = sgx_data
         self.sgx_data_mapper = {x: y for x, y in zip(
             self.sgx_data["ticker"], self.sgx_data["company_name"])}
 
-        self.industry_df = pd.read_csv(
-            "csv_store/industry_new.csv")  # Replace with GBQ query
+        self.industry_df = industry_df
         self.industry_mapper = {x: y for x, y in zip(
             self.industry_df["ticker"], self.industry_df["industry"])}
 
@@ -47,7 +42,7 @@ class HeatListGenerator:
         return df
 
     def normaliseColumn(self, col):
-        output = abs((col-col.mean())/col.std())
+        output = (col-col.mean())/col.std()
         return output
 
     def getHeatListNormalised(self):
@@ -94,7 +89,6 @@ class HeatListGenerator:
         self.dict_query = dict_query
         for res in dict_query:
             self.generateHeatScoreFromRes(res)
-        #self.df.apply(lambda x: self.generateHeatScoreFromRow(x), axis=1)
         ticker_heat_list, industry_heat_list = self.getHeatListNormalised()
         ticker_heat_list.reset_index(inplace=True)
         ticker_heat_list = ticker_heat_list.rename(columns={'index': 'ticker'})

@@ -26,29 +26,38 @@ class bigQueryDB:
     def gbqCreateNewTable(self, data, datasetName, tableName):
         datasetTable = datasetName + "." + tableName
         if isinstance(data, pd.DataFrame):
-            try:
-                pandas_gbq.to_gbq(
-                    data, datasetTable, project_id=self.project_id, credentials=self.credentials)
-                # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
-                self.syncTables()
-                return True
-            except Exception as err:
-                raise err
+            if not data.empty:
+                try:
+                    pandas_gbq.to_gbq(
+                        data, datasetTable, project_id=self.project_id, credentials=self.credentials)
+                    print(f"Table Succefully Created {datasetTable}")
+                    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
+                    self.syncTables()
+                    return True
+                except Exception as err:
+                    self.syncTables()
+                    raise err
+            else:
+                print("Empty Dataset - Append Aborted")
         else:
             raise Exception("Data File not Dataframe")
 
     # datasetTableName is to be in the form of datasetName.TableName
     def gbqAppend(self, data, datasetTable):
         # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
-        self.syncTables()
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
-                try:
-                    pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
-                                      if_exists="append", credentials=self.credentials)
-                    return True
-                except Exception as err:
-                    raise err
+                if not data.empty:
+                    self.syncTables()
+                    try:
+                        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                          if_exists="append", credentials=self.credentials)
+                        print(f"Data Successfully Added to {datasetTable}")
+                        return True
+                    except Exception as err:
+                        raise err
+                else:
+                    print("Empty Dataset - Append Aborted")
             else:
                 raise Exception("Data File not Dataframe")
         else:
@@ -57,15 +66,20 @@ class bigQueryDB:
     # datasetTable is to be in the form of datasetName.TableName
     def gbqReplace(self, data, datasetTable):
         # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
-        self.syncTables()
+
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
-                try:
-                    pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
-                                      if_exists="replace", credentials=self.credentials)
-                    return True
-                except Exception as err:
-                    raise err
+                if not data.empty:
+                    self.syncTables()
+                    try:
+                        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                          if_exists="replace", credentials=self.credentials)
+                        print(f"Data Successfully Replaced at {datasetTable}")
+                        return True
+                    except Exception as err:
+                        raise err
+                else:
+                    print("Empty Dataset - Replace Aborted")
             else:
                 raise Exception("Data File not Dataframe")
         else:
@@ -77,6 +91,7 @@ class bigQueryDB:
             self.syncDataset()
             return True
         except Exception as err:
+            self.syncDataset()
             raise err
 
     def gbqDeleteTable(self, datasetTable):
@@ -85,6 +100,7 @@ class bigQueryDB:
             self.syncTables()
             return True
         except Exception as err:
+            self.syncTables()
             raise err
 
     def gbqCheckDatasetExist(self, datasetName):
@@ -95,7 +111,7 @@ class bigQueryDB:
         gbqTables = self.getTables()
         return datasetTable in gbqTables
 
-    def gbdQueryAPI(self, query):
+    def gbqQueryAPI(self, query):
         try:
             df = pandas_gbq.read_gbq(
                 query, project_id=self.project_id, credentials=self.credentials)
@@ -107,7 +123,7 @@ class bigQueryDB:
     # queryString takes in SQL Queries
     def getDataQuery(self, queryString):
         sql = ""+queryString+""
-        return self.gbdQueryAPI(sql)
+        return self.gbqQueryAPI(sql)
 
     def getDataFields(self, datasetTable, *fields):
         fieldString = ""
@@ -119,10 +135,9 @@ class bigQueryDB:
             fieldString = "*"
         queryString = "SELECT " + fieldString + " FROM " + datasetTable
         sql = "" + queryString + ""
-        return self.gbdQueryAPI(sql)
+        return self.gbqQueryAPI(sql)
 
     # Returns all datasetName as a list
-
     def getDataset(self):
         return self.syncDataset()
 
@@ -130,15 +145,17 @@ class bigQueryDB:
     def syncDataset(self):
         datasets = list(self.client.list_datasets())  # Make an API request.
         updatedDatasetList = []
-
+        print("Updating Datasets")
         if datasets:
             for dataset in datasets:
                 updatedDatasetList.append(dataset.dataset_id)
             # Updating serviceAccount.json
             self.cred["bigQueryConfig"]["DATASET_ID"] = updatedDatasetList
+            self.dataset_id = updatedDatasetList
 
             with open(self.credUrl, 'w') as jsonFile:
                 json.dump(self.cred, jsonFile)
+            print("Dataset Succesfully Updated")
             return updatedDatasetList
 
         else:
@@ -155,6 +172,7 @@ class bigQueryDB:
         self.syncDataset()
 
         for dataset in self.dataset_id:
+            print(f"Updating Tables for {dataset}")
             tables = self.client.list_tables(dataset)  # Make an API request
             for table in tables:
                 updatedTableList.append(
@@ -165,7 +183,26 @@ class bigQueryDB:
         with open(self.credUrl, 'w') as jsonFile:
             json.dump(self.cred, jsonFile)
 
+        print("Tables Succesfully Updated")
         return updatedTableList
+
+    # Returns a list of schemaField
+    def getTableSchema(self, datasetTable):
+        queryString = "SELECT * FROM " + datasetTable
+        query = "" + queryString + ""
+        query_job = self.client.query(query)
+        result = query_job.result()
+        schema = result.schema
+        return schema
+
+    def getTableColumns(self, datasetTable):
+        # --- Schema Field Attributes
+        # field_type: data type of column
+        # name: name of column
+        schema = self.getTableSchema(datasetTable)
+        column_names = [schemafield.name for schemafield in schema]
+        data_type = [schemafield.field_type for schemafield in schema]
+        return [column_names, data_type]
 
 
 #------- Unit Test Codes -----------#
