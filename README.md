@@ -1,4 +1,5 @@
-<br />
+<!-- PROJECT LOGO -->
+
 <div align="center">
   <a>
     <img src="read_me_files/sfyr_logo.png" alt="Logo" width="150" height="150">
@@ -9,20 +10,35 @@
   <p align="center">
     Investing Intelligence
     <br />
-    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Full Project Report»</strong></a>
     <br />
   </p>
 </div>
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li><a href="#authors">Authors</a></li>
+    <li><a href="#codes-and-resources-used">Codes and Resources Used</a></li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+<br />
 
 # SFYR Data Pipeline Implementation
 
 Our Company, Sfyr (pronounced: Sapphire /sæfaɪə(r)/) aims to provide retail investors with the tools and data required to support their high-frequency retail trading decisions and needs. Through the use of a data warehouse, Apache Airflow and public data sources, Sfyr provides its clients with accurate, consolidated and updated stock data.
 
-### _Keywords_
+### _Keywords:_
 
 _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, DAG, Airflow, BigQuery, Firestore, FinBERT, Sentiment, Stocks Analysis, Investment Insights, Web Scraping, Google Cloud Monitoring._
 
-## IS3107 Group 7 | Authors:
+## Authors:
 
 - Loh Hong Tak Edmund (A0199943H)
 - Ng Ting You (A0201672N)
@@ -35,8 +51,10 @@ _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, 
 ## Codes and Resources Used
 
 **Python Version:** 3.9.5
+
 **Built with:** [Microsoft Visual Studio Code](https://code.visualstudio.com/),
 [Oracle VM Virtual Box](https://www.virtualbox.org/), [Git](https://git-scm.com/)
+
 **Notable Packages:** apache-airflow, beautifulsoup4, datetime, firebase-admin, json, numpy, pandas, pandas-gbq, telethon, pandas, parse, pendulum, regex, tokenizers, torch, transformers, virtualenv, yahoo-fin, yfinance (view requirements.txt for full list)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -139,3 +157,7 @@ airflow webserver
 ```
 
 By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080)
+
+## Contact
+
+## Acknowledgement
