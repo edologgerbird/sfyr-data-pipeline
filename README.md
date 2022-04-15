@@ -76,7 +76,7 @@ load_examples = False
 
 Place the Google Authentication Crediential JSON files in `utils/` .
 
-Update `utils/serviceAccount.json` with the name of the credential file
+Update `utils/serviceAccount.json` with the name of the credential files.
 
 ###
 
