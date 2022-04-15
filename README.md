@@ -270,6 +270,10 @@ One notification per 10 minutes
 # Incident autoclose duration
 30 minutes
 ```
+<br>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 
 ## Usage
 
