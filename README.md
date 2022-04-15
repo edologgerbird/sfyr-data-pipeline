@@ -16,17 +16,16 @@
 </div>
 
 <!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#authors">Authors</a></li>
-    <li><a href="#codes-and-resources-used">Codes and Resources Used</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+
+<summary>Table of Contents</summary>
+<ol>
+<li><a href="#authors">Authors</a></li>
+<li><a href="#codes-and-resources-used">Codes and Resources Used</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#contact">Contact</a></li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
+</ol>
 
 <br />
 
@@ -40,11 +39,11 @@ _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, 
 
 ## Authors:
 
-- Loh Hong Tak Edmund (A0199943H)
-- Ng Ting You (A0201672N)
-- Tan Yi Bing (A0204181U)
-- Wong Zhou Wai (A0201509R)
-- Yap Hui Yi (A0203707M)
+- Loh Hong Tak Edmund
+- Ng Ting You
+- Tan Yi Bing
+- Wong Zhou Wai
+- Yap Hui Yi
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -170,9 +169,13 @@ By default, the DAG is scheduled to execute twice a day, at 0930HRS and 2130HRS 
 
 To configure error alert...
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Contact
 
 If you would like to reqeuest a feature or report a bug, please contact us at is3107.g7@gmail.com.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Acknowledgement
 
