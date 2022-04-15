@@ -44,11 +44,11 @@ _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, 
 
 ## Authors:
 
-- Loh Hong Tak Edmund (A0XXX943H)
-- Ng Ting You (A0XXX672N)
-- Tan Yi Bing (A0XXX181U)
-- Wong Zhou Wai (A0XXX509R)
-- Yap Hui Yi (A0XXX707M)
+-   Loh Hong Tak Edmund (A0XXX943H)
+-   Ng Ting You (A0XXX672N)
+-   Tan Yi Bing (A0XXX181U)
+-   Wong Zhou Wai (A0XXX509R)
+-   Yap Hui Yi (A0XXX707M)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -69,8 +69,8 @@ _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, 
 
 Make sure you have installed all of the following on your development machine:
 
-- Python 3.8 onwards
-- Linux Virtual Machine (Highly recommended for running Airflow). Pipeline tested on Oracle VM Virtual Box
+-   Python 3.8 onwards
+-   Linux Virtual Machine (Highly recommended for running Airflow). Pipeline tested on Oracle VM Virtual Box
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -83,7 +83,6 @@ We recommend setting up a virtual machine and virtual environment to run this pr
 ### _1. Oracle Virtual Machine_
 
 To set up a VM Virtual Box, please follow the steps detailed [here](https://github.com/edologgerbird/is3107_g7/blob/test/edo-DAG/installation_guide/VM%20Installation%20Instructions.pdf).
-
 
 ### _2. Python Virtual Environment_
 
@@ -265,6 +264,28 @@ One notification per 10 minutes
 # Incident autoclose duration
 30 minutes
 ```
+
+<br>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+### _7. Setting Up Telegram Scraper Credentials_
+
+Before being able to run the Telegram Scraper Module, user will have to register on Telegram and sign into their account via [Telegram Login](https://my.telegram.org/auth)
+
+From there, access the API development tools, create a new project and note down your App
+
+-   api_id
+-   api_hash
+
+> ❗ **Keep your API id and hash Safe!**
+
+After getting the api_id and api_hash, update `utils/serviceAccount.json` telegramConfig object with your teleNumber, api_id and api_hash.
+
+On first start up of the telegram scraping module, you will asked to enter a code sent to your telegram number as specified in the `utils/serviceAccount.json`. If you have an additional 2FA password set, you will be require to enter your password as well.
+
+After the first setup and login, the telegram scraper module should work as intended.
+
 <br>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -280,7 +301,7 @@ airflow scheduler -D
 airflow webserver -D
 ```
 
-By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080). 
+By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080).
 Both processes are running as Daemon Processes. Alternatively, users can set-up Systemd by following [https://airflow.apache.org/docs/apache-airflow/stable/howto/run-with-systemd.html](this guide).
 
 ### _2. Activating DAG Task_
