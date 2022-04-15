@@ -336,30 +336,30 @@ def load_yFinance_data(**kwargs):
     errors = dict()
 
     for datafield in yfinance_data_to_upload.keys():
-        # try:
-        print(f"Uploading {datafield} data")
-        print(yfinance_data_to_upload[datafield])
-        datasetTable = "yfinance." + datafield
-        if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
-            if datafield in ["ticker_status"]:
-                bigQueryDB_layer.gbqReplace(
-                    yfinance_data_to_upload[datafield], datasetTable)
+        try:
+            print(f"Uploading {datafield} data")
+            print(yfinance_data_to_upload[datafield])
+            datasetTable = "yfinance." + datafield
+            if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
+                if datafield in ["ticker_status"]:
+                    bigQueryDB_layer.gbqReplace(
+                        yfinance_data_to_upload[datafield], datasetTable)
+                else:
+                    bigQueryDB_layer.gbqAppend(
+                        yfinance_data_to_upload[datafield], datasetTable)
+            elif not yfinance_data_to_upload[datafield].empty:
+                bigQueryDB_layer.gbqCreateNewTable(
+                    yfinance_data_to_upload[datafield], "yfinance", datafield)
             else:
-                bigQueryDB_layer.gbqAppend(
-                    yfinance_data_to_upload[datafield], datasetTable)
-        elif not yfinance_data_to_upload[datafield].empty:
-            bigQueryDB_layer.gbqCreateNewTable(
-                yfinance_data_to_upload[datafield], "yfinance", datafield)
-        else:
-            print("Empty Dataframe")
-        # except Exception as e:
-        #     traceback_info = traceback.format_exc()
-        #     print(
-        #         f">>>> ERROR WITH {datafield}")
-        #     print(e)
-        #     print(traceback_info)
-        #     errors[datafield] = traceback_info
-        #     continue
+                print("Empty Dataframe")
+        except Exception as e:
+            traceback_info = traceback.format_exc()
+            print(
+                f">>>> ERROR WITH {datafield}")
+            print(e)
+            print(traceback_info)
+            errors[datafield] = traceback_info
+            continue
 
     errors_df = pd.DataFrame(errors.items())
     errors_df.to_csv(f"error_{datetime.now()}_.csv".replace(":", " "))
@@ -652,13 +652,3 @@ transform_SBR_data_task >> query_SBR_data_task >> generate_heatlists_task
 query_YahooFin_data_task >> generate_heatlists_task
 
 generate_heatlists_task >> load_heatlists_task
-
-'''
-extract_SGX_data_task >> query_SGX_data_task>> transform_SGX_data_task >> load_SGX_data_task >> extract_SBR_data_task >> extract_tele_data_task >> \
-extract_YahooFin_data_task >> extract_yFinance_data_task >> transform_yFinance_data_task >> \
-transform_SBR_data_task >> transform_tele_data_task >> transform_YahooFin_data_task >> \
-load_SBR_data_task >> load_tele_data_task >> load_YahooFin_data_task >> \
-load_yFinance_data_task >> query_SBR_data_task >> query_tele_data_task >> \
-query_YahooFin_data_task >> generate_heatlists_task >> load_heatlists_task
-
-'''
