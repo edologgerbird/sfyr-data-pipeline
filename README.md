@@ -320,7 +320,7 @@ If you would like to reqeuest a feature or report a bug, please contact us at is
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Acknowledgement
+## Acknowledgements
 
 We would like to thank Assistant Professor Frank Xing, Dr Gao Yu Ting and Mr Quek Jian Hong Joel of the National University of Singapore for the opportunity to embark on this project.
 
