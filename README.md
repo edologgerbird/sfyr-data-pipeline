@@ -156,8 +156,26 @@ airflow webserver
 
 ```
 
-By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080)
+By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080).
+
+### _2. Activating DAG Task_
+
+After logging in, you will be brought to the main Airflow dashboard. To enable the DAG Task to run as per schedule, simply toggle the switch next to the task.
+
+<img src="read_me_files/screenshot1.png" alt="Logo">
+
+By default, the DAG is scheduled to execute twice a day, at 0930HRS and 2130HRS (GMT+8)
+
+### _3. Error Alert_
+
+To configure error alert...
 
 ## Contact
 
+If you would like to reqeuest a feature or report a bug, please contact us at is3107_g7@gmail.com.
+
 ## Acknowledgement
+
+The group would like to thank Assistant Professor Frank Xing, Dr Gao Yu Ting and Mr Quek Jian Hong Joel of the National University of Singapore for the opportunity to embark on this project.
+
+We would also like to thank Nescafe and Redbull for providing us with the caffeine required to complete this project.
