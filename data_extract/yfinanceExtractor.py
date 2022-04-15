@@ -436,7 +436,8 @@ class yfinanceExtractor:
                     ticker.ticker)
                 recommendations_df = pd.concat(
                     [recommendations_df, ticker_recommendations])
-        recommendations_df = recommendations_df.reset_index()
+        recommendations_df = recommendations_df.reset_index().rename(columns={
+            'index': 'Date'})
 
         # Store to Shared Data
         self.yfinanceData["stock_recommendation"] = recommendations_df
