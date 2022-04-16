@@ -74,7 +74,7 @@ def extract_SGX_data(**kwargs):
     # >> return DataFrame: SGX_data
     SGXDataExtractor_layer = SGXDataExtractor()
     SGXDataExtractor_layer.load_SGX_data_from_source()
-    sgx_data = SGXDataExtractor_layer.get_SGX_data().head(30)
+    sgx_data = SGXDataExtractor_layer.get_SGX_data().sample(5)
     return (sgx_data, SGXDataExtractor_layer)
 
 
@@ -107,9 +107,9 @@ def extract_YahooFin_data(**kwargs):
 
 def extract_yFinance_data(**kwargs):
     # >> extract yFinance_data
-    # >> return dictionary of DataFrames: yFinance_data
+    # >> return dictionary of DataFrames: yFinance_dataar
     ti = kwargs['ti']
-    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head(220)
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head(50)
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
