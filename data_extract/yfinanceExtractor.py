@@ -21,13 +21,12 @@ class yfinanceExtractor:
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
         self.ticker_delisted = []  # List of Inactive Ticker Name String
-        
+
         # Initalise yFinance Output
         self.yfinanceData = {}
         for dataField in self.yfinanceCol:
             self.yfinanceData[dataField] = pd.DataFrame(
                 columns=self.yfinanceCol[dataField])
-
 
         # Check on Ticker Active/Inactive
         self.checkTickers()
