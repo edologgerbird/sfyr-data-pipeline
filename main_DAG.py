@@ -18,6 +18,7 @@ from data_transform.telegramDataTransform import telegramDataTransformer
 from data_transform.yahooFinNewsTransform import yahooFinNewsTransformer
 from data_processing.FinBertAPI import FinBERT
 from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
+from data_transform.yfinanceTransform import yfinanceTransform
 
 # Load Modules
 from data_load.firestoreAPI import firestoreDB
@@ -235,49 +236,51 @@ def transform_yFinance_data(**kwargs):
 
     # >> xcom.pull(DataFrame: yFinance_data)
     yFinance_data = ti.xcom_pull(task_ids="extract_yFinance_data_task")
-    for datafield in yFinance_data.keys():
-        print(f"Transforming {datafield} for GBQ Upload")
+    yFinance_data = yfinanceTransform(yFinance_data)
 
-        # Removing Spaces in Column Names - GBQ Limitation
-        yFinance_data[datafield].columns = yFinance_data[datafield].columns.str.replace(
-            ' ', '_')
+    # for datafield in yFinance_data.keys():
+    #     print(f"Transforming {datafield} for GBQ Upload")
 
-        # Add "_" to start if Column Names start with a number - GBQ Limitation
-        # Replace "%" with Percentage - GBQ Limitation
-        yfinanace_data_columns = yFinance_data[datafield].columns.tolist()
-        yfinance_formatted_columns = {}
-        for columnName in yfinanace_data_columns:
-            if columnName[0].isdigit():
-                newName = "_" + columnName
-                yfinance_formatted_columns[columnName] = newName
-            elif "%" in columnName:
-                newName = columnName.replace('%', 'percentage')
-                yfinance_formatted_columns[columnName] = newName
-            else:
-                yfinance_formatted_columns[columnName] = columnName
-        print(yfinance_formatted_columns)
+    #     # Removing Spaces in Column Names - GBQ Limitation
+    #     yFinance_data[datafield].columns = yFinance_data[datafield].columns.str.replace(
+    #         ' ', '_')
 
-        # Replacing Column Names
-        print(f"Replacing Column Names of {datafield}")
-        yFinance_data[datafield].rename(
-            columns=yfinance_formatted_columns, inplace=True)
+    #     # Add "_" to start if Column Names start with a number - GBQ Limitation
+    #     # Replace "%" with Percentage - GBQ Limitation
+    #     yfinanace_data_columns = yFinance_data[datafield].columns.tolist()
+    #     yfinance_formatted_columns = {}
+    #     for columnName in yfinanace_data_columns:
+    #         if columnName[0].isdigit():
+    #             newName = "_" + columnName
+    #             yfinance_formatted_columns[columnName] = newName
+    #         elif "%" in columnName:
+    #             newName = columnName.replace('%', 'percentage')
+    #             yfinance_formatted_columns[columnName] = newName
+    #         else:
+    #             yfinance_formatted_columns[columnName] = columnName
+    #     print(yfinance_formatted_columns)
 
-        # Convertion of dtypes
-        print(f"Conversion of Column Data Types for {datafield}")
-        yFinance_data[datafield] = yFinance_data[datafield].convert_dtypes(
-        )
+    #     # Replacing Column Names
+    #     print(f"Replacing Column Names of {datafield}")
+    #     yFinance_data[datafield].rename(
+    #         columns=yfinance_formatted_columns, inplace=True)
 
-        # Remove Potential Duplicated Columns
-        yFinance_data[datafield] = yFinance_data[datafield].loc[:,
-                                                                ~yFinance_data[datafield].columns.duplicated()]
+    #     # Convertion of dtypes
+    #     print(f"Conversion of Column Data Types for {datafield}")
+    #     yFinance_data[datafield] = yFinance_data[datafield].convert_dtypes(
+    #     )
 
-        # cast dict and lists to string type
+    #     # Remove Potential Duplicated Columns
+    #     yFinance_data[datafield] = yFinance_data[datafield].loc[:,
+    #                                                             ~yFinance_data[datafield].columns.duplicated()]
 
-        # for column in yFinance_data[datafield].columns:
-        #     yFinance_data[datafield][column] = yFinance_data[datafield][column].apply(
-        #         lambda x: str(x) if (type(x) == dict or type(x) == list) else x)
+    #     # cast dict and lists to string type
 
-        print(f"Transformation of {datafield} Complete")
+    #     # for column in yFinance_data[datafield].columns:
+    #     #     yFinance_data[datafield][column] = yFinance_data[datafield][column].apply(
+    #     #         lambda x: str(x) if (type(x) == dict or type(x) == list) else x)
+
+    #     print(f"Transformation of {datafield} Complete")
 
     #  >> return dictionary: yFinance_data_transformed
     return yFinance_data
