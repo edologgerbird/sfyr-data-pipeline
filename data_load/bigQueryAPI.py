@@ -62,10 +62,10 @@ class bigQueryDB:
                 return False
         else:
             print(
-                f"INFO: {datasetTable} exist - Data Will Be Replaced unless Operation Cancelled")
-            time.sleep(3)
+                f"INFO: {datasetTable} exist - Data Will Be Appended unless Operation Cancelled")
+            time.sleep(7)
             self.updateTableSchema([datasetTable])
-            self.gbqReplace(data, datasetTable, self.tableSchema[datasetTable])
+            self.gbqAppend(data, datasetTable, self.tableSchema[datasetTable])
 
     # datasetTableName is to be in the form of datasetName.TableName
     def gbqAppend(self, data, datasetTable, schema=None):
@@ -97,7 +97,7 @@ class bigQueryDB:
         else:
             print(
                 f"INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled")
-            time.sleep(3)
+            time.sleep(7)
             datasetTableSplit = datasetTable.split(".")
             self.gbqCreateNewTable(
                 data, datasetTableSplit[0], datasetTableSplit[1])
@@ -131,7 +131,7 @@ class bigQueryDB:
         else:
             print(
                 f"INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled")
-            time.sleep(3)
+            time.sleep(7)
             datasetTableSplit = datasetTable.split(".")
             self.gbqCreateNewTable(
                 data, datasetTableSplit[0], datasetTableSplit[1])
