@@ -417,5 +417,5 @@
     "% Out",
     "Value"
   ],
-  "stock_ih": ["Tickers", "Holder", "Shares", "Date Reported"]
+  "stock_ih": ["Tickers", "Holder", "Shares", "Date Reported", "% Out", "Value"]
 }
