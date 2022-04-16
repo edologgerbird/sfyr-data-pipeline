@@ -173,8 +173,8 @@ class bigQueryDB:
 
     # Helper Function to Sync Local Dataset with Cloud
     def syncDataset(self):
-        print(f"INFO: Updating Datasets for {datasets}")
         datasets = list(self.client.list_datasets())  # Make an API request.
+        print(f"INFO: Updating Datasets for {datasets}")
         updatedDatasetList = []
 
         if datasets:
