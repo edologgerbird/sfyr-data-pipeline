@@ -67,7 +67,7 @@ if __name__ == '__main__':
     # with open(tableSchemaUrl, 'r') as schemaFile:
     #     tableSchema = json.load(schemaFile)
 
-    # sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head(15)
+    # sgx_data = bigQueryDB().getDataFields("SGX.Tickers").sample(15)
     # # sgx_data = sgx_data[(sgx_data["ticker"] == "42N") |
     # #                     (sgx_data["ticker"] == "5OI")]
     # gbq_layer = bigQueryDB()
@@ -77,7 +77,6 @@ if __name__ == '__main__':
 
     # gbq_layer.gbqAppend(yfinance_data_to_upload, "yfinance.earnings_and_revenue",
     #                     tableSchema["yfinance.earnings_and_revenue"])
-
 
     # ind_data = yfinance_data_to_upload["stock_industry"]
     # print(ind_data)
