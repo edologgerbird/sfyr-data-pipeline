@@ -1,10 +1,13 @@
 import pandas as pd
 import json
+import traceback
 
 
 class yfinanceTransform:
     def __init__(self, yfinance_data):
         self.yfinance_data = yfinance_data
+
+        self.errors_all = dict()
 
     def replaceColumnName(self, dataset):
         # Removing Spaces in Column Names - GBQ Limitation
@@ -43,7 +46,11 @@ class yfinanceTransform:
         print(f"SUCCESS: Duplicate Column Removed In {dataset} ")
 
     def schemaCompliance(self, dataset):
+
+        errors = []
+
         print(f"INFO: {dataset} Schema Compliance Triggered")
+
         datatype_mapping = {
             "STRING": "string",
             "INTEGER": "Int64",
@@ -65,23 +72,29 @@ class yfinanceTransform:
         yfinance_dataset = yfinance_dataset.convert_dtypes()
 
         for col in yfinance_dataset.columns:
-            if col not in pd_dataset_schema.keys():
-                print(f"INFO: Extra {col} Dropped")
-                yfinance_dataset.drop(labels=col, axis=1)
-                print(f"SUCCESS: Extra {col} Dropped")
-            elif yfinance_dataset[col].dtypes != pd_dataset_schema[col]:
-                print(
-                    f"INFO: {col} Enforcing Schema {yfinance_dataset[col].dtype} -> {pd_dataset_schema[col]}")
-                if yfinance_dataset[col].dtype == "string" and pd_dataset_schema[col] == "Int64":
-                    yfinance_dataset = yfinance_dataset.astype(
-                        {col: "Float64"})
-                    print(
-                        f"INFO: Intermediate {yfinance_dataset[col].dtype} Enforcement for String -> Int ")
-                yfinance_dataset = yfinance_dataset.astype(
-                    {col: pd_dataset_schema[col]})
-                print(
-                    f"SUCCESS: {col} Datatype Enforced as {yfinance_dataset[col].dtype}")
 
+            try:
+                if col not in pd_dataset_schema.keys():
+                    print(f"INFO: Extra {col} Dropped")
+                    yfinance_dataset.drop(labels=col, axis=1)
+                elif yfinance_dataset[col].dtypes != pd_dataset_schema[col]:
+                    print(
+                        f"INFO: {col} Enforcing Schema {yfinance_dataset[col].dtype} -> {pd_dataset_schema[col]}")
+                    if yfinance_dataset[col].dtype == "string" and pd_dataset_schema[col] == "Int64":
+                        yfinance_dataset = yfinance_dataset.astype(
+                            {col: "Float64"})
+                        print(
+                            f"INFO: Intermediate {yfinance_dataset[col].dtype} Enforcement for String -> Int ")
+
+                    yfinance_dataset = yfinance_dataset.astype(
+                        {col: pd_dataset_schema[col]})
+                    print(
+                        f"SUCCESS: {col} Datatype Enforced as {yfinance_dataset[col].dtype}")
+            except:
+                traceback_info = traceback.format_exc()
+                print(traceback_info)
+                errors.append([col, traceback_info])
+        self.errors_all["dataset"] = errors
         print(f"SUCCESS: {dataset} Schema Compliance Enforced")
         self.yfinance_data[dataset] = yfinance_dataset
         return yfinance_dataset
@@ -98,4 +111,5 @@ class yfinanceTransform:
                 print(f"WARNING: {datafield} Skipped - Empty DataFrame")
 
         print("SUCCESS: yFinance Transform Completed")
+        self.errors_all.to_csv("yfin_transform_errors.csv", index=False)
         return self.yfinance_data
