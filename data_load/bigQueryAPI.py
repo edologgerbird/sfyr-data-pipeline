@@ -45,12 +45,13 @@ class bigQueryDB:
                         self.syncTables()
                         return True
                     except Exception as err:
-                        self.syncTables()
                         print(
                             f"ERROR: Data Addition to {datasetTable} Aborted")
-                        if datasetTable in self.datasetTable:
-                            print(f"INFO: {datasetTable} has been created")
                         print(f"Error Log: {err}")
+                        print(f"Traceback: {traceback.format_exc()}")
+                        self.syncTables()
+                        if datasetTable in self.datasetTable:
+                            print(f"ALERT: {datasetTable} has been created")
                         return False
 
                 else:
