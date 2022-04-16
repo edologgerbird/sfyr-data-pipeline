@@ -582,11 +582,11 @@ class yfinanceExtractor:
         except:
             failed.append("Institutional Holders")
 
-        # for name, df in self.yfinanceData.items():
-        #     df.to_csv(f"output_store/{name}.csv", index=False)
+        for name, df in self.yfinanceData.items():
+            df.to_csv(f"output_store/{name}.csv", index=False)
 
-        # failed_df = pd.DataFrame(failed)
-        # failed_df.to_csv("output_store/failed.csv", index=False)
+        failed_df = pd.DataFrame(failed)
+        failed_df.to_csv("output_store/failed.csv", index=False)
 
         for failure in failed:
             print(failure)
