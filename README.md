@@ -44,11 +44,11 @@ _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, 
 
 ## Authors:
 
--   Loh Hong Tak Edmund (A0XXX943H)
--   Ng Ting You (A0XXX672N)
--   Tan Yi Bing (A0XXX181U)
--   Wong Zhou Wai (A0XXX509R)
--   Yap Hui Yi (A0XXX707M)
+- Loh Hong Tak Edmund (A0XXX943H)
+- Ng Ting You (A0XXX672N)
+- Tan Yi Bing (A0XXX181U)
+- Wong Zhou Wai (A0XXX509R)
+- Yap Hui Yi (A0XXX707M)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -69,8 +69,8 @@ _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, 
 
 Make sure you have installed all of the following on your development machine:
 
--   Python 3.8 onwards
--   Linux Virtual Machine (Highly recommended for running Airflow). Pipeline tested on Oracle VM Virtual Box
+- Python 3.8 onwards
+- Linux Virtual Machine (Highly recommended for running Airflow). Pipeline tested on Oracle VM Virtual Box
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -210,7 +210,6 @@ smtp_port = 587
 smtp_mail_from = <Email Address>
 smtp_timeout = 30
 smtp_retry_limit = 5
-
 ```
 
 If you are not using Gmail as your SMTP Service, edit the information according to your SMTP Server Configurations.
@@ -275,16 +274,44 @@ Before being able to run the Telegram Scraper Module, user will have to register
 
 From there, access the API development tools, create a new project and note down your App
 
--   api_id
--   api_hash
+- api_id
+- api_hash
+
+<br>
 
 > ❗ **Keep your API id and hash Safe!**
 
 After getting the api_id and api_hash, update `utils/serviceAccount.json` telegramConfig object with your teleNumber, api_id and api_hash.
 
+```json
+{
+  "telegramConfig": {
+    "teleNumber": "<Phone_Number>",
+    "api_id": ,
+    "api_hash": "<API_HASH>"
+  },
+}
+```
+
 On first start up of the telegram scraping module, you will asked to enter a code sent to your telegram number as specified in the `utils/serviceAccount.json`. If you have an additional 2FA password set, you will be require to enter your password as well.
 
 After the first setup and login, the telegram scraper module should work as intended.
+
+<br>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+### _8. Setting Up of `ServiceAccount.json`_
+
+With the Google Cloud Project Created in **Step 5**, we will have to update `ServiceAccount.json` which provides a centralised and local copy of the configurations, datasets and datatables.
+
+```json
+{
+  "bigQueryConfig": {
+    "PROJECT_ID": "<Google Cloud projectID>"
+  }
+}
+```
 
 <br>
 
