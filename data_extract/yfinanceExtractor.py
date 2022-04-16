@@ -13,10 +13,10 @@ class yfinanceExtractor:
         self.sgxTickers = sgxTickers
         self.sgxTickers.ticker = self.sgxTickers.ticker.str[:] + ".SI"
 
-        # Initalisation of yFinance Columns Datafile
-        self.yfinanceColUrl = "data_extract/yfinanceColumns.json"
-        with open(self.yfinanceColUrl, 'r') as jsonFile:
-            self.yfinanceCol = json.load(jsonFile)
+        # Initalisation of yFinance Schema Datafile
+        self.yfinanceColumnNameUrl = "data_extract/yfinanceColumnName.json"
+        with open(self.yfinanceColumnNameUrl, 'r') as jsonFile:
+            self.ColumnName = json.load(jsonFile)
 
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
@@ -24,9 +24,9 @@ class yfinanceExtractor:
 
         # Initalise yFinance Output
         self.yfinanceData = {}
-        for dataField in self.yfinanceCol:
+        for dataField in self.ColumnName["columnNames"]:
             self.yfinanceData[dataField] = pd.DataFrame(
-                columns=self.yfinanceCol[dataField])
+                columns=self.ColumnName["columnNames"][dataField])
 
         # Check on Ticker Active/Inactive
         self.checkTickers()

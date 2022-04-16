@@ -23,6 +23,11 @@ class bigQueryDB:
         self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
         self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]
 
+        # Set-up Table Schema
+        self.tableSchemaUrl = "utils/bigQuerySchema.json"
+        with open(self.tableSchemaUrl, 'r') as schemaFile:
+            self.tableSchema = json.load(schemaFile)
+
         print("INFO: GBQ Pipeline Initialised")
 
     def gbqCreateNewTable(self, data, datasetName, tableName):
@@ -57,17 +62,22 @@ class bigQueryDB:
             print(
                 f"INFO: {datasetTable} exist - Data Will Be Replaced unless Operation Cancelled")
             time.sleep(3)
-            self.gbqReplace(data, datasetTable)
+            self.updateTableSchema([datasetTable])
+            self.gbqReplace(data, datasetTable, self.tableSchema[datasetTable])
 
     # datasetTableName is to be in the form of datasetName.TableName
-    def gbqAppend(self, data, datasetTable):
+    def gbqAppend(self, data, datasetTable, schema=None):
         # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
                 if not data.empty:
                     try:
-                        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
-                                          if_exists="append", credentials=self.credentials)
+                        if schema == None:
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists="append", credentials=self.credentials)
+                        else:
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists="append", table_schema=schema, credentials=self.credentials)
                         print(
                             f"SUCCESS: Data Appended to {datasetTable}")
                         return True
@@ -89,13 +99,17 @@ class bigQueryDB:
                 data, datasetTableSplit[0], datasetTableSplit[1])
 
     # datasetTable is to be in the form of datasetName.TableName
-    def gbqReplace(self, data, datasetTable):
+    def gbqReplace(self, data, datasetTable, schema=None):
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
                 if not data.empty:
                     try:
-                        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
-                                          if_exists="replace", credentials=self.credentials)
+                        if schema == None:
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists="replace", credentials=self.credentials)
+                        else:
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists="replace", table_schema=schema, credentials=self.credentials)
                         print(f"SUCCESS: {datasetTable} Data Replaced")
                         return True
                     except Exception as err:
@@ -220,26 +234,41 @@ class bigQueryDB:
         with open(self.credUrl, 'w') as jsonFile:
             json.dump(self.cred, jsonFile)
 
-        print("INFO: Tables Succesfully Updated")
+        print("SUCCESS: Tables Succesfully Updated")
         return updatedTableList
 
     # Returns a list of schemaField
     def getTableSchema(self, datasetTable):
+        print(f"INFO: Query Table Schema for {datasetTable}")
         queryString = "SELECT * FROM " + datasetTable
         query = "" + queryString + ""
         query_job = self.client.query(query)
         result = query_job.result()
-        schema = result.schema
-        return schema
+        schemas = result.schema
 
-    def getTableColumns(self, datasetTable):
         # --- Schema Field Attributes
         # field_type: data type of column
         # name: name of column
-        schema = self.getTableSchema(datasetTable)
-        column_names = [schemafield.name for schemafield in schema]
-        data_type = [schemafield.field_type for schemafield in schema]
-        return [column_names, data_type]
+
+        formatted_schema = {}
+        for schema in schemas:
+            formatted_schema[schema.name] = schema.field_type
+
+        print(f"SUCCESS: Retrived Table Schema for {datasetTable}")
+        return [formatted_schema]
+
+    def updateTableSchema(self, datasetTablelist):
+        print(f"INFO: Updating Table Schema for {datasetTablelist}")
+        for datasetTable in datasetTablelist:
+            updatedSchema = self.getTableSchema(datasetTable)
+            self.tableSchema[datasetTable] = updatedSchema
+
+        with open(self.tableSchemaUrl, 'w') as schemaFile:
+            json.dump(self.tableSchema, schemaFile)
+
+        print(f"INFO: Updated Table Schema for {datasetTablelist} ")
+
+        return True
 
 
 #------- Unit Test Codes -----------#
