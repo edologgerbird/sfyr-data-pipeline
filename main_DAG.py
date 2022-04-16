@@ -237,8 +237,8 @@ def transform_yFinance_data(**kwargs):
 
     # >> xcom.pull(DataFrame: yFinance_data)
     yFinance_data = ti.xcom_pull(task_ids="extract_yFinance_data_task")
-    yFinance_data = yfinanceTransform(yFinance_data)
-
+    yFinance_transform_layer = yfinanceTransform(yFinance_data)
+    yFinance_data = yFinance_transform_layer.transformData()
     # for datafield in yFinance_data.keys():
     #     print(f"Transforming {datafield} for GBQ Upload")
 
