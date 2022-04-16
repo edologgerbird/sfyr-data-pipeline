@@ -393,23 +393,18 @@ class yfinanceExtractor:
 
     def getRecommendations(self):
         # Get Recommendations
-        recommendations_df = pd.DataFrame()
+        recommendations_df = pd.DataFrame(
+            columns=["Date", "Tickers", "Firm", "To Grade", "From Grade", "Action"])
 
         for ticker in self.ticker_active:
-            if ticker.recommendations is None:
-                ticker_recommendations = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
-                recommendations_df = pd.concat(
-                    [recommendations_df, ticker_recommendations])
-
-            else:
+            if ticker.recommendations is not None:
                 ticker_recommendations = ticker.recommendations
                 ticker_recommendations['Tickers'] = self.removeSI(
                     ticker.ticker)
+                ticker_recommendations["Date"] = ticker_recommendations.index
                 recommendations_df = pd.concat(
                     [recommendations_df, ticker_recommendations])
-        recommendations_df = recommendations_df.reset_index().rename(columns={
-            'index': 'Date'})
+        recommendations_df = recommendations_df.reset_index(drop=True)
 
         # Store to Shared Data
         self.yfinanceData["stock_recommendation"] = recommendations_df
@@ -428,6 +423,8 @@ class yfinanceExtractor:
             else:
                 ticker_analysis = ticker.analysis
                 ticker_analysis['Tickers'] = self.removeSI(ticker.ticker)
+                ticker_analysis['Tickers'] = ticker_analysis['Tickers'].astype(
+                    "string")
                 analysis_df = pd.concat(
                     [analysis_df, ticker_analysis])
 
@@ -519,40 +516,40 @@ class yfinanceExtractor:
         # except:
         #     failed.append("Quarterly Earnings and Revenue")
 
-        try:
-            print(">> ========== START: Major Holders Query")
-            self.getMajorHolders()
-            print(">> ========== COMPLETE: Major Holders Query")
-        except:
-            failed.append("Major Holders")
+        # try:
+        #     print(">> ========== START: Major Holders Query")
+        #     self.getMajorHolders()
+        #     print(">> ========== COMPLETE: Major Holders Query")
+        # except:
+        #     failed.append("Major Holders")
 
-        try:
-            print(">> ========== START: Basic Shares Query")
-            self.getBasicShares()
-            print(">> ========== COMPLETE: Basic Shares Query")
-        except:
-            failed.append("Basic Shares")
+        # try:
+        #     print(">> ========== START: Basic Shares Query")
+        #     self.getBasicShares()
+        #     print(">> ========== COMPLETE: Basic Shares Query")
+        # except:
+        #     failed.append("Basic Shares")
 
-        try:
-            print("Query Stock Info")
-            self.getStockInfo()
-            print("Stock Info Query Complete")
-        except:
-            failed.append("Stock Info")
+        # try:
+        #     print("Query Stock Info")
+        #     self.getStockInfo()
+        #     print("Stock Info Query Complete")
+        # except:
+        #     failed.append("Stock Info")
 
-        try:
-            print(">> ========== START: Stock Industry Extraction")
-            self.getStockIndustry()
-            print(">> ========== COMPLETE: Stock Industry Extraction")
-        except:
-            failed.append("Stock industry")
+        # try:
+        #     print(">> ========== START: Stock Industry Extraction")
+        #     self.getStockIndustry()
+        #     print(">> ========== COMPLETE: Stock Industry Extraction")
+        # except:
+        #     failed.append("Stock industry")
 
-        try:
-            print(">> ========== START: Stock Calendar Query")
-            self.getCalendar()
-            print(">> ========== COMPLETE: Stock Calendar Query")
-        except:
-            failed.append("Calendar Query")
+        # try:
+        #     print(">> ========== START: Stock Calendar Query")
+        #     self.getCalendar()
+        #     print(">> ========== COMPLETE: Stock Calendar Query")
+        # except:
+        #     failed.append("Calendar Query")
 
         try:
             print(">> ========== START: Analyst Recommendations Query")
@@ -561,27 +558,26 @@ class yfinanceExtractor:
         except:
             failed.append("Analyst Recommendations")
 
-        try:
-            print(">> ========== START: Stock Analysis Query")
-            self.getAnalysis()
-            print(">> ========== COMPLETE: Stock Analysis Query")
-        except:
-            failed.append("Stock Analysis")
+        # try:
+        #     print(">> ========== START: Stock Analysis Query")
+        #     self.getAnalysis()
+        #     print(">> ========== COMPLETE: Stock Analysis Query")
+        # except:
+        #     failed.append("Stock Analysis")
 
-        try:
-            print(">> ========== START: Mutual Fund Holders Query")
-            self.getMutualFundHolders()
-            print(">> ========== COMPLETE: Mutual Fund Holders Query")
-        except:
-            failed.append("Mutual Fund Holder")
+        # try:
+        #     print(">> ========== START: Mutual Fund Holders Query")
+        #     self.getMutualFundHolders()
+        #     print(">> ========== COMPLETE: Mutual Fund Holders Query")
+        # except:
+        #     failed.append("Mutual Fund Holder")
 
-        try:
-            print(">> ========== START: Institutional Holders Querys")
-            self.getInstitutionalHolders()
-            print(">> ========== COMPLETE: Institutional Holders Query")
-        except:
-            failed.append("Institutional Holders")
-
+        # try:
+        #     print(">> ========== START: Institutional Holders Querys")
+        #     self.getInstitutionalHolders()
+        #     print(">> ========== COMPLETE: Institutional Holders Query")
+        # except:
+        #     failed.append("Institutional Holders")
 
         for name, df in self.yfinanceData.items():
             df.to_csv(f"output_store/{name}.csv", index=False)
