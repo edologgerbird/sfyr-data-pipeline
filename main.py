@@ -8,6 +8,7 @@ from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.SBRExtractor import SBRExtractor
 from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
+from data_transform.yfinanceTransform import yfinanceTransform
 from matplotlib import ticker
 from datetime import datetime as dt
 import time
@@ -58,32 +59,32 @@ if __name__ == '__main__':
     #                                          "yfinance.stock_info",
     #                                          "yfinance.stock_mfh",
     #                                          "yfinance.stock_recommendation",
-    #                                          "yfinance.ticker_status"
+    #                                          "yfinance.ticker_status",
+    #                                         "yfinance.historical_data"
     #                                          ])
     # print(schema)
 
-    # ---- Test yFinance Pipeline ---- #
+    # ---- Test yFinance Extract ---- #
+    # gbq_layer = bigQueryDB()
+    # sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head()
+    # yfinance_data_to_upload = yfinanceExtractor(sgx_data).yfinanceQuery()
+
+    # ---- Test yFinance Transform ---- #
     # tableSchemaUrl = "utils/bigQuerySchema.json"
     # with open(tableSchemaUrl, 'r') as schemaFile:
     #     tableSchema = json.load(schemaFile)
+    # yfinanceTransform_layer = yfinanceTransform(yfinance_data_to_upload)
+    # yfinanceTransform_layer.transformData()
 
-    # sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head(15)
-    # # sgx_data = sgx_data[(sgx_data["ticker"] == "42N") |
-    # #                     (sgx_data["ticker"] == "5OI")]
-    # gbq_layer = bigQueryDB()
-    # yfinance_data_to_upload = yfinanceExtractor(sgx_data).yfinanceQuery()[
-    #     "earnings_and_revenue"]
-    # print(yfinance_data_to_upload)
-
+    # ---- Test yFinance Upload ---- #
     # gbq_layer.gbqAppend(yfinance_data_to_upload, "yfinance.earnings_and_revenue",
     #                     tableSchema["yfinance.earnings_and_revenue"])
 
-
+    # ---- Test Heatlist Generation ---- #
     # ind_data = yfinance_data_to_upload["stock_industry"]
     # print(ind_data)
     # gen_heat_list = GenerateHeatlistsFromQuery(sgx_data, ind_data)
 
-    #
     # ---- Test SGXDataExtractor---- #
     # sgx_layer = SGXDataExtractor()
     # sgx_data = sgx_layer.get_SGX_data()

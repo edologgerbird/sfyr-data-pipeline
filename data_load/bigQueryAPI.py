@@ -73,10 +73,11 @@ class bigQueryDB:
                 if not data.empty:
                     try:
                         if schema == None:
+                            print(f"INFO: Schema Not Provided")
                             pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                               if_exists="append", credentials=self.credentials)
                         else:
-                            print(schema)
+                            print(f"INFO: Schema Provided {schema}")
                             pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                               if_exists="append", table_schema=schema, credentials=self.credentials)
                         print(
@@ -107,9 +108,11 @@ class bigQueryDB:
                 if not data.empty:
                     try:
                         if schema == None:
+                            print(f"INFO: Schema Not Provided")
                             pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                               if_exists="replace", credentials=self.credentials)
                         else:
+                            print(f"INFO: Schema Provided {schema}")
                             pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                               if_exists="replace", table_schema=schema, credentials=self.credentials)
                         print(f"SUCCESS: {datasetTable} Data Replaced")
