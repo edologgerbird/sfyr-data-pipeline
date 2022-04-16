@@ -213,6 +213,24 @@ smtp_retry_limit = 5
 
 If you are not using Gmail as your SMTP Service, edit the information according to your SMTP Server Configurations.
 
+3. Update the default_args in your DAG file. This will set-up the DAG to trigger an email if a task retries or fails. 
+
+```python
+default_args = {
+    'email': [<Email Address>],
+    'email_on_failure': True, 
+    'email_on_retry': True,
+}
+```
+4. Optional - Set-up the number of retries for a failed task and duration between retries
+
+```python
+default_args = {
+    'retries': 1,
+    'retry_delay': timedelta(minutes=1)
+}
+```
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _6. Setting Up Google Cloud Telegram Alerts_
