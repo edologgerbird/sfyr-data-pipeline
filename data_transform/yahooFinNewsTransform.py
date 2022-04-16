@@ -5,13 +5,21 @@ import pandas as pd
 
 class yahooFinNewsTransformer:
     def __init__(self):
-        # print("Initialising Firestore Pipeline...")
-        # self.firestoreDB_layer = firestoreDB()
         self.data_pending_upload = None
         self.articles = []
-        # print("Firestore Pipeline Initialised")
 
     def tickerNewsFormat(self, news, start_date=None, end_date=dt.now()):
+        """This function formats news extracted from yahooFinNewExtractor into a format suitable for upload to Firestore. 
+        This function also provides the ability to filter news articles by their publish date
+
+        Args:
+            news (list): List of all the news articles extracted
+            start_date (datetime, optional): Earliest article publish date to be included. Defaults to None.
+            end_date (datetime, optional): Latest article publish date to be included. Defaults to today.
+
+        Returns:
+            dataframe: Dataframe of the formatted news articles and filtered by publish date
+        """
         newsFormatted = []
         articles = []
 
@@ -43,10 +51,17 @@ class yahooFinNewsTransformer:
 
         self.data_pending_upload = newsFormatted
         pdArticles = pd.DataFrame(articles, columns=["message"])
-        #pdArticles.columns = ["message"]
         return pdArticles
 
     def finBERTFormat(self, sentiments):
+        """Associate FinBERT sentiments output with each news article
+
+        Args:
+            sentiments (dataframe): Dataframe output from FinBERT
+
+        Returns:
+            dataframe: Dataframe of all news articles associated with sentiments
+        """
         for i in range(0, len(self.data_pending_upload)):
             self.data_pending_upload[i]["sentiments"] = {
                 "negative": sentiments.iloc[i]["Negative"],
