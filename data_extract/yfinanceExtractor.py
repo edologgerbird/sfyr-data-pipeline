@@ -328,26 +328,32 @@ class yfinanceExtractor:
     def getStockInfo(self):
         # Get stock information
         all_tickers_dict = {}
+        all_tickers_info = pd.DataFrame(columns=['Tickers', '52WeekChange', 'SandP52WeekChange', 'address1', 'address2', 'algorithm', 'annualHoldingsTurnover', 'annualReportExpenseRatio', 'ask', 'askSize', 'averageDailyVolume10Day', 'averageDailyVolume3Month',
+                                                 'averageVolume', 'averageVolume10days', 'beta', 'beta3Year', 'bid', 'bidSize', 'bondHoldings', 'bondPosition', 'bondRatings', 'bookValue', 'cashPosition', 'category', 'circulatingSupply', 'city',
+                                                 'companyOfficers', 'convertiblePosition', 'country', 'currency', 'currencySymbol', 'currentPrice', 'currentRatio', 'dateShortInterest', 'dayHigh', 'dayLow', 'debtToEquity', 'dividendRate', 'dividendYield',
+                                                 'earningsGrowth', 'earningsQuarterlyGrowth', 'ebitda', 'ebitdaMargins', 'enterpriseToEbitda', 'enterpriseToRevenue', 'enterpriseValue', 'equityHoldings', 'err', 'exDividendDate', 'exchange', 'exchangeDataDelayedBy',
+                                                 'exchangeName', 'exchangeTimezoneName', 'exchangeTimezoneShortName', 'expireDate', 'fax', 'fiftyDayAverage', 'fiftyTwoWeekHigh', 'fiftyTwoWeekLow', 'financialCurrency', 'fiveYearAverageReturn', 'fiveYearAvgDividendYield',
+                                                 'floatShares', 'forwardEps', 'forwardPE', 'freeCashflow', 'fromCurrency', 'fullTimeEmployees', 'fundFamily', 'fundInceptionDate', 'gmtOffSetMilliseconds', 'grossMargins', 'grossProfits', 'headSymbol',
+                                                 'heldPercentInsiders', 'heldPercentInstitutions', 'holdings', 'industry', 'isEsgPopulated', 'lastCapGain', 'lastDividendDate', 'lastDividendValue', 'lastFiscalYearEnd', 'lastMarket', 'lastSplitDate', 'lastSplitFactor',
+                                                 'legalType', 'logo_url', 'longBusinessSummary', 'longName', 'market', 'marketCap', 'marketState', 'maxAge', 'maxSupply', 'messageBoardId', 'morningStarOverallRating', 'morningStarRiskRating', 'mostRecentQuarter',
+                                                 'navPrice', 'netIncomeToCommon', 'nextFiscalYearEnd', 'numberOfAnalystOpinions', 'open', 'openInterest', 'operatingCashflow', 'operatingMargins', 'otherPosition', 'payoutRatio', 'pegRatio',
+                                                 'phone', 'postMarketChange', 'postMarketPrice', 'preMarketChange', 'preMarketPrice', 'preferredPosition', 'previousClose', 'priceHint', 'priceToBook', 'priceToSalesTrailing12Months', 'profitMargins',
+                                                 'quickRatio', 'quoteSourceName', 'quoteType', 'recommendationKey', 'recommendationMean', 'regularMarketChange', 'regularMarketChangePercent', 'regularMarketDayHigh', 'regularMarketDayLow', 'regularMarketOpen',
+                                                 'regularMarketPreviousClose', 'regularMarketPrice', 'regularMarketSource', 'regularMarketTime', 'regularMarketVolume', 'returnOnAssets', 'returnOnEquity', 'revenueGrowth', 'revenuePerShare', 'revenueQuarterlyGrowth',
+                                                 'sector', 'sectorWeightings', 'sharesOutstanding', 'sharesPercentSharesOut', 'sharesShort', 'sharesShortPreviousMonthDate', 'sharesShortPriorMonth', 'shortName', 'shortPercentOfFloat', 'shortRatio',
+                                                 'startDate', 'state', 'stockPosition', 'strikePrice', 'symbol', 'targetHighPrice', 'targetLowPrice', 'targetMeanPrice', 'targetMedianPrice', 'threeYearAverageReturn', 'toCurrency', 'totalAssets',
+                                                 'totalCash', 'totalCashPerShare', 'totalDebt', 'totalRevenue', 'tradeable', 'trailingAnnualDividendRate', 'trailingAnnualDividendYield', 'trailingEps', 'trailingPE', 'twoHundredDayAverage', 'underlyingExchangeSymbol',
+                                                 'underlyingSymbol', 'uuid', 'volume', 'volume24Hr', 'volumeAllCurrencies', 'website', 'yield', 'ytdReturn', 'zip'])
         for ticker in self.ticker_active:
-            if ticker.info is None:
-                all_tickers_dict[self.removeSI(ticker.ticker)] = pd.Series()
-            else:
+            if ticker.info is not None:
                 print(ticker.info)
-                ticker_info = pd.Series(ticker.info)
-                print(ticker_info)
-                all_tickers_dict[self.removeSI(
-                    ticker.ticker)] = pd.Series(ticker_info)
-        all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
-        )
+                ticker_info = pd.DataFrame(ticker.info.items()).set_index(0).T
+                ticker_info["Tickers"] = self.removeSI(ticker.ticker)
+                all_tickers_info = pd.concat([all_tickers_info, ticker_info])
 
-        all_tickers_info = all_tickers_info.reset_index()
-
-        all_tickers_info = all_tickers_info.rename(
-            columns={'index': 'Tickers'})
+        all_tickers_info = all_tickers_info.reset_index(drop=True)
 
         for column in all_tickers_info.columns:
-            # all_tickers_info[column] = all_tickers_info[column].apply(lambda x: str(x) if ((str(x)+" ")[
-            #     0] in ["{", "["]) else x)
             all_tickers_info[column] = all_tickers_info[column].apply(
                 self.cast_dict_to_string)
 
@@ -522,9 +528,9 @@ class yfinanceExtractor:
         #     failed.append("Basic Shares")
 
         # try:
-        #     print("Query Stock Info")
-        #     self.getStockInfo()
-        #     print("Stock Info Query Complete")
+        print("Query Stock Info")
+        self.getStockInfo()
+        print("Stock Info Query Complete")
         # except:
         #     failed.append("Stock Info")
 
@@ -535,12 +541,12 @@ class yfinanceExtractor:
         # except:
         #     failed.append("Stock industry")
 
-        try:
-            print(">> ========== START: Stock Calendar Query")
-            self.getCalendar()
-            print(">> ========== COMPLETE: Stock Calendar Query")
-        except:
-            failed.append("Calendar Query")
+        # try:
+        #     print(">> ========== START: Stock Calendar Query")
+        #     self.getCalendar()
+        #     print(">> ========== COMPLETE: Stock Calendar Query")
+        # except:
+        #     failed.append("Calendar Query")
 
         # try:
         #     print(">> ========== START: Analyst Recommendations Query")
