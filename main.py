@@ -45,28 +45,38 @@ if __name__ == '__main__':
     #     start_date="20-02-2022", end_date="22-02-2022")
 
     # ---- Test GBQ Pipeline ---- #
-    schema = bigQueryDB().updateTableSchema(["yfinance.earnings_and_revenue",
-                                             "yfinance.financial_statements",
-                                             "yfinance.majorHolders",
-                                             "yfinance.quarterly_earnings_and_revenue",
-                                             "yfinance.quarterly_financial_statements",
-                                             "yfinance.stock_analysis",
-                                             "yfinance.stock_calendar",
-                                             "yfinance.stock_ih",
-                                             "yfinance.stock_industry",
-                                             "yfinance.stock_info",
-                                             "yfinance.stock_mfh",
-                                             "yfinance.stock_recommendation",
-                                             "yfinance.ticker_status"
-                                             ])
+    # schema = bigQueryDB().updateTableSchema(["SGX.Tickers",
+    #                                          "yfinance.earnings_and_revenue",
+    #                                          "yfinance.financial_statements",
+    #                                          "yfinance.majorHolders",
+    #                                          "yfinance.quarterly_earnings_and_revenue",
+    #                                          "yfinance.quarterly_financial_statements",
+    #                                          "yfinance.stock_analysis",
+    #                                          "yfinance.stock_calendar",
+    #                                          "yfinance.stock_ih",
+    #                                          "yfinance.stock_industry",
+    #                                          "yfinance.stock_info",
+    #                                          "yfinance.stock_mfh",
+    #                                          "yfinance.stock_recommendation",
+    #                                          "yfinance.ticker_status"
+    #                                          ])
     # print(schema)
 
     # ---- Test yFinance Pipeline ---- #
-    # sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head(20)
-    # sgx_data = sgx_data[(sgx_data["ticker"] == "42N") |
-    #                     (sgx_data["ticker"] == "5OI")]
-    # # gbq_layer = bigQueryDB()
-    # yfinance_data_to_upload = yfinanceExtractor(sgx_data)
+    # tableSchemaUrl = "utils/bigQuerySchema.json"
+    # with open(tableSchemaUrl, 'r') as schemaFile:
+    #     tableSchema = json.load(schemaFile)
+
+    # sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head(15)
+    # # sgx_data = sgx_data[(sgx_data["ticker"] == "42N") |
+    # #                     (sgx_data["ticker"] == "5OI")]
+    # gbq_layer = bigQueryDB()
+    # yfinance_data_to_upload = yfinanceExtractor(sgx_data).yfinanceQuery()[
+    #     "earnings_and_revenue"]
+    # print(yfinance_data_to_upload)
+
+    # gbq_layer.gbqAppend(yfinance_data_to_upload, "yfinance.earnings_and_revenue",
+    #                     tableSchema["yfinance.earnings_and_revenue"])
 
     # ind_data = yfinance_data_to_upload["stock_industry"]
     # print(ind_data)

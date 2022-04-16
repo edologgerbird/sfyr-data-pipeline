@@ -162,7 +162,7 @@
       "Capital Surplus",
       "Deferred Long Term Liab"
     ],
-    "earnings_and_revenue": ["Year", "Revenue", "Earnings", "Tickers"],
+    "earnings_and_revenue": ["Revenue", "Earnings", "Tickers"],
     "quarterly_earnings_and_revenue": [
       "Quarters",
       "Revenue",
