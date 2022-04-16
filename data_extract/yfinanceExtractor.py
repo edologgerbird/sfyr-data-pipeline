@@ -292,7 +292,6 @@ class yfinanceExtractor:
         all_tickers_info = self.yfinanceData["stock_info"]
         for ticker in self.ticker_active:
             if ticker.info is not None:
-                print(ticker.info)
                 ticker_info = pd.DataFrame(ticker.info.items()).set_index(0).T
                 ticker_info["Tickers"] = self.removeSI(ticker.ticker)
                 ticker_info["Tickers"] = ticker_info["Tickers"].astype(
@@ -332,7 +331,7 @@ class yfinanceExtractor:
                 stock_calendar_df = pd.concat(
                     [stock_calendar_df, ticker_calendar])
         stock_calendar_df = stock_calendar_df.reset_index(drop=True)
-        stock_calendar_df.replace({np.nan: None}, inplace=True)
+        stock_calendar_df.replace({np.nan: np.nan}, inplace=True)
         # Store to Shared Data
         print(stock_calendar_df.dtypes)
         self.yfinanceData["stock_calendar"] = stock_calendar_df
