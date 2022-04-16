@@ -49,12 +49,14 @@ if __name__ == '__main__':
     # print(schema)
 
     # ---- Test yFinance Pipeline ---- #
-
     sgx_data = bigQueryDB().getDataFields("SGX.Tickers")
     sgx_data = sgx_data[(sgx_data["ticker"] == "42N") |
                         (sgx_data["ticker"] == "5OI")]
-    gbq_layer = bigQueryDB()
-    yfinance_data_to_upload = yfinanceExtractor(sgx_data).yfinanceQuery()
+
+    yfinanceExtractor(sgx_data)
+    # gbq_layer = bigQueryDB()
+    # yfinance_data_to_upload = yfinanceExtractor(sgx_data).yfinanceQuery()
+
     # ind_data = yfinance_data_to_upload["stock_industry"]
     # print(ind_data)
     # gen_heat_list = GenerateHeatlistsFromQuery(sgx_data, ind_data)
