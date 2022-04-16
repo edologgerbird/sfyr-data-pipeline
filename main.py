@@ -78,6 +78,7 @@ if __name__ == '__main__':
     # gbq_layer.gbqAppend(yfinance_data_to_upload, "yfinance.earnings_and_revenue",
     #                     tableSchema["yfinance.earnings_and_revenue"])
 
+
     # ind_data = yfinance_data_to_upload["stock_industry"]
     # print(ind_data)
     # gen_heat_list = GenerateHeatlistsFromQuery(sgx_data, ind_data)
