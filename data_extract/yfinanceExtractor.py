@@ -329,11 +329,10 @@ class yfinanceExtractor:
                 ticker_calendar = ticker_calendar.rename(
                     columns={"Ticker": "Tickers"})
                 ticker_calendar['Tickers'] = self.removeSI(ticker.ticker)
-                ticker_calendar['Earnings Date'] = ticker_calendar['Earnings Date'].astype(
-                    'datetime64[ns]')
                 stock_calendar_df = pd.concat(
                     [stock_calendar_df, ticker_calendar])
         stock_calendar_df = stock_calendar_df.reset_index(drop=True)
+        stock_calendar_df.replace({np.nan: None}, inplace=True)
         # Store to Shared Data
         print(stock_calendar_df.dtypes)
         self.yfinanceData["stock_calendar"] = stock_calendar_df
@@ -411,103 +410,30 @@ class yfinanceExtractor:
 
     def yfinanceQuery(self):
         failed = []
-        # try:
-        #     print("Query Historical Data")
-        #     self.getHistoricalData()
-        #     print("Historical Data Query Complete")
-        # except:
-        #     failed.append("Historical Data")
+        query_calls = {
+            "Historical Data": self.getHistoricalData,
+            "Financial Statement": self.getFinancialStatement,
+            "Quarterly Financial Statement": self.getQuarterlyFinancialStatement,
+            "Earnings and Revenue": self.getEarningsandRevenue,
+            "Quarterly Earnings and Revenue": self.getQuarterlyEarningsandRevenue,
+            "Major Holders": self.getMajorHolders,
+            "Basic Shares": self.getBasicShares,
+            "Stock Info": self.getStockInfo,
+            "Stock Industry": self.getStockIndustry,
+            "Calendar": self.getCalendar,
+            "Analyst Recommendations": self.getRecommendations,
+            "Stock Analysis": self.getAnalysis,
+            "Mutual Fund Holders": self.getMajorHolders,
+            "Institutional Holders": self.getInstitutionalHolders,
+        }
 
-        # try:
-        #     print("Query Financial Statement")
-        #     self.getFinancialStatement()
-        #     print("Financial Statement Query Complete")
-        # except:
-        #     failed.append("Financial Statement")
-
-        # try:
-        #     print(">> ========== START: Quarterly Financial Statement Query")
-        #     print(self.getQuarterlyFinancialStatement())
-        #     print(">> ========== COMPLETE: Quarterly Financial Statement Query")
-        # except:
-        #     failed.append("Quaterly Financial Statement")
-
-        # try:
-        #     print("Query Earnings and Revenue")
-        #     self.getEarningsandRevenue()
-        #     print("Earnings and Revenue Query Complete")
-        # except:
-        #     failed.append("Earnings and Revenue")
-
-        # try:
-        #     print("Query Quarterly Earnings and Revenue")
-        #     self.getQuarterlyEarningsandRevenue()
-        #     print("Quarterly Earnings and Revenue Query Complete")
-        # except:
-        #     failed.append("Quarterly Earnings and Revenue")
-
-        # try:
-        #     print(">> ========== START: Major Holders Query")
-        #     self.getMajorHolders()
-        #     print(">> ========== COMPLETE: Major Holders Query")
-        # except:
-        #     failed.append("Major Holders")
-
-        # try:
-        #     print(">> ========== START: Basic Shares Query")
-        #     self.getBasicShares()
-        #     print(">> ========== COMPLETE: Basic Shares Query")
-        # except:
-        #     failed.append("Basic Shares")
-
-        try:
-            print("Query Stock Info")
-            self.getStockInfo()
-            print("Stock Info Query Complete")
-        except:
-            failed.append("Stock Info")
-
-        # try:
-        #     print(">> ========== START: Stock Industry Extraction")
-        #     self.getStockIndustry()
-        #     print(">> ========== COMPLETE: Stock Industry Extraction")
-        # except:
-        #     failed.append("Stock industry")
-
-        try:
-            print(">> ========== START: Stock Calendar Query")
-            self.getCalendar()
-            print(">> ========== COMPLETE: Stock Calendar Query")
-        except:
-            failed.append("Calendar Query")
-
-        # try:
-        #     print(">> ========== START: Analyst Recommendations Query")
-        #     self.getRecommendations()
-        #     print(">> ========== COMPLETE: Analyst Recommendations Query")
-        # except:
-        #     failed.append("Analyst Recommendations")
-
-        # try:
-        #     print(">> ========== START: Stock Analysis Query")
-        #     self.getAnalysis()
-        #     print(">> ========== COMPLETE: Stock Analysis Query")
-        # except:
-        #     failed.append("Stock Analysis")
-
-        # try:
-        #     print(">> ========== START: Mutual Fund Holders Query")
-        #     self.getMutualFundHolders()
-        #     print(">> ========== COMPLETE: Mutual Fund Holders Query")
-        # except:
-        #     failed.append("Mutual Fund Holder")
-
-        # try:
-        #     print(">> ========== START: Institutional Holders Querys")
-        #     self.getInstitutionalHolders()
-        #     print(">> ========== COMPLETE: Institutional Holders Query")
-        # except:
-        #     failed.append("Institutional Holders")
+        for query, query_fn in query_calls.items():
+            try:
+                print(f">> ========== START: {query} Query")
+                query_fn()
+                print(f">> ========== COMPLETE: {query} Query")
+            except:
+                failed.append(query)
 
         for name, df in self.yfinanceData.items():
             df.to_csv(f"output_store/{name}.csv", index=False)
