@@ -17,21 +17,37 @@ class yfinanceExtractor:
 
         # yFinance Ouput
         self.yfinanceData = {
-            "ticker_status": pd.DataFrame(),
-            "historical_data": pd.DataFrame(),
-            "financial_statements": pd.DataFrame(),
-            "quarterly_financial_statements": pd.DataFrame(),
-            "earnings_and_revenue": pd.DataFrame(),
-            "quarterly_earnings_and_revenue": pd.DataFrame(),
-            "majorHolders": pd.DataFrame(),
-            "basic_shares": pd.DataFrame(),
-            "stock_info": pd.DataFrame(),
-            "stock_industry": pd.DataFrame(),
-            "stock_calendar": pd.DataFrame(),
-            "stock_recommendation": pd.DataFrame(),
-            "stock_analysis": pd.DataFrame(),
-            "stock_mfh": pd.DataFrame(),
-            "stock_ih": pd.DataFrame()
+            "ticker_status": pd.DataFrame(columns=["Listed", "Delisted"]),
+            "historical_data": pd.DataFrame(columns=['Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Tickers', 'Market Status']),
+            "financial_statements": pd.DataFrame(columns=['Date', 'Research Development', 'Effect Of Accounting Charges', 'Income Before Tax', 'Minority Interest', 'Net Income_x', 'Selling General Administrative', 'Gross Profit', 'Ebit', 'Operating Income', 'Other Operating Expenses', 'Interest Expense', 'Extraordinary Items', 'Non Recurring', 'Other Items', 'Income Tax Expense', 'Total Revenue', 'Total Operating Expenses', 'Cost Of Revenue', 'Total Other Income Expense Net', 'Discontinued Operations', 'Net Income From Continuing Ops', 'Net Income Applicable To Common Shares', 'Total Liab', 'Total Stockholder Equity', 'Other Current Liab', 'Total Assets', 'Common Stock', 'Other Current Assets', 'Retained Earnings', 'Other Liab', 'Cash', 'Total Current Liabilities', 'Property Plant Equipment', 'Total Current Assets', 'Net Tangible Assets', 'Net Receivables', 'Accounts Payable', 'Intangible Assets', 'Treasury Stock', 'Other Assets', 'Other Stockholder Equity', 'Long Term Debt', 'Deferred Long Term Asset Charges', 'Change To Liabilities', 'Net Borrowings', 'Total Cash From Financing Activities', 'Net Income_y', 'Change In Cash', 'Total Cash From Operating Activities', 'Depreciation', 'Change To Account Receivables', 'Change To Netincome', 'Total Cashflows From Investing Activities', 'Capital Expenditures', 'Change To Operating Activities', 'Issuance Of Stock', 'Minority Interest_x', 'Minority Interest_y', 'Short Long Term Debt', 'Inventory', 'Good Will', 'Other Cashflows From Investing Activities', 'Change To Inventory', 'Other Cashflows From Financing Activities', 'Short Term Investments', 'Effect Of Exchange Rate', 'Long Term Investments', 'Investments', 'Dividends Paid', 'Repurchase Of Stock', 'Capital Surplus', 'Deferred Long Term Liab']),
+            "quarterly_financial_statements": pd.DataFrame(columns=['Date', 'Research Development', 'Effect Of Accounting Charges', 'Income Before Tax', 'Minority Interest', 'Net Income_x', 'Selling General Administrative', 'Gross Profit', 'Ebit', 'Operating Income', 'Other Operating Expenses', 'Interest Expense', 'Extraordinary Items', 'Non Recurring', 'Other Items', 'Income Tax Expense', 'Total Revenue', 'Total Operating Expenses', 'Cost Of Revenue', 'Total Other Income Expense Net', 'Discontinued Operations', 'Net Income From Continuing Ops', 'Net Income Applicable To Common Shares', 'Total Liab', 'Total Stockholder Equity', 'Other Current Liab', 'Total Assets', 'Common Stock', 'Other Current Assets', 'Retained Earnings', 'Other Liab', 'Cash', 'Total Current Liabilities', 'Property Plant Equipment', 'Total Current Assets', 'Net Tangible Assets', 'Net Receivables', 'Accounts Payable', 'Intangible Assets', 'Treasury Stock', 'Other Assets', 'Other Stockholder Equity', 'Long Term Debt', 'Net Income_y', 'Change To Liabilities', 'Net Borrowings', 'Total Cash From Financing Activities', 'Change In Cash', 'Total Cash From Operating Activities', 'Depreciation', 'Change To Account Receivables', 'Change To Netincome', 'Minority Interest_x', 'Minority Interest_y', 'Deferred Long Term Asset Charges', 'Short Long Term Debt', 'Inventory', 'Total Cashflows From Investing Activities', 'Change To Operating Activities', 'Issuance Of Stock', 'Other Cashflows From Investing Activities', 'Change To Inventory', 'Other Cashflows From Financing Activities', 'Capital Expenditures', 'Short Term Investments', 'Effect Of Exchange Rate', 'Long Term Investments', 'Investments', 'Good Will', 'Repurchase Of Stock', 'Dividends Paid', 'Capital Surplus', 'Deferred Long Term Liab']),
+            "earnings_and_revenue": pd.DataFrame(columns=['Year', 'Revenue', 'Earnings', 'Tickers']),
+            "quarterly_earnings_and_revenue": pd.DataFrame(columns=['Quarters', 'Revenue', 'Earnings', 'Tickers']),
+            "majorHolders": pd.DataFrame(columns=["Tickers", '% of Shares Held by All Insider', '% of Shares Held by Institutions',
+                                                  '% of Float Held by Institutions', 'Number of Institutions Holding Shares'], dtype="string"),
+            "basic_shares": pd.DataFrame(columns=['Year', 'Tickers']),
+            "stock_info": pd.DataFrame(columns=['Tickers', '52WeekChange', 'SandP52WeekChange', 'address1', 'address2', 'algorithm', 'annualHoldingsTurnover', 'annualReportExpenseRatio', 'ask', 'askSize', 'averageDailyVolume10Day', 'averageDailyVolume3Month',
+                                                'averageVolume', 'averageVolume10days', 'beta', 'beta3Year', 'bid', 'bidSize', 'bondHoldings', 'bondPosition', 'bondRatings', 'bookValue', 'cashPosition', 'category', 'circulatingSupply', 'city',
+                                                'companyOfficers', 'convertiblePosition', 'country', 'currency', 'currencySymbol', 'currentPrice', 'currentRatio', 'dateShortInterest', 'dayHigh', 'dayLow', 'debtToEquity', 'dividendRate', 'dividendYield',
+                                                'earningsGrowth', 'earningsQuarterlyGrowth', 'ebitda', 'ebitdaMargins', 'enterpriseToEbitda', 'enterpriseToRevenue', 'enterpriseValue', 'equityHoldings', 'err', 'exDividendDate', 'exchange', 'exchangeDataDelayedBy',
+                                                'exchangeName', 'exchangeTimezoneName', 'exchangeTimezoneShortName', 'expireDate', 'fax', 'fiftyDayAverage', 'fiftyTwoWeekHigh', 'fiftyTwoWeekLow', 'financialCurrency', 'fiveYearAverageReturn', 'fiveYearAvgDividendYield',
+                                                'floatShares', 'forwardEps', 'forwardPE', 'freeCashflow', 'fromCurrency', 'fullTimeEmployees', 'fundFamily', 'fundInceptionDate', 'gmtOffSetMilliseconds', 'grossMargins', 'grossProfits', 'headSymbol',
+                                                'heldPercentInsiders', 'heldPercentInstitutions', 'holdings', 'industry', 'isEsgPopulated', 'lastCapGain', 'lastDividendDate', 'lastDividendValue', 'lastFiscalYearEnd', 'lastMarket', 'lastSplitDate', 'lastSplitFactor',
+                                                'legalType', 'logo_url', 'longBusinessSummary', 'longName', 'market', 'marketCap', 'marketState', 'maxAge', 'maxSupply', 'messageBoardId', 'morningStarOverallRating', 'morningStarRiskRating', 'mostRecentQuarter',
+                                                'navPrice', 'netIncomeToCommon', 'nextFiscalYearEnd', 'numberOfAnalystOpinions', 'open', 'openInterest', 'operatingCashflow', 'operatingMargins', 'otherPosition', 'payoutRatio', 'pegRatio',
+                                                'phone', 'postMarketChange', 'postMarketPrice', 'preMarketChange', 'preMarketPrice', 'preferredPosition', 'previousClose', 'priceHint', 'priceToBook', 'priceToSalesTrailing12Months', 'profitMargins',
+                                                'quickRatio', 'quoteSourceName', 'quoteType', 'recommendationKey', 'recommendationMean', 'regularMarketChange', 'regularMarketChangePercent', 'regularMarketDayHigh', 'regularMarketDayLow', 'regularMarketOpen',
+                                                'regularMarketPreviousClose', 'regularMarketPrice', 'regularMarketSource', 'regularMarketTime', 'regularMarketVolume', 'returnOnAssets', 'returnOnEquity', 'revenueGrowth', 'revenuePerShare', 'revenueQuarterlyGrowth',
+                                                'sector', 'sectorWeightings', 'sharesOutstanding', 'sharesPercentSharesOut', 'sharesShort', 'sharesShortPreviousMonthDate', 'sharesShortPriorMonth', 'shortName', 'shortPercentOfFloat', 'shortRatio',
+                                                'startDate', 'state', 'stockPosition', 'strikePrice', 'symbol', 'targetHighPrice', 'targetLowPrice', 'targetMeanPrice', 'targetMedianPrice', 'threeYearAverageReturn', 'toCurrency', 'totalAssets',
+                                                'totalCash', 'totalCashPerShare', 'totalDebt', 'totalRevenue', 'tradeable', 'trailingAnnualDividendRate', 'trailingAnnualDividendYield', 'trailingEps', 'trailingPE', 'twoHundredDayAverage', 'underlyingExchangeSymbol',
+                                                'underlyingSymbol', 'uuid', 'volume', 'volume24Hr', 'volumeAllCurrencies', 'website', 'yield', 'ytdReturn', 'zip']),
+            "stock_industry": pd.DataFrame(columns=['ticker', 'industry']),
+            "stock_calendar": pd.DataFrame(columns=['Earnings Date', 'Earnings Average', 'Earnings Low', 'Earnings High', 'Revenue Average', 'Revenue Low', 'Revenue High', 'Ticker', 'Tickers']),
+            "stock_recommendation": pd.DataFrame(columns=["Date", "Tickers", "Firm", "To Grade", "From Grade", "Action"]),
+            "stock_analysis": pd.DataFrame(columns=['Period', 'Max Age', 'End Date', 'Growth', 'Earnings Estimate Avg', 'Earnings Estimate Low', 'Earnings Estimate High', 'Earnings Estimate Year Ago Eps', 'Earnings Estimate Number Of Analysts', 'Earnings Estimate Growth', 'Revenue Estimate Avg', 'Revenue Estimate Low', 'Revenue Estimate High', 'Revenue Estimate Number Of Analysts', 'Revenue Estimate Year Ago Revenue', 'Revenue Estimate Growth', 'Eps Trend Current', 'Eps Trend 7Days Ago', 'Eps Trend 30Days Ago', 'Eps Trend 60Days Ago', 'Eps Trend 90Days Ago', 'Eps Revisions Up Last7Days', 'Eps Revisions Up Last30Days', 'Eps Revisions Down Last30Days', 'Eps Revisions Down Last90Days', 'Tickers']),
+            "stock_mfh": pd.DataFrame(columns=['Tickers', 'Holder', 'Shares', 'Date Reported', '% Out', 'Value']),
+            "stock_ih": pd.DataFrame(columns=['Tickers', 'Holder', 'Shares', 'Date Reported', '% Out', 'Value'])
         }
 
         # Check on Ticker Active/Inactive
@@ -72,7 +88,7 @@ class yfinanceExtractor:
 
     def getHistoricalData(self, start_date=dt.now()):
         # Listed Tickers' historical market data
-        historical_data_df = pd.DataFrame()
+        historical_data_df = self.yfinanceData["historical_data"]
         counter = 1
         for ticker in self.ticker_active:
             print(
@@ -106,7 +122,7 @@ class yfinanceExtractor:
         return historical_data_df
 
     def getFinancialStatement(self):
-        financial_statements_df = pd.DataFrame()
+        financial_statements_df = self.yfinanceData["financial_statements"]
         counter = 1
         for ticker in self.ticker_active:
             print(
@@ -133,7 +149,7 @@ class yfinanceExtractor:
         return financial_statements_df
 
     def getQuarterlyFinancialStatement(self):
-        quarterly_financial_statements_df = pd.DataFrame()
+        quarterly_financial_statements_df = self.yfinanceData["quarterly_financial_statements"]
         counter = 1
         for ticker in self.ticker_active:
             print(
@@ -161,7 +177,7 @@ class yfinanceExtractor:
 
     def getQuarterlyFinancialStatement_old(self):
         # Get quarterly financial statement (Financials, Balance Sheet, Cashflows)
-        quarterly_financial_statements_df = pd.DataFrame()
+        quarterly_financial_statements_df = self.yfinanceData["quarterly_financial_statements"]
         counter = 1
 
         for ticker in self.ticker_active:
@@ -200,7 +216,7 @@ class yfinanceExtractor:
 
     def getEarningsandRevenue(self):
         # Get Earnings and Revenue
-        earnings_and_revenues_df = pd.DataFrame()
+        earnings_and_revenues_df = self.yfinanceData["earnings_and_revenue"]
 
         for ticker in self.ticker_active:
             if (ticker.earnings.shape[0] < 1):
@@ -226,7 +242,7 @@ class yfinanceExtractor:
 
     def getQuarterlyEarningsandRevenue(self):
         # Get Quarterly Earnings and Revenue
-        quarterly_earnings_and_revenues_df = pd.DataFrame()
+        quarterly_earnings_and_revenues_df = self.yfinanceData["quarterly_earnings_and_revenue"]
 
         for ticker in self.ticker_active:
             if (ticker.quarterly_earnings.shape[0] < 1):
@@ -266,8 +282,7 @@ class yfinanceExtractor:
 
     def getMajorHolders(self):
         # Get Major Holders
-        majorHolders_df = pd.DataFrame(columns=["Tickers", '% of Shares Held by All Insider', '% of Shares Held by Institutions',
-                                       '% of Float Held by Institutions', 'Number of Institutions Holding Shares'], dtype="string")
+        majorHolders_df = self.yfinanceData["majorHolders"]
         for ticker in self.ticker_active:
             if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
                 ticker_majorHolders = pd.DataFrame(
@@ -299,7 +314,7 @@ class yfinanceExtractor:
 
     def getBasicShares(self):
         # Get Basic Shares
-        basic_shares_df = pd.DataFrame()
+        basic_shares_df = self.yfinanceData["basic_shares"]
         for ticker in self.ticker_active:
             if ticker.shares is None:
                 # Ticker does not have shares info
@@ -327,23 +342,7 @@ class yfinanceExtractor:
 
     def getStockInfo(self):
         # Get stock information
-        all_tickers_dict = {}
-        all_tickers_info = pd.DataFrame(columns=['Tickers', '52WeekChange', 'SandP52WeekChange', 'address1', 'address2', 'algorithm', 'annualHoldingsTurnover', 'annualReportExpenseRatio', 'ask', 'askSize', 'averageDailyVolume10Day', 'averageDailyVolume3Month',
-                                                 'averageVolume', 'averageVolume10days', 'beta', 'beta3Year', 'bid', 'bidSize', 'bondHoldings', 'bondPosition', 'bondRatings', 'bookValue', 'cashPosition', 'category', 'circulatingSupply', 'city',
-                                                 'companyOfficers', 'convertiblePosition', 'country', 'currency', 'currencySymbol', 'currentPrice', 'currentRatio', 'dateShortInterest', 'dayHigh', 'dayLow', 'debtToEquity', 'dividendRate', 'dividendYield',
-                                                 'earningsGrowth', 'earningsQuarterlyGrowth', 'ebitda', 'ebitdaMargins', 'enterpriseToEbitda', 'enterpriseToRevenue', 'enterpriseValue', 'equityHoldings', 'err', 'exDividendDate', 'exchange', 'exchangeDataDelayedBy',
-                                                 'exchangeName', 'exchangeTimezoneName', 'exchangeTimezoneShortName', 'expireDate', 'fax', 'fiftyDayAverage', 'fiftyTwoWeekHigh', 'fiftyTwoWeekLow', 'financialCurrency', 'fiveYearAverageReturn', 'fiveYearAvgDividendYield',
-                                                 'floatShares', 'forwardEps', 'forwardPE', 'freeCashflow', 'fromCurrency', 'fullTimeEmployees', 'fundFamily', 'fundInceptionDate', 'gmtOffSetMilliseconds', 'grossMargins', 'grossProfits', 'headSymbol',
-                                                 'heldPercentInsiders', 'heldPercentInstitutions', 'holdings', 'industry', 'isEsgPopulated', 'lastCapGain', 'lastDividendDate', 'lastDividendValue', 'lastFiscalYearEnd', 'lastMarket', 'lastSplitDate', 'lastSplitFactor',
-                                                 'legalType', 'logo_url', 'longBusinessSummary', 'longName', 'market', 'marketCap', 'marketState', 'maxAge', 'maxSupply', 'messageBoardId', 'morningStarOverallRating', 'morningStarRiskRating', 'mostRecentQuarter',
-                                                 'navPrice', 'netIncomeToCommon', 'nextFiscalYearEnd', 'numberOfAnalystOpinions', 'open', 'openInterest', 'operatingCashflow', 'operatingMargins', 'otherPosition', 'payoutRatio', 'pegRatio',
-                                                 'phone', 'postMarketChange', 'postMarketPrice', 'preMarketChange', 'preMarketPrice', 'preferredPosition', 'previousClose', 'priceHint', 'priceToBook', 'priceToSalesTrailing12Months', 'profitMargins',
-                                                 'quickRatio', 'quoteSourceName', 'quoteType', 'recommendationKey', 'recommendationMean', 'regularMarketChange', 'regularMarketChangePercent', 'regularMarketDayHigh', 'regularMarketDayLow', 'regularMarketOpen',
-                                                 'regularMarketPreviousClose', 'regularMarketPrice', 'regularMarketSource', 'regularMarketTime', 'regularMarketVolume', 'returnOnAssets', 'returnOnEquity', 'revenueGrowth', 'revenuePerShare', 'revenueQuarterlyGrowth',
-                                                 'sector', 'sectorWeightings', 'sharesOutstanding', 'sharesPercentSharesOut', 'sharesShort', 'sharesShortPreviousMonthDate', 'sharesShortPriorMonth', 'shortName', 'shortPercentOfFloat', 'shortRatio',
-                                                 'startDate', 'state', 'stockPosition', 'strikePrice', 'symbol', 'targetHighPrice', 'targetLowPrice', 'targetMeanPrice', 'targetMedianPrice', 'threeYearAverageReturn', 'toCurrency', 'totalAssets',
-                                                 'totalCash', 'totalCashPerShare', 'totalDebt', 'totalRevenue', 'tradeable', 'trailingAnnualDividendRate', 'trailingAnnualDividendYield', 'trailingEps', 'trailingPE', 'twoHundredDayAverage', 'underlyingExchangeSymbol',
-                                                 'underlyingSymbol', 'uuid', 'volume', 'volume24Hr', 'volumeAllCurrencies', 'website', 'yield', 'ytdReturn', 'zip'])
+        all_tickers_info = self.yfinanceData["stock_info"]
         for ticker in self.ticker_active:
             if ticker.info is not None:
                 print(ticker.info)
@@ -374,7 +373,7 @@ class yfinanceExtractor:
 
     def getCalendar(self):
         # Get next event (earnings, etc)
-        stock_calendar_df = pd.DataFrame()
+        stock_calendar_df = self.yfinanceData["stock_calendar"]
         for ticker in self.ticker_active:
             if ticker.calendar is not None:
                 ticker_calendar = ticker.calendar.transpose()
@@ -390,8 +389,7 @@ class yfinanceExtractor:
 
     def getRecommendations(self):
         # Get Recommendations
-        recommendations_df = pd.DataFrame(
-            columns=["Date", "Tickers", "Firm", "To Grade", "From Grade", "Action"])
+        recommendations_df = self.yfinanceData["stock_recommendation"]
 
         for ticker in self.ticker_active:
             if ticker.recommendations is not None:
@@ -409,7 +407,7 @@ class yfinanceExtractor:
 
     def getAnalysis(self):
         # Get Analysis
-        analysis_df = pd.DataFrame()
+        analysis_df = self.yfinanceData["stock_analysis"]
         for ticker in self.ticker_active:
             if ticker.analysis is None:
                 ticker_analysis = pd.DataFrame(
@@ -435,8 +433,7 @@ class yfinanceExtractor:
 
     def getMutualFundHolders(self):
         # Get Mutual Fund Holders
-        mfh_pd = pd.DataFrame()
-
+        mfh_pd = self.yfinanceData["stock_mfh"]
         for ticker in self.ticker_active:
             if ticker.mutualfund_holders is None:
                 ticker_mfh = pd.DataFrame(
@@ -456,7 +453,7 @@ class yfinanceExtractor:
 
     def getInstitutionalHolders(self):
         # Get Institutional holders
-        ih_pd = pd.DataFrame()
+        ih_pd = self.yfinanceData["stock_ih"]
 
         for ticker in self.ticker_active:
             if ticker.institutional_holders is None or ticker.institutional_holders.shape[1] != 5:
@@ -478,103 +475,103 @@ class yfinanceExtractor:
 
     def yfinanceQuery(self):
         failed = []
-        # try:
-        #     print("Query Historical Data")
-        #     self.getHistoricalData()
-        #     print("Historical Data Query Complete")
-        # except:
-        #     failed.append("Historical Data")
+        try:
+            print("Query Historical Data")
+            self.getHistoricalData()
+            print("Historical Data Query Complete")
+        except:
+            failed.append("Historical Data")
 
-        # try:
-        #     print("Query Financial Statement")
-        #     self.getFinancialStatement()
-        #     print("Financial Statement Query Complete")
-        # except:
-        #     failed.append("Financial Statement")
+        try:
+            print("Query Financial Statement")
+            self.getFinancialStatement()
+            print("Financial Statement Query Complete")
+        except:
+            failed.append("Financial Statement")
 
-        # try:
-        #     print(">> ========== START: Quarterly Financial Statement Query")
-        #     print(self.getQuarterlyFinancialStatement())
-        #     print(">> ========== COMPLETE: Quarterly Financial Statement Query")
-        # except:
-        #     failed.append("Quaterly Financial Statement")
+        try:
+            print(">> ========== START: Quarterly Financial Statement Query")
+            print(self.getQuarterlyFinancialStatement())
+            print(">> ========== COMPLETE: Quarterly Financial Statement Query")
+        except:
+            failed.append("Quaterly Financial Statement")
 
-        # try:
-        #     print("Query Earnings and Revenue")
-        #     self.getEarningsandRevenue()
-        #     print("Earnings and Revenue Query Complete")
-        # except:
-        #     failed.append("Earnings and Revenue")
+        try:
+            print("Query Earnings and Revenue")
+            self.getEarningsandRevenue()
+            print("Earnings and Revenue Query Complete")
+        except:
+            failed.append("Earnings and Revenue")
 
-        # try:
-        #     print("Query Quarterly Earnings and Revenue")
-        #     self.getQuarterlyEarningsandRevenue()
-        #     print("Quarterly Earnings and Revenue Query Complete")
-        # except:
-        #     failed.append("Quarterly Earnings and Revenue")
+        try:
+            print("Query Quarterly Earnings and Revenue")
+            self.getQuarterlyEarningsandRevenue()
+            print("Quarterly Earnings and Revenue Query Complete")
+        except:
+            failed.append("Quarterly Earnings and Revenue")
 
-        # try:
-        #     print(">> ========== START: Major Holders Query")
-        #     self.getMajorHolders()
-        #     print(">> ========== COMPLETE: Major Holders Query")
-        # except:
-        #     failed.append("Major Holders")
+        try:
+            print(">> ========== START: Major Holders Query")
+            self.getMajorHolders()
+            print(">> ========== COMPLETE: Major Holders Query")
+        except:
+            failed.append("Major Holders")
 
-        # try:
-        #     print(">> ========== START: Basic Shares Query")
-        #     self.getBasicShares()
-        #     print(">> ========== COMPLETE: Basic Shares Query")
-        # except:
-        #     failed.append("Basic Shares")
+        try:
+            print(">> ========== START: Basic Shares Query")
+            self.getBasicShares()
+            print(">> ========== COMPLETE: Basic Shares Query")
+        except:
+            failed.append("Basic Shares")
 
-        # try:
-        print("Query Stock Info")
-        self.getStockInfo()
-        print("Stock Info Query Complete")
-        # except:
-        #     failed.append("Stock Info")
+        try:
+            print("Query Stock Info")
+            self.getStockInfo()
+            print("Stock Info Query Complete")
+        except:
+            failed.append("Stock Info")
 
-        # try:
-        #     print(">> ========== START: Stock Industry Extraction")
-        #     self.getStockIndustry()
-        #     print(">> ========== COMPLETE: Stock Industry Extraction")
-        # except:
-        #     failed.append("Stock industry")
+        try:
+            print(">> ========== START: Stock Industry Extraction")
+            self.getStockIndustry()
+            print(">> ========== COMPLETE: Stock Industry Extraction")
+        except:
+            failed.append("Stock industry")
 
-        # try:
-        #     print(">> ========== START: Stock Calendar Query")
-        #     self.getCalendar()
-        #     print(">> ========== COMPLETE: Stock Calendar Query")
-        # except:
-        #     failed.append("Calendar Query")
+        try:
+            print(">> ========== START: Stock Calendar Query")
+            self.getCalendar()
+            print(">> ========== COMPLETE: Stock Calendar Query")
+        except:
+            failed.append("Calendar Query")
 
-        # try:
-        #     print(">> ========== START: Analyst Recommendations Query")
-        #     self.getRecommendations()
-        #     print(">> ========== COMPLETE: Analyst Recommendations Query")
-        # except:
-        #     failed.append("Analyst Recommendations")
+        try:
+            print(">> ========== START: Analyst Recommendations Query")
+            self.getRecommendations()
+            print(">> ========== COMPLETE: Analyst Recommendations Query")
+        except:
+            failed.append("Analyst Recommendations")
 
-        # try:
-        #     print(">> ========== START: Stock Analysis Query")
-        #     self.getAnalysis()
-        #     print(">> ========== COMPLETE: Stock Analysis Query")
-        # except:
-        #     failed.append("Stock Analysis")
+        try:
+            print(">> ========== START: Stock Analysis Query")
+            self.getAnalysis()
+            print(">> ========== COMPLETE: Stock Analysis Query")
+        except:
+            failed.append("Stock Analysis")
 
-        # try:
-        #     print(">> ========== START: Mutual Fund Holders Query")
-        #     self.getMutualFundHolders()
-        #     print(">> ========== COMPLETE: Mutual Fund Holders Query")
-        # except:
-        #     failed.append("Mutual Fund Holder")
+        try:
+            print(">> ========== START: Mutual Fund Holders Query")
+            self.getMutualFundHolders()
+            print(">> ========== COMPLETE: Mutual Fund Holders Query")
+        except:
+            failed.append("Mutual Fund Holder")
 
-        # try:
-        #     print(">> ========== START: Institutional Holders Querys")
-        #     self.getInstitutionalHolders()
-        #     print(">> ========== COMPLETE: Institutional Holders Query")
-        # except:
-        #     failed.append("Institutional Holders")
+        try:
+            print(">> ========== START: Institutional Holders Querys")
+            self.getInstitutionalHolders()
+            print(">> ========== COMPLETE: Institutional Holders Query")
+        except:
+            failed.append("Institutional Holders")
 
         for name, df in self.yfinanceData.items():
             df.to_csv(f"output_store/{name}.csv", index=False)
