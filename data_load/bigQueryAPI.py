@@ -56,7 +56,7 @@ class bigQueryDB:
                     print("ERROR: Empty DataFrame - Table Creation Aborted")
                     return False
             else:
-                print("ERROR: Data File not Dataframe")
+                print("ERROR: Data Object Not Dataframe")
                 return False
         else:
             print(
@@ -76,6 +76,7 @@ class bigQueryDB:
                             pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                               if_exists="append", credentials=self.credentials)
                         else:
+                            print(schema)
                             pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                               if_exists="append", table_schema=schema, credentials=self.credentials)
                         print(
@@ -83,12 +84,13 @@ class bigQueryDB:
                         return True
                     except Exception as err:
                         print(f"ERROR: Data Append to {datasetTable} Aborted")
-                        print(f"Error Log: {err}")
-                        return False
+                        # print(f"Error Log: {err}")
+                        raise err
+                        # return False
                 else:
                     print("ERROR: Empty DataFrame - Table Creation Aborted")
             else:
-                print("ERROR: Data Object not Dataframe")
+                print("ERROR: Data Object Not Dataframe")
                 return False
         else:
             print(
@@ -250,12 +252,16 @@ class bigQueryDB:
         # field_type: data type of column
         # name: name of column
 
-        formatted_schema = {}
+        formatted_schema = []
         for schema in schemas:
-            formatted_schema[schema.name] = schema.field_type
+            schema_details = {
+                'name': schema.name,
+                'type': schema.field_type
+            }
+            formatted_schema.append(schema_details)
 
         print(f"SUCCESS: Retrived Table Schema for {datasetTable}")
-        return [formatted_schema]
+        return formatted_schema
 
     def updateTableSchema(self, datasetTablelist):
         print(f"INFO: Updating Table Schema for {datasetTablelist}")
