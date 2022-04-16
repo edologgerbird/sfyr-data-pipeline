@@ -5,14 +5,6 @@ class yfinanceTransform:
     def __init__(self, yfinance_data):
         self.yfinance_data = yfinance_data
 
-        for datafield in self.yfinance_data.keys():
-            self.replaceColumnName(datafield)
-            self.removeDuplicateColumns(datafield)
-            print(f"SUCCESS: Transformation of {datafield} Complete")
-
-        print("SUCCESS: yFinance Transform Completed")
-        return self.yfinance_data
-
     def replaceColumnName(self, datafield):
         # Removing Spaces in Column Names - GBQ Limitation
         print(f"INFO: {datafield} Column Name Replacement Triggered")
@@ -48,3 +40,12 @@ class yfinanceTransform:
         self.yfinance_data[datafield] = self.yfinance_data[datafield].loc[:,
                                                                           ~self.yfinance_data[datafield].columns.duplicated()]
         print(f"SUCCESS: {datafield} Column Duplicates Removed")
+
+    def transformData(self):
+        for datafield in self.yfinance_data.keys():
+            self.replaceColumnName(datafield)
+            self.removeDuplicateColumns(datafield)
+            print(f"SUCCESS: Transformation of {datafield} Complete")
+
+        print("SUCCESS: yFinance Transform Completed")
+        return self.yfinance_data
