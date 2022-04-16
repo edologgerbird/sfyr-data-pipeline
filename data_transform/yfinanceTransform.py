@@ -37,10 +37,10 @@ class yfinanceTransform:
         print(f"SUCCESS: {dataset} Column Name Replacement")
 
     def removeDuplicateColumns(self, dataset):
-        print(f"INFO: Removing Column Duplicates - {dataset}")
+        print(f"INFO: Removing Column Duplicates for {dataset}")
         self.yfinance_data[dataset] = self.yfinance_data[dataset].loc[:,
                                                                       ~self.yfinance_data[dataset].columns.duplicated()]
-        print(f"SUCCESS: {dataset} Column Duplicates Removed")
+        print(f"SUCCESS: Duplicate Column Removed In {dataset} ")
 
     def schemaCompliance(self, dataset):
         print(f"INFO: {dataset} Schema Compliance Triggered")
@@ -68,6 +68,7 @@ class yfinanceTransform:
             if col not in pd_dataset_schema.keys():
                 print(f"INFO: Extra {col} Dropped")
                 yfinance_dataset.drop(labels=col, axis=1)
+                print(f"SUCCESS: Extra {col} Dropped")
             elif yfinance_dataset[col].dtypes != pd_dataset_schema[col]:
                 print(
                     f"INFO: {col} Enforcing Schema {yfinance_dataset[col].dtype} -> {pd_dataset_schema[col]}")
@@ -87,14 +88,14 @@ class yfinanceTransform:
 
     def transformData(self):
         for datafield in self.yfinance_data.keys():
-            print(f"INFO: Transformation of {datafield} Triggered")
             if not self.yfinance_data[datafield].empty:
+                print(f"INFO: Transformation of {datafield} Triggered")
                 self.replaceColumnName(datafield)
                 self.removeDuplicateColumns(datafield)
                 self.schemaCompliance(datafield)
                 print(f"SUCCESS: Transformation of {datafield} Complete")
             else:
-                print(f"INFO: {datafield} Skipped - Empty DataFrame")
+                print(f"WARNING: {datafield} Skipped - Empty DataFrame")
 
         print("SUCCESS: yFinance Transform Completed")
         return self.yfinance_data
