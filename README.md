@@ -78,7 +78,6 @@ Make sure you have installed all of the following on your development machine:
 
 We recommend setting up a virtual machine and virtual environment to run this project.
 
-<br>
 
 ### _1. Oracle Virtual Machine_
 
