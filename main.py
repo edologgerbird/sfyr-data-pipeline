@@ -51,8 +51,8 @@ if __name__ == '__main__':
     # ---- Test yFinance Pipeline ---- #
 
     sgx_data = bigQueryDB().getDataFields("SGX.Tickers")
-    sgx_data = sgx_data[(sgx_data["ticker"] == "K3SD") |
-                        (sgx_data["ticker"] == "K3RD")]
+    sgx_data = sgx_data[(sgx_data["ticker"] == "42N") |
+                        (sgx_data["ticker"] == "5OI")]
     gbq_layer = bigQueryDB()
     yfinance_data_to_upload = yfinanceExtractor(sgx_data).yfinanceQuery()
     # ind_data = yfinance_data_to_upload["stock_industry"]
