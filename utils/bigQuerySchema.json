@@ -278,7 +278,7 @@
     { "name": "exDividendDate", "type": "INTEGER" },
     { "name": "exchange", "type": "STRING" },
     { "name": "exchangeDataDelayedBy", "type": "INTEGER" },
-    { "name": "exchangeName", "type": "INTEGER" },
+    { "name": "exchangeName", "type": "STRING" },
     { "name": "exchangeTimezoneName", "type": "STRING" },
     { "name": "exchangeTimezoneShortName", "type": "STRING" },
     { "name": "expireDate", "type": "STRING" },

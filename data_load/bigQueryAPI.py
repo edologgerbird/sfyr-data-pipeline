@@ -275,7 +275,7 @@ class bigQueryDB:
         with open(self.tableSchemaUrl, 'w') as schemaFile:
             json.dump(self.tableSchema, schemaFile)
 
-        print(f"INFO: Updated Table Schema for {datasetTablelist} ")
+        print(f"SUCCESS: Updated Table Schema for {datasetTablelist} ")
 
         return True
 
