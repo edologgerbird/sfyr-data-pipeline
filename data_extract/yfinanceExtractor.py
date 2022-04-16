@@ -484,40 +484,40 @@ class yfinanceExtractor:
 
     def yfinanceQuery(self):
         failed = []
-        try:
-            print("Query Historical Data")
-            self.getHistoricalData()
-            print("Historical Data Query Complete")
-        except:
-            failed.append("Historical Data")
+        # try:
+        #     print("Query Historical Data")
+        #     self.getHistoricalData()
+        #     print("Historical Data Query Complete")
+        # except:
+        #     failed.append("Historical Data")
 
-        try:
-            print("Query Financial Statement")
-            self.getFinancialStatement()
-            print("Financial Statement Query Complete")
-        except:
-            failed.append("Financial Statement")
+        # try:
+        #     print("Query Financial Statement")
+        #     self.getFinancialStatement()
+        #     print("Financial Statement Query Complete")
+        # except:
+        #     failed.append("Financial Statement")
 
-        try:
-            print(">> ========== START: Quarterly Financial Statement Query")
-            print(self.getQuarterlyFinancialStatement())
-            print(">> ========== COMPLETE: Quarterly Financial Statement Query")
-        except:
-            failed.append("Quaterly Financial Statement")
+        # try:
+        #     print(">> ========== START: Quarterly Financial Statement Query")
+        #     print(self.getQuarterlyFinancialStatement())
+        #     print(">> ========== COMPLETE: Quarterly Financial Statement Query")
+        # except:
+        #     failed.append("Quaterly Financial Statement")
 
-        try:
-            print("Query Earnings and Revenue")
-            self.getEarningsandRevenue()
-            print("Earnings and Revenue Query Complete")
-        except:
-            failed.append("Earnings and Revenue")
+        # try:
+        #     print("Query Earnings and Revenue")
+        #     self.getEarningsandRevenue()
+        #     print("Earnings and Revenue Query Complete")
+        # except:
+        #     failed.append("Earnings and Revenue")
 
-        try:
-            print("Query Quarterly Earnings and Revenue")
-            self.getQuarterlyEarningsandRevenue()
-            print("Quarterly Earnings and Revenue Query Complete")
-        except:
-            failed.append("Quarterly Earnings and Revenue")
+        # try:
+        #     print("Query Quarterly Earnings and Revenue")
+        #     self.getQuarterlyEarningsandRevenue()
+        #     print("Quarterly Earnings and Revenue Query Complete")
+        # except:
+        #     failed.append("Quarterly Earnings and Revenue")
 
         try:
             print(">> ========== START: Major Holders Query")
@@ -581,6 +581,7 @@ class yfinanceExtractor:
             print(">> ========== COMPLETE: Institutional Holders Query")
         except:
             failed.append("Institutional Holders")
+
 
         for name, df in self.yfinanceData.items():
             df.to_csv(f"output_store/{name}.csv", index=False)
