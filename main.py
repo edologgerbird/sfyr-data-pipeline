@@ -49,7 +49,7 @@ if __name__ == '__main__':
     # print(schema)
 
     # ---- Test yFinance Pipeline ---- #
-    sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head(20)
+    sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head(10)
     # sgx_data = sgx_data[(sgx_data["ticker"] == "42N") |
     #                     (sgx_data["ticker"] == "5OI")]
     gbq_layer = bigQueryDB()

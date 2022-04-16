@@ -58,7 +58,7 @@ global_end_date = global_start_date_excute_time
 
 # Test Time for data extraction
 extraction_start_date = datetime.today() - timedelta(days=8)
-extraction_end_date = datetime.today() - timedelta(days=8)
+extraction_end_date = datetime.today() - timedelta(days=6)
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
@@ -84,7 +84,7 @@ def extract_SBR_data(**kwargs):
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return sbr_raw_data.head(10)
+    return sbr_raw_data.head(1)
 
 
 def extract_tele_data(**kwargs):
@@ -93,7 +93,7 @@ def extract_tele_data(**kwargs):
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return tele_data_raw.head(10)
+    return tele_data_raw.head(1)
 
 
 def extract_YahooFin_data(**kwargs):
@@ -109,7 +109,8 @@ def extract_yFinance_data(**kwargs):
     # >> extract yFinance_data
     # >> return dictionary of DataFrames: yFinance_dataar
     ti = kwargs['ti']
-    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].head(20)
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[
+        1].sample(50)
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
