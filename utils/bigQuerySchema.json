@@ -257,7 +257,7 @@
     { "name": "convertiblePosition", "type": "INTEGER" },
     { "name": "country", "type": "STRING" },
     { "name": "currency", "type": "STRING" },
-    { "name": "currencySymbol", "type": "INTEGER" },
+    { "name": "currencySymbol", "type": "STRING" },
     { "name": "currentPrice", "type": "FLOAT" },
     { "name": "currentRatio", "type": "FLOAT" },
     { "name": "dateShortInterest", "type": "INTEGER" },
