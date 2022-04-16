@@ -370,24 +370,15 @@ class yfinanceExtractor:
         # Get next event (earnings, etc)
         stock_calendar_df = pd.DataFrame()
         for ticker in self.ticker_active:
-            if ticker.calendar is None:
-                ticker_calendar = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
-                stock_calendar_df = pd.concat(
-                    [stock_calendar_df, ticker_calendar])
-
-            else:
+            if ticker.calendar is not None:
                 ticker_calendar = ticker.calendar.transpose()
-                ticker_calendar['Ticker'] = self.removeSI(ticker.ticker)
+                ticker_calendar = ticker_calendar.rename(
+                    columns={"Ticker": "Tickers"})
+                ticker_calendar['Tickers'] = self.removeSI(ticker.ticker)
                 stock_calendar_df = pd.concat(
                     [stock_calendar_df, ticker_calendar])
-        print(stock_calendar_df)
         stock_calendar_df = stock_calendar_df.reset_index(drop=True)
         # Store to Shared Data
-        print(stock_calendar_df)
-        for c in stock_calendar_df.columns:
-            print(c)
-
         self.yfinanceData["stock_calendar"] = stock_calendar_df
         return stock_calendar_df
 
@@ -544,19 +535,19 @@ class yfinanceExtractor:
         # except:
         #     failed.append("Stock industry")
 
-        # try:
-        #     print(">> ========== START: Stock Calendar Query")
-        #     self.getCalendar()
-        #     print(">> ========== COMPLETE: Stock Calendar Query")
-        # except:
-        #     failed.append("Calendar Query")
-
         try:
-            print(">> ========== START: Analyst Recommendations Query")
-            self.getRecommendations()
-            print(">> ========== COMPLETE: Analyst Recommendations Query")
+            print(">> ========== START: Stock Calendar Query")
+            self.getCalendar()
+            print(">> ========== COMPLETE: Stock Calendar Query")
         except:
-            failed.append("Analyst Recommendations")
+            failed.append("Calendar Query")
+
+        # try:
+        #     print(">> ========== START: Analyst Recommendations Query")
+        #     self.getRecommendations()
+        #     print(">> ========== COMPLETE: Analyst Recommendations Query")
+        # except:
+        #     failed.append("Analyst Recommendations")
 
         # try:
         #     print(">> ========== START: Stock Analysis Query")
