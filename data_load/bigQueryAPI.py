@@ -3,11 +3,12 @@ import pandas_gbq
 from google.cloud import bigquery
 from google.oauth2 import service_account
 import json
+import time
 
 
 class bigQueryDB:
     def __init__(self):
-        print("Initialising GBQ Pipeline...")
+        print("INFO: Initialising GBQ Pipeline...")
         # Set-up Credentials and Project
         self.credentials = service_account.Credentials.from_service_account_file(
             'utils/is3107-group-7-008534a376ad.json',)
@@ -21,26 +22,42 @@ class bigQueryDB:
         self.project_id = self.cred["bigQueryConfig"]["PROJECT_ID"]
         self.dataset_id = self.cred["bigQueryConfig"]["DATASET_ID"]
         self.datasetTable = self.cred["bigQueryConfig"]["DATASET_TABLE"]
-        print("GBQ Pipeline Initialised")
+
+        print("INFO: GBQ Pipeline Initialised")
 
     def gbqCreateNewTable(self, data, datasetName, tableName):
         datasetTable = datasetName + "." + tableName
-        if isinstance(data, pd.DataFrame):
-            if not data.empty:
-                try:
-                    pandas_gbq.to_gbq(
-                        data, datasetTable, project_id=self.project_id, credentials=self.credentials)
-                    print(f"Table Succefully Created {datasetTable}")
-                    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
-                    self.syncTables()
-                    return True
-                except Exception as err:
-                    self.syncTables()
-                    raise err
+        if (datasetTable not in self.datasetTable):
+            if isinstance(data, pd.DataFrame):
+                if not data.empty:
+                    try:
+                        pandas_gbq.to_gbq(
+                            data, datasetTable, project_id=self.project_id, credentials=self.credentials)
+                        print(f"SUCCESS: {datasetTable} Created")
+                        print(f"SUCCESS: Data Added to {datasetTable}")
+                        # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
+                        self.syncTables()
+                        return True
+                    except Exception as err:
+                        self.syncTables()
+                        print(
+                            f"ERROR: Data Addition to {datasetTable} Aborted")
+                        if datasetTable in self.datasetTable:
+                            print(f"INFO: {datasetTable} has been created")
+                        print(f"Error Log: {err}")
+                        return False
+
+                else:
+                    print("ERROR: Empty DataFrame - Table Creation Aborted")
+                    return False
             else:
-                print("Empty Dataset - Append Aborted")
+                print("ERROR: Data File not Dataframe")
+                return False
         else:
-            raise Exception("Data File not Dataframe")
+            print(
+                f"INFO: {datasetTable} exist - Data Will Be Replaced unless Operation Cancelled")
+            time.sleep(3)
+            self.gbqReplace(data, datasetTable)
 
     # datasetTableName is to be in the form of datasetName.TableName
     def gbqAppend(self, data, datasetTable):
@@ -48,42 +65,55 @@ class bigQueryDB:
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
                 if not data.empty:
-                    self.syncTables()
                     try:
                         pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                           if_exists="append", credentials=self.credentials)
-                        print(f"Data Successfully Added to {datasetTable}")
+                        print(
+                            f"SUCCESS: Data Appended to {datasetTable}")
                         return True
                     except Exception as err:
-                        raise err
+                        print(f"ERROR: Data Append to {datasetTable} Aborted")
+                        print(f"Error Log: {err}")
+                        return False
                 else:
-                    print("Empty Dataset - Append Aborted")
+                    print("ERROR: Empty DataFrame - Table Creation Aborted")
             else:
-                raise Exception("Data File not Dataframe")
+                print("ERROR: Data Object not Dataframe")
+                return False
         else:
-            raise Exception("Table Does not Exist")
+            print(
+                f"INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled")
+            time.sleep(3)
+            datasetTableSplit = datasetTable.split(".")
+            self.gbqCreateNewTable(
+                data, datasetTableSplit[0], datasetTableSplit[1])
 
     # datasetTable is to be in the form of datasetName.TableName
     def gbqReplace(self, data, datasetTable):
-        # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
-
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
                 if not data.empty:
-                    self.syncTables()
                     try:
                         pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
                                           if_exists="replace", credentials=self.credentials)
-                        print(f"Data Successfully Replaced at {datasetTable}")
+                        print(f"SUCCESS: {datasetTable} Data Replaced")
                         return True
                     except Exception as err:
-                        raise err
+                        print(f"ERROR: Data Append to {datasetTable} Aborted")
+                        print(f"Error Log: {err}")
+                        return False
                 else:
                     print("Empty Dataset - Replace Aborted")
             else:
-                raise Exception("Data File not Dataframe")
+                print("ERROR: Data Object not Dataframe")
+                return False
         else:
-            raise Exception("Table Does not Exist")
+            print(
+                f"INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled")
+            time.sleep(3)
+            datasetTableSplit = datasetTable.split(".")
+            self.gbqCreateNewTable(
+                data, datasetTableSplit[0], datasetTableSplit[1])
 
     def gbqDeleteDataset(self, dataset):
         try:
@@ -143,9 +173,10 @@ class bigQueryDB:
 
     # Helper Function to Sync Local Dataset with Cloud
     def syncDataset(self):
+        print(f"INFO: Updating Datasets for {datasets}")
         datasets = list(self.client.list_datasets())  # Make an API request.
         updatedDatasetList = []
-        print("Updating Datasets")
+
         if datasets:
             for dataset in datasets:
                 updatedDatasetList.append(dataset.dataset_id)
@@ -155,11 +186,11 @@ class bigQueryDB:
 
             with open(self.credUrl, 'w') as jsonFile:
                 json.dump(self.cred, jsonFile)
-            print("Dataset Succesfully Updated")
+            print("SUCCESS: Dataset Succesfully Updated")
             return updatedDatasetList
 
         else:
-            print("{} project does not contain any datasets.".format(self.project))
+            print("WARNING: {} does not contain any datasets.".format(self.project))
             return None
 
     # Returns all datasetName.tableName as a list
@@ -170,20 +201,26 @@ class bigQueryDB:
     def syncTables(self):
         updatedTableList = []
         self.syncDataset()
-
+        print(f"INFO: Updating Tables for {self.dataset_id}")
         for dataset in self.dataset_id:
-            print(f"Updating Tables for {dataset}")
-            tables = self.client.list_tables(dataset)  # Make an API request
-            for table in tables:
-                updatedTableList.append(
-                    table.dataset_id + "." + table.table_id)
+            try:
+                tables = self.client.list_tables(
+                    dataset)  # Make an API request
+                for table in tables:
+                    updatedTableList.append(
+                        table.dataset_id + "." + table.table_id)
+
+            except Exception as err:
+                print(f"ERROR: {dataset} Update Failure")
+                print(f"Error Log: {err}")
+
         # Updating serviceAccount.json
         self.cred["bigQueryConfig"]["DATASET_TABLE"] = updatedTableList
 
         with open(self.credUrl, 'w') as jsonFile:
             json.dump(self.cred, jsonFile)
 
-        print("Tables Succesfully Updated")
+        print("INFO: Tables Succesfully Updated")
         return updatedTableList
 
     # Returns a list of schemaField

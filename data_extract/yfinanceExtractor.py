@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import time
+import json
 from functools import reduce
 import asyncio
 
@@ -12,44 +13,21 @@ class yfinanceExtractor:
         self.sgxTickers = sgxTickers
         self.sgxTickers.ticker = self.sgxTickers.ticker.str[:] + ".SI"
 
+        # Initalisation of yFinance Columns Datafile
+        self.yfinanceColUrl = "data_extract/yfinanceColumns.json"
+        with open(self.yfinanceColUrl, 'r') as jsonFile:
+            self.yfinanceCol = json.load(jsonFile)
+
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
         self.ticker_delisted = []  # List of Inactive Ticker Name String
+        
+        # Initalise yFinance Output
+        self.yfinanceData = {}
+        for dataField in self.yfinanceCol:
+            self.yfinanceData[dataField] = pd.DataFrame(
+                columns=self.yfinanceCol[dataField])
 
-        # yFinance Ouput
-        self.yfinanceData = {
-            "ticker_status": pd.DataFrame(columns=["Listed", "Delisted"]),
-            "historical_data": pd.DataFrame(columns=['Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume', 'Tickers', 'Market Status']),
-            "financial_statements": pd.DataFrame(columns=['Date', 'Research Development', 'Effect Of Accounting Charges', 'Income Before Tax', 'Minority Interest', 'Net Income_x', 'Selling General Administrative', 'Gross Profit', 'Ebit', 'Operating Income', 'Other Operating Expenses', 'Interest Expense', 'Extraordinary Items', 'Non Recurring', 'Other Items', 'Income Tax Expense', 'Total Revenue', 'Total Operating Expenses', 'Cost Of Revenue', 'Total Other Income Expense Net', 'Discontinued Operations', 'Net Income From Continuing Ops', 'Net Income Applicable To Common Shares', 'Total Liab', 'Total Stockholder Equity', 'Other Current Liab', 'Total Assets', 'Common Stock', 'Other Current Assets', 'Retained Earnings', 'Other Liab', 'Cash', 'Total Current Liabilities', 'Property Plant Equipment', 'Total Current Assets', 'Net Tangible Assets', 'Net Receivables', 'Accounts Payable', 'Intangible Assets', 'Treasury Stock', 'Other Assets', 'Other Stockholder Equity', 'Long Term Debt', 'Deferred Long Term Asset Charges', 'Change To Liabilities', 'Net Borrowings', 'Total Cash From Financing Activities', 'Net Income_y', 'Change In Cash', 'Total Cash From Operating Activities', 'Depreciation', 'Change To Account Receivables', 'Change To Netincome', 'Total Cashflows From Investing Activities', 'Capital Expenditures', 'Change To Operating Activities', 'Issuance Of Stock', 'Minority Interest_x', 'Minority Interest_y', 'Short Long Term Debt', 'Inventory', 'Good Will', 'Other Cashflows From Investing Activities', 'Change To Inventory', 'Other Cashflows From Financing Activities', 'Short Term Investments', 'Effect Of Exchange Rate', 'Long Term Investments', 'Investments', 'Dividends Paid', 'Repurchase Of Stock', 'Capital Surplus', 'Deferred Long Term Liab']),
-            "quarterly_financial_statements": pd.DataFrame(columns=['Date', 'Research Development', 'Effect Of Accounting Charges', 'Income Before Tax', 'Minority Interest', 'Net Income_x', 'Selling General Administrative', 'Gross Profit', 'Ebit', 'Operating Income', 'Other Operating Expenses', 'Interest Expense', 'Extraordinary Items', 'Non Recurring', 'Other Items', 'Income Tax Expense', 'Total Revenue', 'Total Operating Expenses', 'Cost Of Revenue', 'Total Other Income Expense Net', 'Discontinued Operations', 'Net Income From Continuing Ops', 'Net Income Applicable To Common Shares', 'Total Liab', 'Total Stockholder Equity', 'Other Current Liab', 'Total Assets', 'Common Stock', 'Other Current Assets', 'Retained Earnings', 'Other Liab', 'Cash', 'Total Current Liabilities', 'Property Plant Equipment', 'Total Current Assets', 'Net Tangible Assets', 'Net Receivables', 'Accounts Payable', 'Intangible Assets', 'Treasury Stock', 'Other Assets', 'Other Stockholder Equity', 'Long Term Debt', 'Net Income_y', 'Change To Liabilities', 'Net Borrowings', 'Total Cash From Financing Activities', 'Change In Cash', 'Total Cash From Operating Activities', 'Depreciation', 'Change To Account Receivables', 'Change To Netincome', 'Minority Interest_x', 'Minority Interest_y', 'Deferred Long Term Asset Charges', 'Short Long Term Debt', 'Inventory', 'Total Cashflows From Investing Activities', 'Change To Operating Activities', 'Issuance Of Stock', 'Other Cashflows From Investing Activities', 'Change To Inventory', 'Other Cashflows From Financing Activities', 'Capital Expenditures', 'Short Term Investments', 'Effect Of Exchange Rate', 'Long Term Investments', 'Investments', 'Good Will', 'Repurchase Of Stock', 'Dividends Paid', 'Capital Surplus', 'Deferred Long Term Liab']),
-            "earnings_and_revenue": pd.DataFrame(columns=['Year', 'Revenue', 'Earnings', 'Tickers']),
-            "quarterly_earnings_and_revenue": pd.DataFrame(columns=['Quarters', 'Revenue', 'Earnings', 'Tickers']),
-            "majorHolders": pd.DataFrame(columns=["Tickers", '% of Shares Held by All Insider', '% of Shares Held by Institutions',
-                                                  '% of Float Held by Institutions', 'Number of Institutions Holding Shares'], dtype="string"),
-            "basic_shares": pd.DataFrame(columns=['Year', 'Tickers']),
-            "stock_info": pd.DataFrame(columns=['Tickers', '52WeekChange', 'SandP52WeekChange', 'address1', 'address2', 'algorithm', 'annualHoldingsTurnover', 'annualReportExpenseRatio', 'ask', 'askSize', 'averageDailyVolume10Day', 'averageDailyVolume3Month',
-                                                'averageVolume', 'averageVolume10days', 'beta', 'beta3Year', 'bid', 'bidSize', 'bondHoldings', 'bondPosition', 'bondRatings', 'bookValue', 'cashPosition', 'category', 'circulatingSupply', 'city',
-                                                'companyOfficers', 'convertiblePosition', 'country', 'currency', 'currencySymbol', 'currentPrice', 'currentRatio', 'dateShortInterest', 'dayHigh', 'dayLow', 'debtToEquity', 'dividendRate', 'dividendYield',
-                                                'earningsGrowth', 'earningsQuarterlyGrowth', 'ebitda', 'ebitdaMargins', 'enterpriseToEbitda', 'enterpriseToRevenue', 'enterpriseValue', 'equityHoldings', 'err', 'exDividendDate', 'exchange', 'exchangeDataDelayedBy',
-                                                'exchangeName', 'exchangeTimezoneName', 'exchangeTimezoneShortName', 'expireDate', 'fax', 'fiftyDayAverage', 'fiftyTwoWeekHigh', 'fiftyTwoWeekLow', 'financialCurrency', 'fiveYearAverageReturn', 'fiveYearAvgDividendYield',
-                                                'floatShares', 'forwardEps', 'forwardPE', 'freeCashflow', 'fromCurrency', 'fullTimeEmployees', 'fundFamily', 'fundInceptionDate', 'gmtOffSetMilliseconds', 'grossMargins', 'grossProfits', 'headSymbol',
-                                                'heldPercentInsiders', 'heldPercentInstitutions', 'holdings', 'industry', 'isEsgPopulated', 'lastCapGain', 'lastDividendDate', 'lastDividendValue', 'lastFiscalYearEnd', 'lastMarket', 'lastSplitDate', 'lastSplitFactor',
-                                                'legalType', 'logo_url', 'longBusinessSummary', 'longName', 'market', 'marketCap', 'marketState', 'maxAge', 'maxSupply', 'messageBoardId', 'morningStarOverallRating', 'morningStarRiskRating', 'mostRecentQuarter',
-                                                'navPrice', 'netIncomeToCommon', 'nextFiscalYearEnd', 'numberOfAnalystOpinions', 'open', 'openInterest', 'operatingCashflow', 'operatingMargins', 'otherPosition', 'payoutRatio', 'pegRatio',
-                                                'phone', 'postMarketChange', 'postMarketPrice', 'preMarketChange', 'preMarketPrice', 'preferredPosition', 'previousClose', 'priceHint', 'priceToBook', 'priceToSalesTrailing12Months', 'profitMargins',
-                                                'quickRatio', 'quoteSourceName', 'quoteType', 'recommendationKey', 'recommendationMean', 'regularMarketChange', 'regularMarketChangePercent', 'regularMarketDayHigh', 'regularMarketDayLow', 'regularMarketOpen',
-                                                'regularMarketPreviousClose', 'regularMarketPrice', 'regularMarketSource', 'regularMarketTime', 'regularMarketVolume', 'returnOnAssets', 'returnOnEquity', 'revenueGrowth', 'revenuePerShare', 'revenueQuarterlyGrowth',
-                                                'sector', 'sectorWeightings', 'sharesOutstanding', 'sharesPercentSharesOut', 'sharesShort', 'sharesShortPreviousMonthDate', 'sharesShortPriorMonth', 'shortName', 'shortPercentOfFloat', 'shortRatio',
-                                                'startDate', 'state', 'stockPosition', 'strikePrice', 'symbol', 'targetHighPrice', 'targetLowPrice', 'targetMeanPrice', 'targetMedianPrice', 'threeYearAverageReturn', 'toCurrency', 'totalAssets',
-                                                'totalCash', 'totalCashPerShare', 'totalDebt', 'totalRevenue', 'tradeable', 'trailingAnnualDividendRate', 'trailingAnnualDividendYield', 'trailingEps', 'trailingPE', 'twoHundredDayAverage', 'underlyingExchangeSymbol',
-                                                'underlyingSymbol', 'uuid', 'volume', 'volume24Hr', 'volumeAllCurrencies', 'website', 'yield', 'ytdReturn', 'zip']),
-            "stock_industry": pd.DataFrame(columns=['ticker', 'industry']),
-            "stock_calendar": pd.DataFrame(columns=['Earnings Date', 'Earnings Average', 'Earnings Low', 'Earnings High', 'Revenue Average', 'Revenue Low', 'Revenue High', 'Tickers']),
-            "stock_recommendation": pd.DataFrame(columns=["Date", "Tickers", "Firm", "To Grade", "From Grade", "Action"]),
-            "stock_analysis": pd.DataFrame(columns=['Period', 'Max Age', 'End Date', 'Growth', 'Earnings Estimate Avg', 'Earnings Estimate Low', 'Earnings Estimate High', 'Earnings Estimate Year Ago Eps', 'Earnings Estimate Number Of Analysts', 'Earnings Estimate Growth', 'Revenue Estimate Avg', 'Revenue Estimate Low', 'Revenue Estimate High', 'Revenue Estimate Number Of Analysts', 'Revenue Estimate Year Ago Revenue', 'Revenue Estimate Growth', 'Eps Trend Current', 'Eps Trend 7Days Ago', 'Eps Trend 30Days Ago', 'Eps Trend 60Days Ago', 'Eps Trend 90Days Ago', 'Eps Revisions Up Last7Days', 'Eps Revisions Up Last30Days', 'Eps Revisions Down Last30Days', 'Eps Revisions Down Last90Days', 'Tickers']),
-            "stock_mfh": pd.DataFrame(columns=['Tickers', 'Holder', 'Shares', 'Date Reported', '% Out', 'Value']),
-            "stock_ih": pd.DataFrame(columns=['Tickers', 'Holder', 'Shares', 'Date Reported', '% Out', 'Value'])
-        }
 
         # Check on Ticker Active/Inactive
         self.checkTickers()
