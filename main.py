@@ -7,6 +7,7 @@ from data_load.bigQueryAPI import bigQueryDB
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.SBRExtractor import SBRExtractor
+from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
 from matplotlib import ticker
 from datetime import datetime as dt
 import time
@@ -48,9 +49,12 @@ if __name__ == '__main__':
     # print(schema)
 
     # ---- Test yFinance Pipeline ---- #
-    data = bigQueryDB().getDataFields("SGX.Tickers").head()
+    sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head(1000)
     gbq_layer = bigQueryDB()
-    yfinance_data_to_upload = yfinanceExtractor(data).yfinanceQuery()
+    yfinance_data_to_upload = yfinanceExtractor(sgx_data).yfinanceQuery()
+    # ind_data = yfinance_data_to_upload["stock_industry"]
+    # print(ind_data)
+    # gen_heat_list = GenerateHeatlistsFromQuery(sgx_data, ind_data)
     # for datafield in yfinance_data_to_upload.keys():
     #     print(datafield)
     #     print(yfinance_data_to_upload[datafield])
