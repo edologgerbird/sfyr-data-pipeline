@@ -6,14 +6,6 @@ class yfinanceTransform:
     def __init__(self, yfinance_data):
         self.yfinance_data = yfinance_data
 
-        for dataset in self.yfinance_data.keys():
-            self.replaceColumnName(dataset)
-            self.removeDuplicateColumns(dataset)
-            print(f"SUCCESS: Transformation of {dataset} Complete")
-
-        print("SUCCESS: yFinance Transform Completed")
-        return self.yfinance_data
-
     def replaceColumnName(self, dataset):
         # Removing Spaces in Column Names - GBQ Limitation
         print(f"INFO: {dataset} Column Name Replacement Triggered")
@@ -51,23 +43,58 @@ class yfinanceTransform:
         print(f"SUCCESS: {dataset} Column Duplicates Removed")
 
     def schemaCompliance(self, dataset):
+        print(f"INFO: {dataset} Schema Compliance Triggered")
         datatype_mapping = {
-            "STRING": "object",
-            "INTEGER": "int64",
-            "FLOAT": "float64",
+            "STRING": "string",
+            "INTEGER": "Int64",
+            "FLOAT": "Float64",
             'TIMESTAMP': 'datetime64',
-            "BOOLEAN": "bool"
+            "BOOLEAN": "boolean"
         }
-        yfinance_dataset = self.yfinance_data[dataset]
         tableSchemaUrl = "utils/bigQuerySchema.json"
         with open(tableSchemaUrl, 'r') as schemaFile:
             tableSchema = json.load(schemaFile)
-        dataset_schema = tableSchema[dataset]
+        dataset_schema = tableSchema["yfinance." + dataset]
+
         pd_dataset_schema = {}
+        yfinance_dataset = self.yfinance_data[dataset]
         for dataset_column in dataset_schema:
             pd_dataset_schema[dataset_column["name"]
                               ] = datatype_mapping[dataset_column["type"]]
-        yfinance_dataset.astype(pd_dataset_schema, copy=False)
 
-        self.yfinance_data = yfinance_dataset
+        yfinance_dataset = yfinance_dataset.convert_dtypes()
+
+        for col in yfinance_dataset.columns:
+            if col not in pd_dataset_schema.keys():
+                print(f"INFO: Extra {col} Dropped")
+                yfinance_dataset.drop(labels=col, axis=1)
+            elif yfinance_dataset[col].dtypes != pd_dataset_schema[col]:
+                print(
+                    f"INFO: {col} Enforcing Schema {yfinance_dataset[col].dtype} -> {pd_dataset_schema[col]}")
+                if yfinance_dataset[col].dtype == "string" and pd_dataset_schema[col] == "Int64":
+                    yfinance_dataset = yfinance_dataset.astype(
+                        {col: "Float64"})
+                    print(
+                        f"INFO: Intermediate {yfinance_dataset[col].dtype} Enforcement for String -> Int ")
+                yfinance_dataset = yfinance_dataset.astype(
+                    {col: pd_dataset_schema[col]})
+                print(
+                    f"SUCCESS: {col} Datatype Enforced as {yfinance_dataset[col].dtype}")
+
+        print(f"SUCCESS: {dataset} Schema Compliance Enforced")
+        self.yfinance_data[dataset] = yfinance_dataset
         return yfinance_dataset
+
+    def transformData(self):
+        for datafield in self.yfinance_data.keys():
+            print(f"INFO: Transformation of {datafield} Triggered")
+            if not self.yfinance_data[datafield].empty:
+                self.replaceColumnName(datafield)
+                self.removeDuplicateColumns(datafield)
+                self.schemaCompliance(datafield)
+                print(f"SUCCESS: Transformation of {datafield} Complete")
+            else:
+                print(f"INFO: {datafield} Skipped - Empty DataFrame")
+
+        print("SUCCESS: yFinance Transform Completed")
+        return self.yfinance_data

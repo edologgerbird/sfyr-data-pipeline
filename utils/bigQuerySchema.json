@@ -431,5 +431,21 @@
   "yfinance.ticker_status": [
     { "name": "Listed", "type": "STRING" },
     { "name": "Delisted", "type": "STRING" }
+  ],
+  "yfinance.historical_data": [
+    { "name": "Date", "type": "TIMESTAMP" },
+    { "name": "Open", "type": "FLOAT" },
+    { "name": "High", "type": "FLOAT" },
+    { "name": "Low", "type": "FLOAT" },
+    { "name": "Close", "type": "FLOAT" },
+    { "name": "Adj_Close", "type": "FLOAT" },
+    { "name": "Volume", "type": "INTEGER" },
+    { "name": "Tickers", "type": "STRING" },
+    { "name": "Market_Status", "type": "STRING" }
+  ],
+  "yfinance.basic_shares": [
+    { "name": "Year", "type": "INTEGER" },
+    { "name": "Tickers", "type": "STRING" },
+    { "name": "BasicShares", "type": "INTEGER" }
   ]
 }
