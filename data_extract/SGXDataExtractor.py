@@ -96,6 +96,8 @@ class SGXDataExtractor:
         self.updated_SGX_data_store = updated_SGX_data.sort_values(
             ['company_name', 'ticker']).reset_index(drop=True)
 
+        self.updated_SGX_data_store = self.updated_SGX_data_store.drop_duplicates()
+
         return self.updated_SGX_data_store
 
     def SGX_data_to_csv(self):
