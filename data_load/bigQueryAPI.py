@@ -4,6 +4,7 @@ from google.cloud import bigquery
 from google.oauth2 import service_account
 import json
 import time
+import traceback
 
 
 class bigQueryDB:
@@ -44,12 +45,13 @@ class bigQueryDB:
                         self.syncTables()
                         return True
                     except Exception as err:
-                        self.syncTables()
                         print(
                             f"ERROR: Data Addition to {datasetTable} Aborted")
-                        if datasetTable in self.datasetTable:
-                            print(f"INFO: {datasetTable} has been created")
                         print(f"Error Log: {err}")
+                        print(f"Traceback: {traceback.format_exc()}")
+                        self.syncTables()
+                        if datasetTable in self.datasetTable:
+                            print(f"ALERT: {datasetTable} has been created")
                         return False
 
                 else:
@@ -60,10 +62,10 @@ class bigQueryDB:
                 return False
         else:
             print(
-                f"INFO: {datasetTable} exist - Data Will Be Replaced unless Operation Cancelled")
-            time.sleep(3)
+                f"INFO: {datasetTable} exist - Data Will Be Appended unless Operation Cancelled")
+            time.sleep(7)
             self.updateTableSchema([datasetTable])
-            self.gbqReplace(data, datasetTable, self.tableSchema[datasetTable])
+            self.gbqAppend(data, datasetTable, self.tableSchema[datasetTable])
 
     # datasetTableName is to be in the form of datasetName.TableName
     def gbqAppend(self, data, datasetTable, schema=None):
@@ -85,9 +87,8 @@ class bigQueryDB:
                         return True
                     except Exception as err:
                         print(f"ERROR: Data Append to {datasetTable} Aborted")
-                        # print(f"Error Log: {err}")
-                        raise err
-                        # return False
+                        print(f"Error Log: {err}")
+                        print(f"Traceback: {traceback.format_exc()}")
                 else:
                     print("ERROR: Empty DataFrame - Table Creation Aborted")
             else:
@@ -96,7 +97,7 @@ class bigQueryDB:
         else:
             print(
                 f"INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled")
-            time.sleep(3)
+            time.sleep(7)
             datasetTableSplit = datasetTable.split(".")
             self.gbqCreateNewTable(
                 data, datasetTableSplit[0], datasetTableSplit[1])
@@ -120,6 +121,7 @@ class bigQueryDB:
                     except Exception as err:
                         print(f"ERROR: Data Append to {datasetTable} Aborted")
                         print(f"Error Log: {err}")
+                        print(f"Traceback: {traceback.format_exc()}")
                         return False
                 else:
                     print("Empty Dataset - Replace Aborted")
@@ -129,7 +131,7 @@ class bigQueryDB:
         else:
             print(
                 f"INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled")
-            time.sleep(3)
+            time.sleep(7)
             datasetTableSplit = datasetTable.split(".")
             self.gbqCreateNewTable(
                 data, datasetTableSplit[0], datasetTableSplit[1])
@@ -141,7 +143,10 @@ class bigQueryDB:
             return True
         except Exception as err:
             self.syncDataset()
-            raise err
+            print(f"ERROR: Delete {dataset} Aborted")
+            print(f"Error Log: {err}")
+            print(f"Traceback: {traceback.format_exc()}")
+            return False
 
     def gbqDeleteTable(self, datasetTable):
         try:
@@ -150,7 +155,10 @@ class bigQueryDB:
             return True
         except Exception as err:
             self.syncTables()
-            raise err
+            print(f"ERROR: Delete {datasetTable} Aborted")
+            print(f"Error Log: {err}")
+            print(f"Traceback: {traceback.format_exc()}")
+            return False
 
     def gbqCheckDatasetExist(self, datasetName):
         gbqDatasets = self.getDataset()
@@ -161,13 +169,18 @@ class bigQueryDB:
         return datasetTable in gbqTables
 
     def gbqQueryAPI(self, query):
+        print(f"INFO: Querying {query}")
         try:
             df = pandas_gbq.read_gbq(
                 query, project_id=self.project_id, credentials=self.credentials)
+            print("SUCCESS: Query Success")
             return df
 
         except Exception as err:
-            raise err
+            print(f"ERROR: Query Aborted - Check Query Format {query} ")
+            print(f"Error Log: {err}")
+            print(f"Traceback: {traceback.format_exc()}")
+            return False
 
     # queryString takes in SQL Queries
     def getDataQuery(self, queryString):
@@ -275,7 +288,7 @@ class bigQueryDB:
         with open(self.tableSchemaUrl, 'w') as schemaFile:
             json.dump(self.tableSchema, schemaFile)
 
-        print(f"INFO: Updated Table Schema for {datasetTablelist} ")
+        print(f"SUCCESS: Updated Table Schema for {datasetTablelist} ")
 
         return True
 

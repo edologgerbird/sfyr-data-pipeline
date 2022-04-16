@@ -64,6 +64,19 @@ if __name__ == '__main__':
     #                                          ])
     # print(schema)
 
+    # df = pd.DataFrame(
+    #     {
+    #         'my_string': ['a', 'b', 'c'],
+    #         'my_int64': [1, 2, 3],
+    #         'my_float64': [4.0, 5.0, 6.0],
+    #         'my_timestamp': [
+    #             pd.Timestamp("1998-09-04T16:03:14"),
+    #             pd.Timestamp("2010-09-13T12:03:45"),
+    #             pd.Timestamp("2015-10-02T16:00:00")
+    #         ],
+    #     }
+    # )
+
     # ---- Test yFinance Extract ---- #
     # gbq_layer = bigQueryDB()
     # sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head()
