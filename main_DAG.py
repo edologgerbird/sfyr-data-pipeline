@@ -36,6 +36,7 @@ import pandas as pd
 from utils.utils import get_execute_time, get_extraction_schedule
 import traceback
 import sys
+import json
 
 ####################################################
 # 0. DEFINE GLOBAL VARIABLES
@@ -337,20 +338,23 @@ def load_yFinance_data(**kwargs):
     yfinance_data_to_upload = ti.xcom_pull(
         task_ids='transform_yFinance_data_task')
 
+    tableSchemaUrl = "utils/bigQuerySchema.json"
+    with open(tableSchemaUrl, 'r') as schemaFile:
+        tableSchema = json.load(schemaFile)
     errors = dict()
 
     for datafield in yfinance_data_to_upload.keys():
-
         print(f"Uploading {datafield} data")
         print(yfinance_data_to_upload[datafield])
         datasetTable = "yfinance." + datafield
+        schema = tableSchema[datasetTable]
         if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
             if datafield in ["ticker_status"]:
                 bigQueryDB_layer.gbqReplace(
-                    yfinance_data_to_upload[datafield], datasetTable)
+                    yfinance_data_to_upload[datafield], datasetTable, schema)
             else:
                 bigQueryDB_layer.gbqAppend(
-                    yfinance_data_to_upload[datafield], datasetTable)
+                    yfinance_data_to_upload[datafield], datasetTable, schema)
         elif not yfinance_data_to_upload[datafield].empty:
             bigQueryDB_layer.gbqCreateNewTable(
                 yfinance_data_to_upload[datafield], "yfinance", datafield)

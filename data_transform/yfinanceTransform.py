@@ -9,6 +9,8 @@ class yfinanceTransform:
             self.replaceColumnName(datafield)
             self.removeDuplicateColumns(datafield)
             print(f"SUCCESS: Transformation of {datafield} Complete")
+
+        print("SUCCESS: yFinance Transform Completed")
         return self.yfinance_data
 
     def replaceColumnName(self, datafield):
