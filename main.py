@@ -19,9 +19,10 @@ if __name__ == '__main__':
     # sgx_data_extractor_layer = SGXDataExtractor()
     # sgx_data_extractor_layer.load_SGX_data_from_source()
 
-    # ---- Test SBR Data Extraction ---- #
+    # # ---- Test SBR Data Extraction ---- #
     # sbr_data_extraction_layer = SBRExtractor()
-    # sbr_data_extraction_layer.load_SBR_data_from_source(start_date="01-02-2022", end_date="10-03-2022")
+    # sbr_data_extraction_layer.load_SBR_data_from_source(
+    #     start_date="01-02-2022", end_date="10-03-2022")
 
     # ---- Test Telegram Data Extraction ---- #
     # tele_data_extractor_layer = TelegramExtractor()
