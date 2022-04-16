@@ -329,11 +329,10 @@ class yfinanceExtractor:
                 ticker_calendar = ticker_calendar.rename(
                     columns={"Ticker": "Tickers"})
                 ticker_calendar['Tickers'] = self.removeSI(ticker.ticker)
-                ticker_calendar['Earnings Date'] = ticker_calendar['Earnings Date'].astype(
-                    'datetime64[ns]')
                 stock_calendar_df = pd.concat(
                     [stock_calendar_df, ticker_calendar])
         stock_calendar_df = stock_calendar_df.reset_index(drop=True)
+        stock_calendar_df.replace({np.nan: None}, inplace=True)
         # Store to Shared Data
         print(stock_calendar_df.dtypes)
         self.yfinanceData["stock_calendar"] = stock_calendar_df
@@ -412,20 +411,20 @@ class yfinanceExtractor:
     def yfinanceQuery(self):
         failed = []
         query_calls = {
-            # "Historical Data": self.getHistoricalData,
-            # "Financial Statement": self.getFinancialStatement,
-            # "Quarterly Financial Statement": self.getQuarterlyFinancialStatement,
-            # "Earnings and Revenue": self.getEarningsandRevenue,
-            # "Quarterly Earnings and Revenue": self.getQuarterlyEarningsandRevenue,
-            # "Major Holders": self.getMajorHolders,
-            # "Basic Shares": self.getBasicShares,
+            "Historical Data": self.getHistoricalData,
+            "Financial Statement": self.getFinancialStatement,
+            "Quarterly Financial Statement": self.getQuarterlyFinancialStatement,
+            "Earnings and Revenue": self.getEarningsandRevenue,
+            "Quarterly Earnings and Revenue": self.getQuarterlyEarningsandRevenue,
+            "Major Holders": self.getMajorHolders,
+            "Basic Shares": self.getBasicShares,
             "Stock Info": self.getStockInfo,
-            # "Stock Industry": self.getStockIndustry,
+            "Stock Industry": self.getStockIndustry,
             "Calendar": self.getCalendar,
-            # "Analyst Recommendations": self.getRecommendations,
-            # "Stock Analysis": self.getAnalysis,
-            # "Mutual Fund Holders": self.getMajorHolders,
-            # "Institutional Holders": self.getInstitutionalHolders,
+            "Analyst Recommendations": self.getRecommendations,
+            "Stock Analysis": self.getAnalysis,
+            "Mutual Fund Holders": self.getMajorHolders,
+            "Institutional Holders": self.getInstitutionalHolders,
         }
 
         for query, query_fn in query_calls.items():
