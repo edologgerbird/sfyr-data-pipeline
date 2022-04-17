@@ -19,6 +19,10 @@
   </p>
 </div>
 
+<!-- LEGAL DISCLAIMERS-->
+
+This project is created using publicity available APIs and was created for educational reasons. Contents of this project should ONLY be used for <strong>NON-COMMERICAL</strong> reasons.
+
 <!-- TABLE OF CONTENTS -->
 
 ### Table of Contents
@@ -395,7 +399,7 @@ We would also like to thank Nescafe and Redbull for providing us with the caffei
 
 <br><br>
 <sub>
-Copyright (C) 2022. This is an open-source tool that uses publicily avaialble API and is intended and should ONLY be used for use for non-commerical reasons.
+Copyright (C) 2022. This project is created using publicity available APIs and was created for educational reasons. Any parts of this project should ONLY be used for <strong>NON-COMMERICAL</strong> reasons.
 </sub>
 
 <sub>
