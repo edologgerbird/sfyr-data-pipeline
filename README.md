@@ -372,7 +372,7 @@ We would also like to thank Nescafe and Redbull for providing us with the caffei
 
 <br><br>
 <sub>
-Copyright (C) 2022
+Copyright (C) 2022. This is an open-source tool that uses publicily avaialble API and is intended and should ONLY be used for use for non-commerical reasons.
 </sub>
     
 <sub>
