@@ -92,6 +92,7 @@ class yfinanceTransform:
                 traceback_info = traceback.format_exc()
                 print(traceback_info)
                 errors.append([col, traceback_info])
+                continue
         self.errors_all["dataset"] = errors
         print(f"SUCCESS: {dataset} Schema Compliance Enforced")
         self.yfinance_data[dataset] = yfinance_dataset
@@ -110,5 +111,6 @@ class yfinanceTransform:
 
         print("SUCCESS: yFinance Transform Completed")
         print("ALERT: Errors saved to yfin_tranform_errors.csv")
-        self.errors_all.to_csv("yfin_transform_errors.csv", index=False)
+        pd.DataFrame(self.errors_all).to_csv(
+            "yfin_transform_errors.csv", index=False)
         return self.yfinance_data

@@ -4,11 +4,12 @@ Telegram Data Transformation
 
 from utils.utils import splitter
 
+
 class telegramDataTransformer:
     def __init__(self):
         self.tele_data_to_upload = None
-        print("telegramDataTransformer Initialised")
-    
+        print("INFO: telegramDataTransformer Initialised")
+
     def transformTelegramData(self, tele_data_raw, tele_data_with_tickers, tele_data_with_sentiments):
         # # Combining Dataframes
 
@@ -20,7 +21,7 @@ class telegramDataTransformer:
         # self.SBR_data_processed = SBR_data_with_tickers
         tele_data_processed = tele_data_with_tickers
         tele_data_processed[["channel", "date", "sender"]
-                                 ] = tele_data_raw[["channel", "date", "sender"]]
+                            ] = tele_data_raw[["channel", "date", "sender"]]
 
         # Transforming Data to NoSQL format
 
@@ -38,5 +39,6 @@ class telegramDataTransformer:
                 ]])
             )
         ]
+        print("SUCCESS: Telegram Data Transformed")
 
         return self.tele_data_to_upload
