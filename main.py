@@ -20,6 +20,9 @@ import json
 
 if __name__ == '__main__':
     start_time = time.time()
+    # ---- Set-up Telegram Session ---- #
+    # TelegramExtractor().connect_to_telegram_server()
+
     # ---- Test SGX Data Extraction ---- #
     # sgx_data_extractor_layer = SGXDataExtractor()
     # sgx_data_extractor_layer.load_SGX_data_from_source()
