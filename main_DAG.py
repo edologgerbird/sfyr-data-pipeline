@@ -34,8 +34,6 @@ from datetime import datetime, timedelta
 import datetime as dt
 import pandas as pd
 from utils.utils import get_execute_time, get_extraction_schedule
-import traceback
-import sys
 import json
 
 ####################################################
@@ -112,8 +110,7 @@ def extract_yFinance_data(**kwargs):
     # >> extract yFinance_data
     # >> return dictionary of DataFrames: yFinance_dataar
     ti = kwargs['ti']
-    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[
-        1].sample(30)
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1]
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
