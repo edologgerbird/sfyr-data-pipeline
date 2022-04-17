@@ -77,8 +77,8 @@ Our team extracted both structured and unstructred data from the following sourc
 - [Singapore Exchange (SGX)](https://www.sgx.com/securities/securities-prices) (via SGX API endpoint)
 - [Yahoo Finance Stocks Metadata](https://sg.finance.yahoo.com/) (via yfinance API)
 - [Yahoo Finance News](https://sg.finance.yahoo.com/) (via yahoo_fin API)
-- [Singapore Business Review](https://sbr.com.sg/) (via BeautifulSoup4)
-- Telegram Channels ([SGX Invest](https://t.me/sgxinvest) and [SGX Market Updates](https://t.me/sgmarketupdates), via Telethon)
+- [Singapore Business Review](https://sbr.com.sg/) (via BeautifulSoup4 API)
+- Telegram Channels ([SGX Invest](https://t.me/sgxinvest) and [SGX Market Updates](https://t.me/sgmarketupdates), via Telethon API)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
