@@ -7,7 +7,7 @@ class SBRDataTransformer:
         print("INFO: SBRDataTransformer Initialised")
 
     def transformSBRData(self, SBR_data_raw, SBR_data_with_tickers, SBR_data_with_sentiments):
-        """Transform SBR Data into a single consolidate data
+        """Transform SBR Data into a single consolidated data
 
         Args:
             SBR_data_raw (dataframe): Dataframe of Raw SBR Data 
