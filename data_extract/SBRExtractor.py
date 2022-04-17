@@ -20,6 +20,11 @@ class SBRExtractor:
         print("INFO: SBRExtractor initialised")
 
     def noOfPages(self):
+        """Obtains the number of pages from the website
+
+        Returns:
+            integer: Number of Pages
+        """
         self.req = Request(self.url, headers={'User-Agent': 'Mozilla/5.0'})
         webpage = urlopen(self.req).read()
         soup = BeautifulSoup(webpage, "lxml")
@@ -28,6 +33,14 @@ class SBRExtractor:
         return int(noOfPages)
 
     def scrapeURL(self, url):
+        """This function scrapes the data from the provided URL
+
+        Args:
+            url (string): The URL to be scrapped
+
+        Returns:
+            dictionary: Output from the URL
+        """
         self.req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         webpage = urlopen(self.req).read()
 
@@ -56,19 +69,26 @@ class SBRExtractor:
         return output_dict
 
     def extract_SBR_data(self, start_date=None, end_date=None):
-        print("Extracting SBR Data ...")
+        """This function extracts data from SBR
 
-        # If start date is None, then temporarily sets start date as 2001-01-01 as SBR was founded in 2001 (All articles will be scrapped)
-        # self.start_date = parser.parse(start_date, dayfirst=True) if (
-        #     start_date is not None) else datetime(2001, 1, 1)
+        Args:
+            start_date (datetime, optional): Earliest date of article publish to be scrapped. Defaults to None.
+            end_date (datetime, optional): Latest date of article publish to be scrapped. Defaults to None.
 
+        Raises:
+            Exception: Sart date input must be before end date input
+
+        Returns:
+            boolean: Success/Failure of Extraction
+        """
+        print("INFO: Extracting SBR Data ...")
+
+        # If start date is None, then temporarily sets start date as 2001-01-01 as SBR was founded in 2001
+        # (All articles will be scrapped)
         self.start_date = start_date if (
             start_date is not None) else datetime(2001, 1, 1)
 
         # If end date is None, then end date will be current datetime
-        # self.end_date = parser.parse(end_date, dayfirst=True) if (
-        #     end_date is not None) else datetime.now()
-
         self.end_date = end_date if (
             end_date is not None) else datetime.now()
 
@@ -76,11 +96,13 @@ class SBRExtractor:
 
         if (self.start_date is not None and self.end_date is not None and self.start_date > self.end_date):
             raise Exception(
-                'ERROR: Start date input must be before end date input')
+                f'ERROR: Start date {self.start_date} input must be before end date {self.end_date} input')
 
         noOfPages = self.noOfPages()
 
         for page in range(0, noOfPages+1):
+            print(
+                f">> ========== Extracting SBR Overall Progress: {page}/{noOfPages}")
             url_page = self.url + '?page=' + str(page)
             self.req = Request(url_page, headers={'User-Agent': 'Mozilla/5.0'})
             webpage = urlopen(self.req).read()
@@ -101,7 +123,7 @@ class SBRExtractor:
 
                 if article_date >= self.start_date:
                     sys.stdout.write(
-                        "Currently scrapping article of datetime: %s \r" % (article_date))
+                        "INFO: Currently scrapping article of datetime: %s \r" % (article_date))
                     sys.stdout.flush()
                     self.SBR_data_store = self.SBR_data_store.append(
                         {'Link': link, 'Title': output_dict['title'], 'Text': output_dict['text'], 'Date': output_dict['date']}, ignore_index=True)
@@ -111,10 +133,21 @@ class SBRExtractor:
                     return True
 
     def SBR_data_to_csv(self):
+        """This function exports SBR data to CSV
+        """
         self.SBR_data_store.to_csv(
             '.\csv_store\SBR_data_stocks.csv', index=False, encoding='utf-8-sig')
         print("SUCCESS: SBR Data successfully saved to CSV")
 
     def load_SBR_data_from_source(self, start_date=None, end_date=None):
+        """This function returns SBR data within a timeframe
+
+        Args:
+            start_date (datetime, optional): Start date of extraction. Defaults to None.
+            end_date (datetime, optional): End date of extraction. Defaults to None.
+
+        Returns:
+            dataframe: Output of all the articles from SBR
+        """
         self.extract_SBR_data(start_date, end_date)
         return self.SBR_data_store

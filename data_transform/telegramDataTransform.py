@@ -1,7 +1,3 @@
-'''
-Telegram Data Transformation
-'''
-
 from utils.utils import splitter
 
 

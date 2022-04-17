@@ -32,6 +32,16 @@ class bigQueryDB:
         print("INFO: GBQ Pipeline Initialised")
 
     def gbqCreateNewTable(self, data, datasetName, tableName):
+        """This function creates a new table in BigQuery
+
+        Args:
+            data (dataframe): Data to be stored in the table
+            datasetName (string): Name of dataset. Can be new or existing
+            tableName (string): Name of dataset. Must be new
+
+        Returns:
+            boolean: Success/Failure of table creation
+        """
         datasetTable = datasetName + "." + tableName
         if (datasetTable not in self.datasetTable):
             if isinstance(data, pd.DataFrame):
@@ -69,6 +79,16 @@ class bigQueryDB:
 
     # datasetTableName is to be in the form of datasetName.TableName
     def gbqAppend(self, data, datasetTable, schema=None):
+        """This function appends data to an existing table in BigQuery
+
+        Args:
+            data (dataframe): Data to be stored in the table
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+            schema (array, optional): _description_. Defaults to None.
+
+        Returns:
+            boolean: Success/Failure of data append
+        """
         # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
@@ -104,6 +124,16 @@ class bigQueryDB:
 
     # datasetTable is to be in the form of datasetName.TableName
     def gbqReplace(self, data, datasetTable, schema=None):
+        """This function replaces data in an existing table in BigQuery
+
+        Args:
+            data (dataframe): Data to be stored in the table
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+            schema (array, optional): _description_. Defaults to None.
+
+        Returns:
+            boolean: Success/Failure of data append
+        """
         if (datasetTable in self.datasetTable):
             if isinstance(data, pd.DataFrame):
                 if not data.empty:
@@ -137,6 +167,14 @@ class bigQueryDB:
                 data, datasetTableSplit[0], datasetTableSplit[1])
 
     def gbqDeleteDataset(self, dataset):
+        """This function deletes dataset in BigQuery
+
+        Args:
+            dataset (string): Name of dataset.
+
+        Returns:
+            boolean: Success/Failure of action
+        """
         try:
             self.client.delete_table(dataset, delete_contents=True)
             self.syncDataset()
@@ -149,6 +187,14 @@ class bigQueryDB:
             return False
 
     def gbqDeleteTable(self, datasetTable):
+        """This function deletes Table in BigQuery
+
+        Args:
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+
+        Returns:
+            boolean: Success/Failure of action
+        """
         try:
             self.client.delete_table(datasetTable)
             self.syncTables()
@@ -161,14 +207,38 @@ class bigQueryDB:
             return False
 
     def gbqCheckDatasetExist(self, datasetName):
+        """This function checks if a dataset exists in BigQuery
+
+        Args:
+            datasetName (string): Name of dataset.
+
+        Returns:
+            boolean: Dataset exist or not exist
+        """
         gbqDatasets = self.getDataset()
         return datasetName in gbqDatasets
 
     def gbqCheckTableExist(self, datasetTable):
+        """This function checks if a table exists in BigQuery
+
+        Args:
+            datasetTable (_type_): Name of datasetTable. Format dataset.Table
+
+        Returns:
+            boolean: Table exist or not exist
+        """
         gbqTables = self.getTables()
         return datasetTable in gbqTables
 
     def gbqQueryAPI(self, query):
+        """This helper function makes a query to BigQuery to obtain data 
+
+        Args:
+            query (string): String of Query to be conducted in BigQuery
+
+        Returns:
+            dataframe: Query Response
+        """
         print(f"INFO: Querying {query}")
         try:
             df = pandas_gbq.read_gbq(
@@ -184,10 +254,27 @@ class bigQueryDB:
 
     # queryString takes in SQL Queries
     def getDataQuery(self, queryString):
+        """This helper function takes in a SQL
+
+        Args:
+            queryString (string): String of Query to be conducted in BigQuery
+
+        Returns:
+            dataframe: Query Response
+        """
         sql = ""+queryString+""
         return self.gbqQueryAPI(sql)
 
     def getDataFields(self, datasetTable, *fields):
+        """This function takes in a table and fields to be queried,  generates a SQL Query and queries BigQuery 
+
+        Args:
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+            fields (string): Name of fields to be extracted.
+
+        Returns:
+            dataframe: Query Response
+        """
         fieldString = ""
         if fields:
             for field in fields:
@@ -201,10 +288,20 @@ class bigQueryDB:
 
     # Returns all datasetName as a list
     def getDataset(self):
+        """This function returns all dataset as a list
+
+        Returns:
+            list: List of all datasets in BigQuery
+        """
         return self.syncDataset()
 
     # Helper Function to Sync Local Dataset with Cloud
     def syncDataset(self):
+        """This helper funcction Sync Local Dataset with Cloud
+
+        Returns:
+            list: List of all datasets
+        """
         datasets = list(self.client.list_datasets())  # Make an API request.
         print(f"INFO: Updating Datasets for {datasets}")
         updatedDatasetList = []
@@ -227,10 +324,20 @@ class bigQueryDB:
 
     # Returns all datasetName.tableName as a list
     def getTables(self):
+        """This function returns all tables as a list
+
+        Returns:
+            list: List of all Tables in BigQuery
+        """
         return self.syncTables()
 
     # Helper Function to Sync Local Tables with Cloud
     def syncTables(self):
+        """This helper funcction Sync Local Table with Cloud
+
+        Returns:
+            list: List of all Tables
+        """
         updatedTableList = []
         self.syncDataset()
         print(f"INFO: Updating Tables for {self.dataset_id}")
@@ -257,6 +364,14 @@ class bigQueryDB:
 
     # Returns a list of schemaField
     def getTableSchema(self, datasetTable):
+        """This helper function queries BigQuery and returns Table Schema
+
+        Args:
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+
+        Returns:
+            list: list of dictionary where each dictionary is schema for a field
+        """
         print(f"INFO: Query Table Schema for {datasetTable}")
         queryString = "SELECT * FROM " + datasetTable
         query = "" + queryString + ""
@@ -280,6 +395,14 @@ class bigQueryDB:
         return formatted_schema
 
     def updateTableSchema(self, datasetTablelist):
+        """This function queries BigQuery and updates local copy of Table Schema
+
+        Args:
+            datasetTablelist (list): List of datasetTable Names. Format dataset.Table
+
+        Returns:
+            boolean: Success/Failure of updating
+        """
         print(f"INFO: Updating Table Schema for {datasetTablelist}")
         for datasetTable in datasetTablelist:
             updatedSchema = self.getTableSchema(datasetTable)

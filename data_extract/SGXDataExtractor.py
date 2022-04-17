@@ -16,6 +16,8 @@ class SGXDataExtractor:
         print("INFO: SGXDataExtractor Initialised")
 
     def extract_SGX_json_data(self):
+        """Helper function to extract information from JSON output
+        """
         print("INFO: Extracting SGX Data from API")
         self.url_request = self.url_request = Request(
             self.url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -24,6 +26,8 @@ class SGXDataExtractor:
         print("SUCCESS: SGX Data Successfully Extracted")
 
     def populate_SGX_data(self):
+        """Helper function to populate data from SGX JSON output
+        """
         print("INFO: Populating SGX Data Store")
         SGX_data_store = {
             "company_name": [],
@@ -44,6 +48,11 @@ class SGXDataExtractor:
         print("SUCCESS: SGX Data successfully populated")
 
     def get_SGXData_from_GBQ(self):
+        """Helper function to query SGX Ticker Table from BigQuery
+
+        Returns:
+            dataframe: Data from the SGX Ticker Table in BigQuery
+        """
         if bigQueryDB().gbqCheckTableExist("SGX.Tickers"):
             return bigQueryDB().getDataFields("SGX.Tickers")
         else:
@@ -51,6 +60,19 @@ class SGXDataExtractor:
 
     # Checks scrapped data with ticker data from GBQ to update their 'active' status
     def update_ticker_status(self, SGX_data_store, GBQ_SGX_ticker_df):
+        """This module checks newly extracted SGX data against BigQuery SGX Ticker Table and updates the ticker statuses
+        # Case 1 - Newly listed tickers
+        # Case 2 - Previously delisted tickers
+        # Case 3 - Newly delisted tickers
+        # Case 4 - Previously delisted tickers that are now active
+
+        Args:
+            SGX_data_store (list): List of existing tickers from SGX Website
+            GBQ_SGX_ticker_df (dataframe): Dataframe of tickers from SGX.Ticker Table
+
+        Returns:
+            datafarme: Dataframe of tickers and updated statuses
+        """
         print("INFO: Updating ticker status")
         # 4 Cases to consider
         # Case 1 - Newly listed tickers
@@ -61,9 +83,6 @@ class SGXDataExtractor:
         # Getting active SGX tickers dataframe
         active_SGX_ticker_df = SGX_data_store
         active_SGX_ticker_list = active_SGX_ticker_df.ticker.to_list()
-
-        # Getting SGX tickers dataframe from GBQ
-        # GBQ_SGX_ticker_df = self.get_SGXData_from_GBQ()
 
         if GBQ_SGX_ticker_df is None:
             self.updated_SGX_data_store = self.SGX_data_store
@@ -100,25 +119,39 @@ class SGXDataExtractor:
 
         self.updated_SGX_data_store = self.updated_SGX_data_store.drop_duplicates()
 
-        print("SUCCESS: Ticker status updated")
+        print("SUCCESS: Ticker status Updated")
 
         return self.updated_SGX_data_store
 
     def SGX_data_to_csv(self):
+        """This helper function outputs SGX Data to CSV
+        """
         self.updated_SGX_data_store.to_csv("SGX_data.csv", index=False)
         print("SUCCESS: SGX Data successfully saved to CSV")
 
     def SGX_data_to_bg(self):
+        """This helper function loads SGX Data into BigQuery
+
+        Returns:
+            boolean: Success/Failure of the loading of SGX Data
+        """
         if bigQueryDB().gbqCheckTableExist("SGX.Tickers"):
             return bigQueryDB().gbqReplace(self.updated_SGX_data_store, "SGX.Tickers")
         else:
             return bigQueryDB().gbqCreateNewTable(self.updated_SGX_data_store, "SGX", "Tickers")
 
     def load_SGX_data_from_source(self):
+        """This function calls extract and populate SGX data
+        """
         self.extract_SGX_json_data()
         self.populate_SGX_data()
 
     def get_SGX_data(self):
+        """This function calls extract and populate SGX data
+
+        Returns:
+            dataframe: Current SGX Ticker and information from SGX
+        """
         self.extract_SGX_json_data()
         self.populate_SGX_data()
         return self.SGX_data_store
