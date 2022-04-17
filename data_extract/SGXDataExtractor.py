@@ -61,10 +61,10 @@ class SGXDataExtractor:
     # Checks scrapped data with ticker data from GBQ to update their 'active' status
     def update_ticker_status(self, SGX_data_store, GBQ_SGX_ticker_df):
         """This module checks newly extracted SGX data against BigQuery SGX Ticker Table and updates the ticker statuses
-        # Case 1 - Newly listed tickers
-        # Case 2 - Previously delisted tickers
-        # Case 3 - Newly delisted tickers
-        # Case 4 - Previously delisted tickers that are now active
+        Case 1 - Newly listed tickers
+        Case 2 - Previously delisted tickers
+        Case 3 - Newly delisted tickers
+        Case 4 - Previously delisted tickers that are now active
 
         Args:
             SGX_data_store (list): List of existing tickers from SGX Website
