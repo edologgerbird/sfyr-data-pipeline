@@ -18,6 +18,12 @@ class TelegramExtractor:
         self.client = TelegramClient(self.name, self.api_id, self.api_hash)
         print("INFO: TelegramExtractor Initialised")
 
+    def init_tele_session(self):
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(self.connect_to_telegram_server())
+        print("SUCCESS: Telegram session initiated")
+        return
+
     def extract_telegram_messages(self, start_date=None, end_date=datetime.now()):
         """This function extracts telegram messsages by calling populate_tele_data
 
