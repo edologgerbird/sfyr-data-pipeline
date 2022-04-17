@@ -99,7 +99,6 @@ def extract_YahooFin_data(**kwargs):
     # >> extracts YahooFin_data
     # >> return DataFrame: YahooFin_data
     yahooFinNewsExtractor_layer = yahooFinNewsExtractor()
-    # pending time periood
     yahooFinNews_data_raw = yahooFinNewsExtractor_layer.getSGXTickerNews()
     return yahooFinNews_data_raw
 
@@ -109,7 +108,7 @@ def extract_yFinance_data(**kwargs):
     # >> return dictionary of DataFrames: yFinance_dataar
     ti = kwargs['ti']
     sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1]
-    yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
+    yfinanceExtractor_layer = yfinanceExtractor(sgxTickers).sample(50)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
     print("yfinance Data Query Complete")
