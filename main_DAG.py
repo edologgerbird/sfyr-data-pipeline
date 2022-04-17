@@ -112,7 +112,7 @@ def extract_yFinance_data(**kwargs):
     # >> return dictionary of DataFrames: yFinance_dataar
     ti = kwargs['ti']
     sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[
-        1].sample(50)
+        1].sample(200)
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()

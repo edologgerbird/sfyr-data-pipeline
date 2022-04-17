@@ -8,32 +8,32 @@ import gc
 
 class FinBERT:
     def __init__(self):
-        print("Initialising FinBERT model...")
+        print("INFO: Initialising FinBERT model")
         self.tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
         self.model = AutoModelForSequenceClassification.from_pretrained(
             "ProsusAI/finbert")
         self.batch_size = 1
-        print("FinBERT model initialised")
+        print("INFO: FinBERT model initialised")
 
     def load_text_data(self, text_series):
         if not isinstance(text_series, pd.core.series.Series):
-            raise Exception("Input text not in Series!")
+            raise Exception("ERROR: Input text not in Series!")
         else:
-            print("Loading text data...")
+            print("INFO: Loading text data")
             text_array = np.array(text_series)
             text_list = list(text_array)
-            print("Text data loaded.")
+            print("SUCCESS: Text data loaded")
             return text_list
 
     def tokenize_text(self, text_list):
-        print("Tokenizing Text...")
+        print("INFO: Tokenizing Text")
         return self.tokenizer(text_list, padding=True, truncation=True, return_tensors='pt')
 
     def predict_sentiments(self, text_list, inputs):
-        print("Predicting sentiments...")
+        print("INFO: Predicting sentiments")
         outputs = self.model(**inputs)
         predictions = torch.nn.functional.softmax(outputs.logits, dim=-1)
-        print("Sentiments successfully predicted!")
+        print("SUCCESS: Sentiments successfully predicted")
         positive = predictions[:, 0].tolist()
         negative = predictions[:, 1].tolist()
         neutral = predictions[:, 2].tolist()
@@ -58,7 +58,8 @@ class FinBERT:
         chunk_counter = 1
         total_chunks = len(chunks)
         for chunk in chunks:
-            print(f"==== Chunk {chunk_counter} / {total_chunks}")
+            print(
+                f"INFO: Performing FinBERT Analysis on Chunk {chunk_counter} / {total_chunks}")
             text_list = self.load_text_data(chunk)
             if not text_list[0]:
                 predictions = pd.DataFrame(
@@ -71,12 +72,6 @@ class FinBERT:
             predictions_mega = pd.concat([predictions_mega, predictions])
             gc.collect()
             chunk_counter += 1
+
+        print("SUCCESS: FinBERT analysis completed")
         return predictions_mega
-
-
-# Test
-# # data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
-# # data["Title_Text"] = data["Title"] + " " + data["Text"]
-# FinBERT_layer = FinBERT()
-# input_series = pd.Series([None])
-# FinBERT_layer.FinBert_pipeline(input_series)

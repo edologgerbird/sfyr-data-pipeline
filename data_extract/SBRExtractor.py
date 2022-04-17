@@ -5,7 +5,6 @@ import json
 import sys
 from datetime import datetime, timedelta
 from dateutil import parser
-import cchardet  # To make scrapping faster
 
 
 class SBRExtractor:
@@ -18,6 +17,7 @@ class SBRExtractor:
             columns=['Title', 'Text', 'Link', 'Date'])
         self.start_date = None
         self.end_date = None
+        print("INFO: SBRExtractor initialised")
 
     def noOfPages(self):
         self.req = Request(self.url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -61,22 +61,22 @@ class SBRExtractor:
         # If start date is None, then temporarily sets start date as 2001-01-01 as SBR was founded in 2001 (All articles will be scrapped)
         # self.start_date = parser.parse(start_date, dayfirst=True) if (
         #     start_date is not None) else datetime(2001, 1, 1)
-        
+
         self.start_date = start_date if (
             start_date is not None) else datetime(2001, 1, 1)
-        
 
         # If end date is None, then end date will be current datetime
         # self.end_date = parser.parse(end_date, dayfirst=True) if (
         #     end_date is not None) else datetime.now()
-        
+
         self.end_date = end_date if (
             end_date is not None) else datetime.now()
 
         self.end_date = self.end_date + timedelta(days=1)
 
         if (self.start_date is not None and self.end_date is not None and self.start_date > self.end_date):
-            raise Exception('Start date input must be before end date input')
+            raise Exception(
+                'ERROR: Start date input must be before end date input')
 
         noOfPages = self.noOfPages()
 
@@ -106,16 +106,15 @@ class SBRExtractor:
                     self.SBR_data_store = self.SBR_data_store.append(
                         {'Link': link, 'Title': output_dict['title'], 'Text': output_dict['text'], 'Date': output_dict['date']}, ignore_index=True)
                 else:
-                    print('\nAll articles until end date has been scraped')
-                    print("SBR Data successfully extracted and populated")
+                    print("SUCCESS: All articles until end date has been scraped")
+                    print("SUCCESS: SBR Data successfully extracted and populated")
                     return True
 
     def SBR_data_to_csv(self):
         self.SBR_data_store.to_csv(
             '.\csv_store\SBR_data_stocks.csv', index=False, encoding='utf-8-sig')
-        print("SBR Data successfully saved to CSV")
+        print("SUCCESS: SBR Data successfully saved to CSV")
 
     def load_SBR_data_from_source(self, start_date=None, end_date=None):
         self.extract_SBR_data(start_date, end_date)
-        # self.SBR_data_to_csv()
         return self.SBR_data_store
