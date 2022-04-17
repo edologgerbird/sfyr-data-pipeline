@@ -16,8 +16,8 @@ from data_transform.TickerExtractor import TickerExtractor
 from data_transform.SBRDataTransform import SBRDataTransformer
 from data_transform.telegramDataTransform import telegramDataTransformer
 from data_transform.yahooFinNewsTransform import yahooFinNewsTransformer
-from data_processing.FinBertAPI import FinBERT
-from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
+from data_transform.FinBertAPI import FinBERT
+from data_transform.generateHeatListFromQuery import GenerateHeatlistsFromQuery
 from data_transform.yfinanceTransform import yfinanceTransform
 
 # Load Modules

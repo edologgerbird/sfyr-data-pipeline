@@ -1,4 +1,4 @@
-from data_processing.HeatListGeneratorAPI import HeatListGenerator
+from data_transform.HeatListGeneratorAPI import HeatListGenerator
 
 
 class GenerateHeatlistsFromQuery:

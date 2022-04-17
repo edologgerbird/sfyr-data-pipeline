@@ -7,9 +7,9 @@ from data_load.bigQueryAPI import bigQueryDB
 from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.SBRExtractor import SBRExtractor
-from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
+from data_transform.generateHeatListFromQuery import GenerateHeatlistsFromQuery
 from data_transform.yfinanceTransform import yfinanceTransform
-from data_processing.FinBertAPI import FinBERT
+from data_transform.FinBertAPI import FinBERT
 from matplotlib import ticker
 from datetime import datetime as dt
 import time
