@@ -41,6 +41,7 @@ import json
 ####################################################
 # 0. DEFINE GLOBAL VARIABLES
 ####################################################
+
 # Schedule first run for D+1, 0930HRS, GMT+08
 global_start_date_excute_time = get_execute_time(datetime.now())
 
@@ -112,7 +113,7 @@ def extract_yFinance_data(**kwargs):
     # >> return dictionary of DataFrames: yFinance_dataar
     ti = kwargs['ti']
     sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[
-        1].sample(200)
+        1].sample(30)
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
@@ -298,11 +299,9 @@ def load_yFinance_data(**kwargs):
     tableSchemaUrl = "utils/bigQuerySchema.json"
     with open(tableSchemaUrl, 'r') as schemaFile:
         tableSchema = json.load(schemaFile)
-    errors = dict()
 
     for datafield in yfinance_data_to_upload.keys():
-        print(f"Uploading {datafield} data")
-        print(yfinance_data_to_upload[datafield])
+        print(f"INFO: Uploading {datafield} data")
         datasetTable = "yfinance." + datafield
         schema = tableSchema[datasetTable]
         if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
@@ -317,9 +316,6 @@ def load_yFinance_data(**kwargs):
                 yfinance_data_to_upload[datafield], "yfinance", datafield)
         else:
             print("Empty Dataframe")
-
-    errors_df = pd.DataFrame(errors.items())
-    errors_df.to_csv(f"error_{datetime.now()}_.csv".replace(":", " "))
 
     return True
 
