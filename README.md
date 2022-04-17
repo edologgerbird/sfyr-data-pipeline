@@ -162,7 +162,7 @@ Edit the airflow.cfg config file _(located in the airflow directory)_ with the f
 > 💡 **A sample airflow.cfg file is located in the utils folder**
 
 ```python
-dags_folder = /home/airflow/is3107_g7
+dags_folder = /home/airflow/<folder_name_containing_code>
 
 enable_xcom_pickling = True
 
