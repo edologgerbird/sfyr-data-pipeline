@@ -132,7 +132,6 @@ def query_SGX_data(**kwargs):
     # >> return DataFrame: SGX_data
     bigQueryDB_layer = bigQueryDB()
     sgx_data = bigQueryDB_layer.getDataFields("SGX.Tickers")
-    # sgx_data = ti.xcom_pull(task_ids="extract_SGX_data_task")
     return sgx_data
 
 
@@ -400,10 +399,6 @@ def load_heatlists(**kwargs):
     generated_heatlist = ti.xcom_pull(task_ids='generate_heatlists_task')
     ticker_heatlist = generated_heatlist[0]
     industry_heatlist = generated_heatlist[1]
-
-    # For sample
-    # ticker_heatlist.to_csv("ticker_heatlist_sample.csv", index=False)
-    # industry_heatlist.to_csv("industry_heatlist_sample.csv", index=False)
 
     heatlist_generated_date = datetime.now()
     heatlist_date = heatlist_generated_date.strftime("%d-%m-%Y")
