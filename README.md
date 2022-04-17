@@ -10,7 +10,7 @@
   <p align="center">
     Investing Intelligence
     <br />
-    <a href=https://docs.google.com/document/d/1UIYDaM6X48wkj70pG6HKmRfErj7QCaD7WhK1O-6BfVQ/edit?usp=sharing"><strong>View the Full Project Report »</strong></a>
+    <a href=https://docs.google.com/document/d/e/2PACX-1vTezDR1jyHe0wa1DKOXDrN9F2yBh351rNb9uwpVIr7r0IIqhGQ0K4XWrEwnUlRVy9Of2sKt34VuqGOc/pub"><strong>View the Full Project Report »</strong></a>
     <br />
     <a href="https://youtu.be/iQjyaGu8dXk"><strong>View the Project Video Demonstration »</strong></a>
     <br />
