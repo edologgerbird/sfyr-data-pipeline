@@ -16,6 +16,17 @@ class FinBERT:
         print("INFO: FinBERT model initialised")
 
     def load_text_data(self, text_series):
+        """This function takes in a Pandas Series of String data, and stores it as a class variable
+
+        Args:
+            text_series (pandas.Series): A Series of String
+
+        Raises:
+            Exception: Exception when input type is not Series
+
+        Returns:
+            list: Returns a list of String chunks
+        """
         if not isinstance(text_series, pd.core.series.Series):
             raise Exception("ERROR: Input text not in Series!")
         else:
@@ -26,10 +37,27 @@ class FinBERT:
             return text_list
 
     def tokenize_text(self, text_list):
+        """Tokenizes a list of String to prepare for FinBERT model analysis.
+
+        Args:
+            text_list (list): a list of Strings
+
+        Returns:
+            transformers.tokenization_utils_base.BatchEncoding: tensors of tokenized text
+        """
         print("INFO: Tokenizing Text")
         return self.tokenizer(text_list, padding=True, truncation=True, return_tensors='pt')
 
     def predict_sentiments(self, text_list, inputs):
+        """Predicts the sentiments of a given input of tokens.
+
+        Args:
+            text_list (list): list of text chunks
+            inputs (transformers.tokenization_utils_base.BatchEncoding): input tensors of tokens
+
+        Returns:
+            pd.DataFrame: returns a DataFrame of text along with the corresponding sentiment scores (Positive, Negative, Neutral)
+        """
         print("INFO: Predicting sentiments")
         outputs = self.model(**inputs)
         predictions = torch.nn.functional.softmax(outputs.logits, dim=-1)
@@ -48,6 +76,14 @@ class FinBERT:
         return df
 
     def FinBert_pipeline(self, text_series):
+        """Executes the FinBert analysis pipeline given an input Series of text. The chunk size can be modified based on system memory capacity.
+
+        Args:
+            text_series (pd.Series): input Series of text to be passed in FinBERT sentiment analysis
+
+        Returns:
+            pd.DataFrame: returns a DataFrame of text along with the corresponding sentiment scores
+        """
         predictions_mega = pd.DataFrame(
             columns=["Text", "Positive", "Negative", "Neutral"])
         if len(text_series) == 0:
