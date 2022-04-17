@@ -170,6 +170,8 @@ dagbag_import_timeout = 100    #Prevents timeout when downloading FinBERT
 
 load_examples = False    # OPTIONAL: Skips loading of DAG Examples
 ```
+At this point in time, do also move the code downloaded/pulled from this repository into the dags_folder. This is crucial for the dag to be picked up.
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
