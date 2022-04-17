@@ -21,7 +21,8 @@
 
 <!-- LEGAL DISCLAIMERS-->
 
-This project is created using publicity available APIs and was created for educational reasons. Contents of this project should ONLY be used for <strong>NON-COMMERICAL</strong> reasons.
+This project was created using publicity available APIs and was created for educational reasons. 
+Contents of this project should ONLY be used for <strong>NON-COMMERICAL</strong> reasons.
 
 <!-- TABLE OF CONTENTS -->
 
@@ -397,20 +398,15 @@ We would like to thank Assistant Professor Frank Xing, Dr Gao Yu Ting and Mr Que
 
 We would also like to thank Nescafe and Redbull for providing us with the caffeine required to complete this project. We would also like to provide great thanks to the sitcom The Office for the inspirational words _"Why say lot word, when few word do trick"_.
 
-<br><br>
-<sub>
-Copyright (C) 2022. This project is created using publicity available APIs and was created for educational reasons. Any parts of this project should ONLY be used for <strong>NON-COMMERICAL</strong> reasons.
-</sub>
+<br>
+
+<sub>**Disclaimer**</sub>
 
 <sub>
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
+The information contained herein is provided for general information only and should not be used as a basis for making any investment or business decisions. Past performances are not necessarily indicative of future performances. Investment involves various risks, and you should ensure that you fully understand the risks, characteristics, and restrictions by reading the Risk Disclosure Statement, and determine if the investment products are suitable for your financial situation, investment objective, and risk tolerance before making any investment decisions. You are recommended to obtain independent professional advice where appropriate. 
 </sub>
-    
+
+<br><br>
 <sub>
-This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-</sub>
-    
-   
-<sub>
-You should have received a copy of the GNU General Public License along with this program.  If not, see http://www.gnu.org/licenses.
+Copyright (C) 2022. This project was created using publicity available APIs and was created for educational reasons. Any parts of this project should ONLY be used for <strong>NON-COMMERICAL</strong> reasons. This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses.
 </sub>
