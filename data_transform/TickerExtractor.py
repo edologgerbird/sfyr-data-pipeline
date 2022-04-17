@@ -11,9 +11,7 @@ class TickerExtractor:
 
         self.text_series = None
         self.text_series_reduced = None
-        self.datasetTable = "SGX.Tickers"
 
-        print("INFO: Querying SGX Data")
         self.SGX_data = SGX_data
         print("SUCCESS: Successfully retrieved SGX Data")
         print("INFO: Initialising Mappers")
