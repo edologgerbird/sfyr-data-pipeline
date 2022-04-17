@@ -157,7 +157,7 @@ airflow users create \
 
 ### _4. Editing Airflow Configs_
 
-Edit the airflow.cfg config file _(located in the airflow directory)_ with the following rules:
+Edit the `airflow.cfg` file _(located in the airflow directory)_ with the following rules:
 
 > 💡 **A sample airflow.cfg file is located in the utils folder**
 
