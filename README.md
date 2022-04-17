@@ -66,7 +66,7 @@ _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, 
 
 ## Codes and Resources Used
 
-**Python Version:** 3.9.5
+**Python Version:** 3.8.5
 
 **Built with:** [Microsoft Visual Studio Code](https://code.visualstudio.com/),
 [Oracle VM Virtual Box](https://www.virtualbox.org/), [Git](https://git-scm.com/), [Apache Airflow](https://airflow.apache.org/)
@@ -93,7 +93,7 @@ Our team extracted both structured and unstructred data from the following sourc
 
 Make sure you have installed all of the following on your development machine:
 
-- Python 3.8 onwards
+- Python 3.8.X (Airflow does not support Python 3.9 as of now)
 - Linux Virtual Machine (Highly recommended for running Airflow). Pipeline tested on Oracle VM Virtual Box
 
 <p align="right">(<a href="#top">back to top</a>)</p>
