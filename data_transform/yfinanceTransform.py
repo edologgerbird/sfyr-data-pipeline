@@ -74,7 +74,7 @@ class yfinanceTransform:
         Returns:
             dataframe: Formatted yFinance Data
         """
-        errors = []
+
         datatype_mapping = {
             "STRING": "string",
             "INTEGER": "Int64",
@@ -119,7 +119,6 @@ class yfinanceTransform:
                 print(traceback.format_exc())
                 continue
 
-        self.errors_all["dataset"] = errors
         print(f"SUCCESS: {dataset} Schema Compliance Enforced")
         self.yfinance_data[dataset] = yfinance_dataset
         return yfinance_dataset
@@ -133,10 +132,15 @@ class yfinanceTransform:
         for datafield in self.yfinance_data.keys():
             if not self.yfinance_data[datafield].empty:
                 print(f"INFO: Transformation of {datafield} Triggered")
-                self.replaceColumnName(datafield)
-                self.removeDuplicateColumns(datafield)
-                self.schemaCompliance(datafield)
-                print(f"SUCCESS: Transformation of {datafield} Complete")
+                try:
+                    self.replaceColumnName(datafield)
+                    self.removeDuplicateColumns(datafield)
+                    self.schemaCompliance(datafield)
+                    print(f"SUCCESS: Transformation of {datafield} Complete")
+                except:
+                    print(f"ERROR: {datafield} Transformation failed")
+                    print(traceback.format_exc())
+                    continue
             else:
                 print(f"WARNING: {datafield} Skipped - Empty DataFrame")
 
