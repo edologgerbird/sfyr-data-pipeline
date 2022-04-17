@@ -939,6 +939,31 @@ class TelegramExtractor:
     print(&#39;SUCCESS: Exported to csv,&#39;, fileName)</code></pre>
                   </details>
                 </dd>
+
+                <dt
+                  id="data_extract.TelegramExtractor.TelegramExtractor.init_tele_session"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">init_tele_session</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>Helper function to initialised telegram session</p>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def init_tele_session(self):
+  &#34;&#34;&#34;Helper function to initalise Telegram session
+  &#34;&#34;&#34;
+  loop = asyncio.get_event_loop()
+  loop.run_until_complete(self.connect_to_telegram_server())
+  print(&#34;SUCCESS: Telegram Session Initalised&#34;)</code></pre>
+                  </details>
+                </dd>
               </dl>
             </dd>
           </dl>
@@ -1027,6 +1052,15 @@ class TelegramExtractor:
                         title="data_extract.TelegramExtractor.TelegramExtractor.tele_data_to_csv"
                         href="#data_extract.TelegramExtractor.TelegramExtractor.tele_data_to_csv"
                         >tele_data_to_csv</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.TelegramExtractor.TelegramExtractor.init_tele_session"
+                        href="#data_extract.TelegramExtractor.TelegramExtractor.init_tele_session"
+                        >init_tele_session</a
                       ></code
                     >
                   </li>

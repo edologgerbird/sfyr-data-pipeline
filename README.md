@@ -334,13 +334,28 @@ After getting the api_id and api_hash, update `utils/serviceAccount.json` telegr
 }
 ```
 
-Telegram security settings require an additional 2FA password (if set-up) and code before session is created and stored after the initial login. As such, you will have to run `main.py` with the following code uncommented.
+**Initalise Telegram Session**
+
+Telegram security settings require an additional 2FA password (if set-up) and code before session is created and stored after the initial login. You will have to initialise the telegram session for the machine you will be running the DAG on.
+
+1. Ensure the following code is uncommented in `main.py`
 
 ```python
-TelegramExtractor().telegram_init()
+Telegram_layer = TelegramExtractor()
+Telegram_layer.init_tele_session()
 ```
 
-You will asked to enter a code sent to your telegram number as specified in the `utils/serviceAccount.json`. After the first setup and login, the telegram scraper module should work as intended without requiring logins.
+2. cd to the directory with `main.py` and run `main.py` with the following command
+
+```sh
+python main.py
+```
+
+3. Enter code sent to your telegram number as specified in the `utils/serviceAccount.json`.
+
+<br>
+
+After this first setup and login, the telegram scraper module should work as intended without requiring logins. You can comment out the code mentioned above.
 
 <br>
 

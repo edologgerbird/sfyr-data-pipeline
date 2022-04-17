@@ -19,6 +19,8 @@ class TelegramExtractor:
         print("INFO: TelegramExtractor Initialised")
 
     def init_tele_session(self):
+        """Helper function to initalise Telegram session
+        """
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.connect_to_telegram_server())
         print("SUCCESS: Telegram session initiated")
