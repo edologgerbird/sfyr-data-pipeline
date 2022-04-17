@@ -11,8 +11,8 @@ import numpy as np
 
 class HeatListGenerator:
     def __init__(self, sgx_data, industry_df):
+        print("INFO: Initialising Heat List Generator")
         self.datasetTable = "SGX.Tickers"
-        print("Querying SGX Data...")
         self.sgx_data = sgx_data
         self.sgx_data_mapper = {x: y for x, y in zip(
             self.sgx_data["ticker"], self.sgx_data["company_name"])}
@@ -25,6 +25,7 @@ class HeatListGenerator:
         self.industry_heat_list = dict()
         self.frequency_counter = dict()
         self.tickers_present = dict()
+        print("INFO: Heat List Generator Initialised")
 
     def getTickerFreq(self):
         df = pd.DataFrame(self.frequency_counter, index=[
@@ -86,6 +87,7 @@ class HeatListGenerator:
                         dict_res["sentiments"]["negative"]
 
     def generateHeatList(self, dict_query):
+        print("INFO: Generating Heat List")
         self.dict_query = dict_query
         for res in dict_query:
             self.generateHeatScoreFromRes(res)
@@ -98,13 +100,5 @@ class HeatListGenerator:
         industry_heat_list.reset_index(inplace=True)
         industry_heat_list = industry_heat_list.rename(
             columns={"index": "industry"})
-
+        print("SUCCESS: Heat Lists generated")
         return ticker_heat_list, industry_heat_list
-
-
-# Test
-# test_csv = pd.read_csv("csv_store/TickerHeatlistInput.csv")
-# HeatListGenerator_Layer = HeatListGenerator(test_csv)
-# ticker_heat_list, industry_heat_list = HeatListGenerator_Layer.generateHeatList()
-# ticker_heat_list.to_csv("csv_store/ticker_heat_list.csv")
-# industry_heat_list.to_csv("csv_store/industry_heat_list.csv")

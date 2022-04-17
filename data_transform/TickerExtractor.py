@@ -5,7 +5,7 @@ import json
 
 class TickerExtractor:
     def __init__(self, SGX_data):
-        print("Initialising Ticker Extractor...")
+        print("INFO: Initialising Ticker Extractor")
         with open('utils/serviceAccount.json', 'r') as jsonFile:
             self.config = json.load(jsonFile)["tickerExtractor"]
 
@@ -13,10 +13,10 @@ class TickerExtractor:
         self.text_series_reduced = None
         self.datasetTable = "SGX.Tickers"
 
-        print("Querying SGX Data...")
+        print("INFO: Querying SGX Data")
         self.SGX_data = SGX_data
-        print("Successfully retrieved SGX Data")
-        print("Initialising Mappers...")
+        print("SUCCESS: Successfully retrieved SGX Data")
+        print("INFO: Initialising Mappers")
         self.SGX_ticker_map_clean = {x: y for x, y in zip(
             self.SGX_data["ticker"], self.SGX_data["company_name"])}
         self.SGX_ticker_map = {x: set([y]) for x, y in zip(
@@ -43,6 +43,8 @@ class TickerExtractor:
             company_name_list = company_name_list | new_name_cont
             self.SGX_ticker_map[ticker] = list(company_name_list)
 
+        print("INFO: TickerExtractor initialised")
+
     def remove_last_word(self, text):
         text_split = text.split()
         return " ".join(text_split[:-1]) if len(text_split) > 1 else text
@@ -68,7 +70,7 @@ class TickerExtractor:
             self.text_series_reduced = text_series.apply(
                 self.return_title_case_only)
         else:
-            raise TypeError("Input is not Series of String type!")
+            raise TypeError("ERROR: Input is not Series of String type!")
 
     def extract_ticker_from_text(self, text):
         ticker_container = dict()
@@ -86,7 +88,7 @@ class TickerExtractor:
         return ticker_container
 
     def extract_tickers_from_text_series(self):
-        print("Extracting tickers from text...")
+        print("INFO: Extracting tickers from text")
         tickers_found = self.text_series_reduced.apply(
             self.extract_ticker_from_text)
         self.results_df = pd.DataFrame(
@@ -95,5 +97,5 @@ class TickerExtractor:
     def populate_ticker_occurences(self, text_series):
         self.load_text_series(text_series)
         self.extract_tickers_from_text_series()
-        print("Tickers successfully extracted and populated")
+        print("SUCCESS: Tickers successfully extracted and populated")
         return self.results_df

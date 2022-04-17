@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 from time import mktime
 import pandas as pd
+import tqdm
 
 
 class yahooFinNewsTransformer:
@@ -25,9 +26,9 @@ class yahooFinNewsTransformer:
 
         # Start Date <= End Date Validation
         if (start_date is not None and end_date is not None and start_date > end_date):
-            raise Exception('Start date input must be before end date input')
+            raise Exception(f"ERROR: {start_date} is not before {end_date}")
 
-        for i in range(0, len(news)):
+        for i in tqdm(range(0, len(news))):
             ticker = news.at[i, "Ticker"]
             tickerNews = news.at[i, "News"]
             for article in tickerNews:
@@ -49,7 +50,9 @@ class yahooFinNewsTransformer:
                         newsFormatted.append(articleFormatted)
                         articles.append(article["summary"])
 
+        print(f"SUCCESS: yahooFinNews Transformed")
         self.data_pending_upload = newsFormatted
+
         pdArticles = pd.DataFrame(articles, columns=["message"])
         return pdArticles
 
@@ -68,4 +71,5 @@ class yahooFinNewsTransformer:
                 "neutral": sentiments.iloc[i]["Neutral"],
                 "positive": sentiments.iloc[i]["Positive"],
             }
+        print(f"SUCCESS: FinBERT Linking Completed")
         return self.data_pending_upload
