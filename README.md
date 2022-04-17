@@ -42,7 +42,7 @@ Our Company, Sfyr (pronounced: Sapphire /sæfaɪə(r)/) aims to provide retail i
 ### _Pipeline Architecture_
 
   <a>
-    <img src="read_me_files/archi.png" alt="Pipeline Architecture" height="450">
+    <img src="read_me_files/archi.png" alt="Pipeline Architecture" height="400">
   </a>
 
 ### _Keywords:_
