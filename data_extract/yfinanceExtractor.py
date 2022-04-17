@@ -5,7 +5,6 @@ import yfinance as yf
 import time
 import json
 from functools import reduce
-import asyncio
 
 
 class yfinanceExtractor:
@@ -43,7 +42,7 @@ class yfinanceExtractor:
         counter = 1
         for ticker in self.sgxTickers["ticker"]:
             print(
-                f">> ========== Extracting {ticker} Overall Progress: ticker {counter}/{no_of_tickers}")
+                f">> ========== Extracting {ticker} Overall Progress: {counter}/{no_of_tickers}")
             time.sleep(0.23)
             length = yf.download(
                 ticker, period='max', interval='1d', timeout=None).shape[0]
@@ -64,9 +63,17 @@ class yfinanceExtractor:
         print("SUCCESS: Active tickers obtained")
         return dfTickers
 
+    # ---- Helper Functions  ----- #
     def removeSI(self, ticker):
         return ticker[:-3]
 
+    def cast_dict_to_string(self, entry):
+        if len(str(entry)) > 0 and str(entry)[0] in ["{", "["]:
+            return str(entry)
+        else:
+            return entry
+
+    # ---- Main Functions  ----- #
     def getHistoricalData(self, start_date=dt.now()):
         target_data = "historical_data"
         print(f"INFO: Extracting {target_data}")
@@ -77,131 +84,133 @@ class yfinanceExtractor:
             print(
                 f"INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}")
             if start_date is None:
-                tickerHistoricalData = yf.download(
-                    ticker.ticker, period='max', interval='1d', timeout=None)
-                tickerHistoricalData["Tickers"] = self.removeSI(ticker.ticker)
-                tickerHistoricalData["Market Status"] = "Market_Closed"
+                tickerHistoricalData=yf.download(
+                    ticker.ticker, period = 'max', interval = '1d', timeout = None)
+                tickerHistoricalData["Tickers"]=self.removeSI(ticker.ticker)
+                tickerHistoricalData["Market Status"]="Market_Closed"
 
             else:
-                start_date_string = start_date.strftime('%Y-%m-%d')
-                tickerHistoricalData = yf.download(
-                    ticker.ticker, start=start_date_string, interval='1d', timeout=None)
-                tickerHistoricalData["Tickers"] = self.removeSI(ticker.ticker)
+                start_date_string=start_date.strftime('%Y-%m-%d')
+                tickerHistoricalData=yf.download(
+                    ticker.ticker, start = start_date_string, interval = '1d', timeout = None)
+                tickerHistoricalData["Tickers"]=self.removeSI(ticker.ticker)
 
                 if int(start_date.hour) < 12:
-                    tickerHistoricalData["Market Status"] = "Market_Open"
+                    tickerHistoricalData["Market Status"]="Market_Open"
                 else:
-                    tickerHistoricalData["Market Status"] = "Market_Closed"
+                    tickerHistoricalData["Market Status"]="Market_Closed"
 
             counter += 1
 
-            historical_data_df = pd.concat(
+            historical_data_df=pd.concat(
                 [historical_data_df, tickerHistoricalData])
 
-        historical_data_df = historical_data_df.reset_index()
+        historical_data_df=historical_data_df.reset_index()
 
         # Store to Shared Data
-        self.yfinanceData[target_data] = historical_data_df
+        self.yfinanceData[target_data]=historical_data_df
         print(f"SUCCESS: {target_data} successfully extracted")
         return historical_data_df
 
     def getFinancialStatement(self):
-        target_data = "financial_statements"
+        target_data="financial_statements"
         print("INFO: Extracting {target_data}")
-        financial_statements_df = self.yfinanceData[target_data]
-        counter = 1
+        financial_statements_df=self.yfinanceData[target_data]
+        counter=1
         for ticker in self.ticker_active:
             print(
                 f"INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}")
-            profit_and_loss = ticker.financials.T.rename_axis(
+            profit_and_loss=ticker.financials.T.rename_axis(
                 'Date').reset_index()
 
-            balance_sheet = ticker.balance_sheet.T.rename_axis(
+            balance_sheet=ticker.balance_sheet.T.rename_axis(
                 'Date').reset_index()
 
-            cashflow = ticker.cashflow.T.rename_axis(
+            cashflow=ticker.cashflow.T.rename_axis(
                 'Date').reset_index()
 
-            financial_statements = reduce(lambda left_table, right_table: pd.merge(
+            financial_statements=reduce(lambda left_table, right_table: pd.merge(
                 left_table, right_table, on='Date'), [profit_and_loss, balance_sheet, cashflow])
             financial_statements = financial_statements.fillna(np.NaN)
             if type(financial_statements["Date"].values[0]) != str:
                 financial_statements_df = pd.concat(
                     [financial_statements_df, financial_statements])
+
             counter += 1
-        self.yfinanceData[target_data] = financial_statements_df
+        self.yfinanceData[target_data]=financial_statements_df
         print("SUCCESS: {target_data} successfully extracted")
         return financial_statements_df
 
     def getQuarterlyFinancialStatement(self):
-        target_data = "quarterly_financial_statements"
+        target_data="quarterly_financial_statements"
         print(f"INFO: Extracting {target_data}")
-        quarterly_financial_statements_df = self.yfinanceData[target_data]
-        counter = 1
+        quarterly_financial_statements_df=self.yfinanceData[target_data]
+        counter=1
         for ticker in self.ticker_active:
             print(
                 f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
-            profit_and_loss = ticker.quarterly_financials.T.rename_axis(
+            profit_and_loss=ticker.quarterly_financials.T.rename_axis(
                 'Date').reset_index()
 
-            balance_sheet = ticker.quarterly_balancesheet.T.rename_axis(
+            balance_sheet=ticker.quarterly_balancesheet.T.rename_axis(
                 'Date').reset_index()
 
-            cashflow = ticker.quarterly_cashflow.T.rename_axis(
+            cashflow=ticker.quarterly_cashflow.T.rename_axis(
                 'Date').reset_index()
 
-            financial_statements = reduce(lambda left_table, right_table: pd.merge(
+            financial_statements=reduce(lambda left_table, right_table: pd.merge(
                 left_table, right_table, on='Date'), [profit_and_loss, balance_sheet, cashflow])
             financial_statements = financial_statements.fillna(np.NaN)
             if type(financial_statements["Date"].values[0]) != str:
                 quarterly_financial_statements_df = pd.concat(
                     [quarterly_financial_statements_df, financial_statements])
+
             counter += 1
-        self.yfinanceData[target_data] = quarterly_financial_statements_df
+        self.yfinanceData[target_data]=quarterly_financial_statements_df
         print(f"SUCCESS: {target_data} successfully extracted")
         return quarterly_financial_statements_df
 
     def getEarningsandRevenue(self):
-        target_data = "earnings_and_revenue"
+        target_data="earnings_and_revenue"
         print(f"INFO: Extracting {target_data}")
         # Get Earnings and Revenue
-        earnings_and_revenues_df = self.yfinanceData[target_data]
-        counter = 1
+        earnings_and_revenues_df=self.yfinanceData[target_data]
+        counter=1
         for ticker in self.ticker_active:
             print(
                 f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
             if (ticker.earnings.shape[0] >= 1):
-                ticker_earning_and_revenue = ticker.earnings
-                ticker_earning_and_revenue['Tickers'] = self.removeSI(
+                ticker_earning_and_revenue=ticker.earnings
+                ticker_earning_and_revenue['Tickers']=self.removeSI(
                     ticker.ticker)
-                earnings_and_revenues_df = pd.concat(
+                earnings_and_revenues_df=pd.concat(
                     [earnings_and_revenues_df, ticker_earning_and_revenue])
             counter += 1
-        earnings_and_revenues_df = earnings_and_revenues_df.reset_index().rename(columns={
+        earnings_and_revenues_df=earnings_and_revenues_df.reset_index().rename(columns = {
             'index': 'Year'})
 
         # Store to Shared Data
-        self.yfinanceData[target_data] = earnings_and_revenues_df
+        self.yfinanceData[target_data]=earnings_and_revenues_df
         print(f"SUCCESS: {target_data} successfully extracted")
         return earnings_and_revenues_df
 
     def getQuarterlyEarningsandRevenue(self):
-        target_data = "quarterly_earnings_and_revenue"
+        target_data="quarterly_earnings_and_revenue"
         print(f"INFO: Extracting {target_data}")
         # Get Quarterly Earnings and Revenue
-        quarterly_earnings_and_revenues_df = self.yfinanceData[target_data]
-        counter = 1
+        quarterly_earnings_and_revenues_df=self.yfinanceData[target_data]
+        counter=1
         for ticker in self.ticker_active:
             print(
                 f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
             if (ticker.quarterly_earnings.shape[0] >= 1):
-                ticker_quarterly_earning_and_revenue = ticker.quarterly_earnings
-                ticker_quarterly_earning_and_revenue['Tickers'] = self.removeSI(
+                ticker_quarterly_earning_and_revenue=ticker.quarterly_earnings
+                ticker_quarterly_earning_and_revenue['Tickers']=self.removeSI(
                     ticker.ticker)
-                quarterly_earnings_and_revenues_df = pd.concat(
+                quarterly_earnings_and_revenues_df=pd.concat(
                     [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
             counter += 1
-        quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index(
+        quarterly_earnings_and_revenues_df=quarterly_earnings_and_revenues_df.reset_index(
         )
 
         first_col_name = list(quarterly_earnings_and_revenues_df.columns)[0]
@@ -257,18 +266,12 @@ class yfinanceExtractor:
                     [basic_shares_df, ticker_share])
             counter += 1
         basic_shares_df = basic_shares_df.reset_index()
-        # Store to Shared Data
+
         basic_shares_df = basic_shares_df.rename(
             columns={basic_shares_df.columns[0]: "Year"})
         self.yfinanceData[target_data] = basic_shares_df
         print(f"SUCCESS: {target_data} successfully extracted")
         return basic_shares_df
-
-    def cast_dict_to_string(self, entry):
-        if len(str(entry)) > 0 and str(entry)[0] in ["{", "["]:
-            return str(entry)
-        else:
-            return entry
 
     def getStockInfo(self):
         # Get stock information
@@ -329,6 +332,7 @@ class yfinanceExtractor:
             counter += 1
         stock_calendar_df = stock_calendar_df.reset_index(drop=True)
         stock_calendar_df.replace({np.nan: np.nan}, inplace=True)
+
         # Store to Shared Data
         self.yfinanceData[target_data] = stock_calendar_df
         print(f"SUCCESS: {target_data} successfully extracted")
