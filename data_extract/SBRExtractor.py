@@ -101,8 +101,7 @@ class SBRExtractor:
         noOfPages = self.noOfPages()
 
         for page in range(0, noOfPages+1):
-            print(
-                f">> ========== Extracting SBR Overall Progress: {page}/{noOfPages}")
+
             url_page = self.url + '?page=' + str(page)
             self.req = Request(url_page, headers={'User-Agent': 'Mozilla/5.0'})
             webpage = urlopen(self.req).read()
