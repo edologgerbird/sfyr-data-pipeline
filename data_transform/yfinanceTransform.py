@@ -6,7 +6,6 @@ import traceback
 class yfinanceTransform:
     def __init__(self, yfinance_data):
         self.yfinance_data = yfinance_data
-
         self.errors_all = dict()
 
     def replaceColumnName(self, dataset):
@@ -46,7 +45,6 @@ class yfinanceTransform:
         print(f"SUCCESS: Duplicate Column Removed In {dataset} ")
 
     def schemaCompliance(self, dataset):
-
         errors = []
 
         print(f"INFO: {dataset} Schema Compliance Triggered")
@@ -112,6 +110,7 @@ class yfinanceTransform:
                 print(f"WARNING: {datafield} Skipped - Empty DataFrame")
 
         print("SUCCESS: yFinance Transform Completed")
+        print("ALERT: Errors saved to yfin_tranform_errors.csv")
         pd.DataFrame(self.errors_all).to_csv(
             "yfin_transform_errors.csv", index=False)
         return self.yfinance_data

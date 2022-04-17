@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 from time import mktime
 import pandas as pd
+import tqdm
 
 
 class yahooFinNewsTransformer:
@@ -9,6 +10,7 @@ class yahooFinNewsTransformer:
         self.articles = []
         print("INFO: yahooFinNewsTransformer initialised")
 
+
     def tickerNewsFormat(self, news, start_date=None, end_date=dt.now()):
         print("INFO: Transforming yahooFinNews Data")
         newsFormatted = []
@@ -16,10 +18,10 @@ class yahooFinNewsTransformer:
 
         # Start Date <= End Date Validation
         if (start_date is not None and end_date is not None and start_date > end_date):
-            raise Exception(
-                'ERROR: Start date input must be before end date input')
+            raise Exception(f"ERROR: {start_date} is not before {end_date}")
 
-        for i in range(0, len(news)):
+
+        for i in tqdm(range(0, len(news))):
             ticker = news.at[i, "Ticker"]
             tickerNews = news.at[i, "News"]
             for article in tickerNews:
@@ -41,18 +43,20 @@ class yahooFinNewsTransformer:
                         newsFormatted.append(articleFormatted)
                         articles.append(article["summary"])
 
+        print(f"SUCCESS: yahooFinNews Transformed")
         self.data_pending_upload = newsFormatted
+
         pdArticles = pd.DataFrame(articles, columns=["message"])
-        print("SUCCESS: yahooFinNews Transformed")
+        print(f"SUCCESS: Generated Dataframe for FinBERT")
         return pdArticles
 
     def finBERTFormat(self, sentiments):
-        print("INFO: Transforming FinBERT Data")
-        for i in range(0, len(self.data_pending_upload)):
+        print("INFO: Linking FinBERT to Articles")
+        for i in tqdm(range(0, len(self.data_pending_upload))):
             self.data_pending_upload[i]["sentiments"] = {
                 "negative": sentiments.iloc[i]["Negative"],
                 "neutral": sentiments.iloc[i]["Neutral"],
                 "positive": sentiments.iloc[i]["Positive"],
             }
-        print("SUCCESS: FinBERT Data transformed")
+        print(f"SUCCESS: FinBERT Linking Completed")
         return self.data_pending_upload
