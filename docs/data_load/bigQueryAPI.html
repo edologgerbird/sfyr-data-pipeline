@@ -1,0 +1,2377 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1"
+    />
+    <meta name="generator" content="pdoc 0.10.0" />
+    <title>data_load.bigQueryAPI API documentation</title>
+    <link rel="icon" type="image/x-icon" href="../sfyr_logo.png" />
+    <meta name="description" content="" />
+    <link
+      rel="preload stylesheet"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css"
+      integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs="
+      crossorigin
+    />
+    <link
+      rel="preload stylesheet"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css"
+      integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg="
+      crossorigin
+    />
+    <link
+      rel="stylesheet preload"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css"
+      crossorigin
+    />
+    <style>
+      :root {
+        --highlight-color: #fe9;
+      }
+      .flex {
+        display: flex !important;
+      }
+      body {
+        line-height: 1.5em;
+      }
+      #content {
+        padding: 20px;
+      }
+      #sidebar {
+        padding: 30px;
+        overflow: hidden;
+      }
+      #sidebar > *:last-child {
+        margin-bottom: 2cm;
+      }
+      .http-server-breadcrumbs {
+        font-size: 130%;
+        margin: 0 0 15px 0;
+      }
+      #footer {
+        font-size: 0.75em;
+        padding: 5px 30px;
+        border-top: 1px solid #ddd;
+        text-align: right;
+      }
+      #footer p {
+        margin: 0 0 0 1em;
+        display: inline-block;
+      }
+      #footer p:last-child {
+        margin-right: 30px;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5 {
+        font-weight: 300;
+      }
+      h1 {
+        font-size: 2.5em;
+        line-height: 1.1em;
+      }
+      h2 {
+        font-size: 1.75em;
+        margin: 1em 0 0.5em 0;
+      }
+      h3 {
+        font-size: 1.4em;
+        margin: 25px 0 10px 0;
+      }
+      h4 {
+        margin: 0;
+        font-size: 105%;
+      }
+      h1:target,
+      h2:target,
+      h3:target,
+      h4:target,
+      h5:target,
+      h6:target {
+        background: var(--highlight-color);
+        padding: 0.2em 0;
+      }
+      a {
+        color: #058;
+        text-decoration: none;
+        transition: color 0.3s ease-in-out;
+      }
+      a:hover {
+        color: #e82;
+      }
+      .title code {
+        font-weight: bold;
+      }
+      h2[id^="header-"] {
+        margin-top: 2em;
+      }
+      .ident {
+        color: #900;
+      }
+      pre code {
+        background: #f8f8f8;
+        font-size: 0.8em;
+        line-height: 1.4em;
+      }
+      code {
+        background: #f2f2f1;
+        padding: 1px 4px;
+        overflow-wrap: break-word;
+      }
+      h1 code {
+        background: transparent;
+      }
+      pre {
+        background: #f8f8f8;
+        border: 0;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        margin: 1em 0;
+        padding: 1ex;
+      }
+      #http-server-module-list {
+        display: flex;
+        flex-flow: column;
+      }
+      #http-server-module-list div {
+        display: flex;
+      }
+      #http-server-module-list dt {
+        min-width: 10%;
+      }
+      #http-server-module-list p {
+        margin-top: 0;
+      }
+      .toc ul,
+      #index {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      #index code {
+        background: transparent;
+      }
+      #index h3 {
+        border-bottom: 1px solid #ddd;
+      }
+      #index ul {
+        padding: 0;
+      }
+      #index h4 {
+        margin-top: 0.6em;
+        font-weight: bold;
+      }
+      @media (min-width: 200ex) {
+        #index .two-column {
+          column-count: 2;
+        }
+      }
+      @media (min-width: 300ex) {
+        #index .two-column {
+          column-count: 3;
+        }
+      }
+      dl {
+        margin-bottom: 2em;
+      }
+      dl dl:last-child {
+        margin-bottom: 4em;
+      }
+      dd {
+        margin: 0 0 1em 3em;
+      }
+      #header-classes + dl > dd {
+        margin-bottom: 3em;
+      }
+      dd dd {
+        margin-left: 2em;
+      }
+      dd p {
+        margin: 10px 0;
+      }
+      .name {
+        background: #eee;
+        font-weight: bold;
+        font-size: 0.85em;
+        padding: 5px 10px;
+        display: inline-block;
+        min-width: 40%;
+      }
+      .name:hover {
+        background: #e0e0e0;
+      }
+      dt:target .name {
+        background: var(--highlight-color);
+      }
+      .name > span:first-child {
+        white-space: nowrap;
+      }
+      .name.class > span:nth-child(2) {
+        margin-left: 0.4em;
+      }
+      .inherited {
+        color: #999;
+        border-left: 5px solid #eee;
+        padding-left: 1em;
+      }
+      .inheritance em {
+        font-style: normal;
+        font-weight: bold;
+      }
+      .desc h2 {
+        font-weight: 400;
+        font-size: 1.25em;
+      }
+      .desc h3 {
+        font-size: 1em;
+      }
+      .desc dt code {
+        background: inherit;
+      }
+      .source summary,
+      .git-link-div {
+        color: #666;
+        text-align: right;
+        font-weight: 400;
+        font-size: 0.8em;
+        text-transform: uppercase;
+      }
+      .source summary > * {
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .git-link {
+        color: inherit;
+        margin-left: 1em;
+      }
+      .source pre {
+        max-height: 500px;
+        overflow: auto;
+        margin: 0;
+      }
+      .source pre code {
+        font-size: 12px;
+        overflow: visible;
+      }
+      .hlist {
+        list-style: none;
+      }
+      .hlist li {
+        display: inline;
+      }
+      .hlist li:after {
+        content: ",\2002";
+      }
+      .hlist li:last-child:after {
+        content: none;
+      }
+      .hlist .hlist {
+        display: inline;
+        padding-left: 1em;
+      }
+      img {
+        max-width: 100%;
+      }
+      td {
+        padding: 0 0.5em;
+      }
+      .admonition {
+        padding: 0.1em 0.5em;
+        margin-bottom: 1em;
+      }
+      .admonition-title {
+        font-weight: bold;
+      }
+      .admonition.note,
+      .admonition.info,
+      .admonition.important {
+        background: #aef;
+      }
+      .admonition.todo,
+      .admonition.versionadded,
+      .admonition.tip,
+      .admonition.hint {
+        background: #dfd;
+      }
+      .admonition.warning,
+      .admonition.versionchanged,
+      .admonition.deprecated {
+        background: #fd4;
+      }
+      .admonition.error,
+      .admonition.danger,
+      .admonition.caution {
+        background: lightpink;
+      }
+    </style>
+    <style media="screen and (min-width: 700px)">
+      @media screen and (min-width: 700px) {
+        #sidebar {
+          width: 30%;
+          height: 100vh;
+          overflow: auto;
+          position: sticky;
+          top: 0;
+        }
+        #content {
+          width: 70%;
+          max-width: 100ch;
+          padding: 3em 4em;
+          border-left: 1px solid #ddd;
+        }
+        pre code {
+          font-size: 1em;
+        }
+        .item .name {
+          font-size: 1em;
+        }
+        main {
+          display: flex;
+          flex-direction: row-reverse;
+          justify-content: flex-end;
+        }
+        .toc ul ul,
+        #index ul {
+          padding-left: 1.5em;
+        }
+        .toc > ul > li {
+          margin-top: 0.5em;
+        }
+      }
+    </style>
+    <style media="print">
+      @media print {
+        #sidebar h1 {
+          page-break-before: always;
+        }
+        .source {
+          display: none;
+        }
+      }
+      @media print {
+        * {
+          background: transparent !important;
+          color: #000 !important;
+          box-shadow: none !important;
+          text-shadow: none !important;
+        }
+        a[href]:after {
+          content: " (" attr(href) ")";
+          font-size: 90%;
+        }
+        a[href][title]:after {
+          content: none;
+        }
+        abbr[title]:after {
+          content: " (" attr(title) ")";
+        }
+        .ir a:after,
+        a[href^="javascript:"]:after,
+        a[href^="#"]:after {
+          content: "";
+        }
+        pre,
+        blockquote {
+          border: 1px solid #999;
+          page-break-inside: avoid;
+        }
+        thead {
+          display: table-header-group;
+        }
+        tr,
+        img {
+          page-break-inside: avoid;
+        }
+        img {
+          max-width: 100% !important;
+        }
+        @page {
+          margin: 0.5cm;
+        }
+        p,
+        h2,
+        h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          page-break-after: avoid;
+        }
+      }
+    </style>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"
+      integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8="
+      crossorigin
+    ></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () =>
+        hljs.initHighlighting()
+      );
+    </script>
+  </head>
+  <body>
+    <main>
+      <article id="content">
+        <header>
+          <h1 class="title">Module <code>data_load.bigQueryAPI</code></h1>
+        </header>
+        <section id="section-intro">
+          <details class="source">
+            <summary>
+              <span>Expand source code</span>
+            </summary>
+            <pre><code class="python">import pandas as pd
+import pandas_gbq
+from google.cloud import bigquery
+from google.oauth2 import service_account
+import json
+import time
+import traceback
+
+
+class bigQueryDB:
+    def __init__(self):
+        print(&#34;INFO: Initialising GBQ Pipeline...&#34;)
+        # Set-up Credentials and Project
+        self.credentials = service_account.Credentials.from_service_account_file(
+            &#39;utils/is3107-group-7-008534a376ad.json&#39;,)
+        self.client = bigquery.Client(credentials=self.credentials)
+        self.project = self.client.project
+
+        # Set-up Local Config
+        self.credUrl = &#34;utils/serviceAccount.json&#34;
+        with open(self.credUrl, &#39;r&#39;) as jsonFile:
+            self.cred = json.load(jsonFile)
+        self.project_id = self.cred[&#34;bigQueryConfig&#34;][&#34;PROJECT_ID&#34;]
+        self.dataset_id = self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_ID&#34;]
+        self.datasetTable = self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_TABLE&#34;]
+
+        # Set-up Table Schema
+        self.tableSchemaUrl = &#34;utils/bigQuerySchema.json&#34;
+        with open(self.tableSchemaUrl, &#39;r&#39;) as schemaFile:
+            self.tableSchema = json.load(schemaFile)
+
+        print(&#34;INFO: GBQ Pipeline Initialised&#34;)
+
+    def gbqCreateNewTable(self, data, datasetName, tableName):
+        &#34;&#34;&#34;This function creates a new table in BigQuery
+
+        Args:
+            data (dataframe): Data to be stored in the table
+            datasetName (string): Name of dataset. Can be new or existing
+            tableName (string): Name of dataset. Must be new
+
+        Returns:
+            boolean: Success/Failure of table creation
+        &#34;&#34;&#34;
+        datasetTable = datasetName + &#34;.&#34; + tableName
+        if (datasetTable not in self.datasetTable):
+            if isinstance(data, pd.DataFrame):
+                if not data.empty:
+                    try:
+                        pandas_gbq.to_gbq(
+                            data, datasetTable, project_id=self.project_id, credentials=self.credentials)
+                        print(f&#34;SUCCESS: {datasetTable} Created&#34;)
+                        print(f&#34;SUCCESS: Data Added to {datasetTable}&#34;)
+                        # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
+                        self.syncTables()
+                        return True
+                    except Exception as err:
+                        print(
+                            f&#34;ERROR: Data Addition to {datasetTable} Aborted&#34;)
+                        print(f&#34;Error Log: {err}&#34;)
+                        print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+                        self.syncTables()
+                        if datasetTable in self.datasetTable:
+                            print(f&#34;ALERT: {datasetTable} has been created&#34;)
+                        return False
+
+                else:
+                    print(&#34;ERROR: Empty DataFrame - Table Creation Aborted&#34;)
+                    return False
+            else:
+                print(&#34;ERROR: Data Object Not Dataframe&#34;)
+                return False
+        else:
+            print(
+                f&#34;INFO: {datasetTable} exist - Data Will Be Appended unless Operation Cancelled&#34;)
+            time.sleep(7)
+            self.updateTableSchema([datasetTable])
+            self.gbqAppend(data, datasetTable, self.tableSchema[datasetTable])
+
+    # datasetTableName is to be in the form of datasetName.TableName
+    def gbqAppend(self, data, datasetTable, schema=None):
+        &#34;&#34;&#34;This function appends data to an existing table in BigQuery
+
+        Args:
+            data (dataframe): Data to be stored in the table
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+            schema (array, optional): _description_. Defaults to None.
+
+        Returns:
+            boolean: Success/Failure of data append
+        &#34;&#34;&#34;
+        # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
+        if (datasetTable in self.datasetTable):
+            if isinstance(data, pd.DataFrame):
+                if not data.empty:
+                    try:
+                        if schema == None:
+                            print(f&#34;INFO: Schema Not Provided&#34;)
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists=&#34;append&#34;, credentials=self.credentials)
+                        else:
+                            print(f&#34;INFO: Schema Provided {schema}&#34;)
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists=&#34;append&#34;, table_schema=schema, credentials=self.credentials)
+                        print(
+                            f&#34;SUCCESS: Data Appended to {datasetTable}&#34;)
+                        return True
+                    except Exception as err:
+                        print(f&#34;ERROR: Data Append to {datasetTable} Aborted&#34;)
+                        print(f&#34;Error Log: {err}&#34;)
+                        print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+                else:
+                    print(&#34;ERROR: Empty DataFrame - Table Creation Aborted&#34;)
+            else:
+                print(&#34;ERROR: Data Object Not Dataframe&#34;)
+                return False
+        else:
+            print(
+                f&#34;INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled&#34;)
+            time.sleep(7)
+            datasetTableSplit = datasetTable.split(&#34;.&#34;)
+            self.gbqCreateNewTable(
+                data, datasetTableSplit[0], datasetTableSplit[1])
+
+    # datasetTable is to be in the form of datasetName.TableName
+    def gbqReplace(self, data, datasetTable, schema=None):
+        &#34;&#34;&#34;This function replaces data in an existing table in BigQuery
+
+        Args:
+            data (dataframe): Data to be stored in the table
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+            schema (array, optional): _description_. Defaults to None.
+
+        Returns:
+            boolean: Success/Failure of data append
+        &#34;&#34;&#34;
+        if (datasetTable in self.datasetTable):
+            if isinstance(data, pd.DataFrame):
+                if not data.empty:
+                    try:
+                        if schema == None:
+                            print(f&#34;INFO: Schema Not Provided&#34;)
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists=&#34;replace&#34;, credentials=self.credentials)
+                        else:
+                            print(f&#34;INFO: Schema Provided {schema}&#34;)
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists=&#34;replace&#34;, table_schema=schema, credentials=self.credentials)
+                        print(f&#34;SUCCESS: {datasetTable} Data Replaced&#34;)
+                        return True
+                    except Exception as err:
+                        print(f&#34;ERROR: Data Append to {datasetTable} Aborted&#34;)
+                        print(f&#34;Error Log: {err}&#34;)
+                        print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+                        return False
+                else:
+                    print(&#34;Empty Dataset - Replace Aborted&#34;)
+            else:
+                print(&#34;ERROR: Data Object not Dataframe&#34;)
+                return False
+        else:
+            print(
+                f&#34;INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled&#34;)
+            time.sleep(7)
+            datasetTableSplit = datasetTable.split(&#34;.&#34;)
+            self.gbqCreateNewTable(
+                data, datasetTableSplit[0], datasetTableSplit[1])
+
+    def gbqDeleteDataset(self, dataset):
+        &#34;&#34;&#34;This function deletes dataset in BigQuery
+
+        Args:
+            dataset (string): Name of dataset.
+
+        Returns:
+            boolean: Success/Failure of action
+        &#34;&#34;&#34;
+        try:
+            self.client.delete_table(dataset, delete_contents=True)
+            self.syncDataset()
+            return True
+        except Exception as err:
+            self.syncDataset()
+            print(f&#34;ERROR: Delete {dataset} Aborted&#34;)
+            print(f&#34;Error Log: {err}&#34;)
+            print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+            return False
+
+    def gbqDeleteTable(self, datasetTable):
+        &#34;&#34;&#34;This function deletes Table in BigQuery
+
+        Args:
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+
+        Returns:
+            boolean: Success/Failure of action
+        &#34;&#34;&#34;
+        try:
+            self.client.delete_table(datasetTable)
+            self.syncTables()
+            return True
+        except Exception as err:
+            self.syncTables()
+            print(f&#34;ERROR: Delete {datasetTable} Aborted&#34;)
+            print(f&#34;Error Log: {err}&#34;)
+            print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+            return False
+
+    def gbqCheckDatasetExist(self, datasetName):
+        &#34;&#34;&#34;This function checks if a dataset exists in BigQuery
+
+        Args:
+            datasetName (string): Name of dataset.
+
+        Returns:
+            boolean: Dataset exist or not exist
+        &#34;&#34;&#34;
+        gbqDatasets = self.getDataset()
+        return datasetName in gbqDatasets
+
+    def gbqCheckTableExist(self, datasetTable):
+        &#34;&#34;&#34;This function checks if a table exists in BigQuery
+
+        Args:
+            datasetTable (_type_): Name of datasetTable. Format dataset.Table
+
+        Returns:
+            boolean: Table exist or not exist
+        &#34;&#34;&#34;
+        gbqTables = self.getTables()
+        return datasetTable in gbqTables
+
+    def gbqQueryAPI(self, query):
+        &#34;&#34;&#34;This helper function makes a query to BigQuery to obtain data 
+
+        Args:
+            query (string): String of Query to be conducted in BigQuery
+
+        Returns:
+            dataframe: Query Response
+        &#34;&#34;&#34;
+        print(f&#34;INFO: Querying {query}&#34;)
+        try:
+            df = pandas_gbq.read_gbq(
+                query, project_id=self.project_id, credentials=self.credentials)
+            print(&#34;SUCCESS: Query Success&#34;)
+            return df
+
+        except Exception as err:
+            print(f&#34;ERROR: Query Aborted - Check Query Format {query} &#34;)
+            print(f&#34;Error Log: {err}&#34;)
+            print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+            return False
+
+    # queryString takes in SQL Queries
+    def getDataQuery(self, queryString):
+        &#34;&#34;&#34;This helper function takes in a SQL
+
+        Args:
+            queryString (string): String of Query to be conducted in BigQuery
+
+        Returns:
+            dataframe: Query Response
+        &#34;&#34;&#34;
+        sql = &#34;&#34;+queryString+&#34;&#34;
+        return self.gbqQueryAPI(sql)
+
+    def getDataFields(self, datasetTable, *fields):
+        &#34;&#34;&#34;This function takes in a table and fields to be queried,  generates a SQL Query and queries BigQuery 
+
+        Args:
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+            fields (string): Name of fields to be extracted.
+
+        Returns:
+            dataframe: Query Response
+        &#34;&#34;&#34;
+        fieldString = &#34;&#34;
+        if fields:
+            for field in fields:
+                fieldString = fieldString + field + &#34;, &#34;
+            fieldString = fieldString[:len(fieldString)-2]
+        else:
+            fieldString = &#34;*&#34;
+        queryString = &#34;SELECT &#34; + fieldString + &#34; FROM &#34; + datasetTable
+        sql = &#34;&#34; + queryString + &#34;&#34;
+        return self.gbqQueryAPI(sql)
+
+    # Returns all datasetName as a list
+    def getDataset(self):
+        &#34;&#34;&#34;This function returns all dataset as a list
+
+        Returns:
+            list: List of all datasets in BigQuery
+        &#34;&#34;&#34;
+        return self.syncDataset()
+
+    # Helper Function to Sync Local Dataset with Cloud
+    def syncDataset(self):
+        &#34;&#34;&#34;This helper funcction Sync Local Dataset with Cloud
+
+        Returns:
+            list: List of all datasets
+        &#34;&#34;&#34;
+        datasets = list(self.client.list_datasets())  # Make an API request.
+        print(f&#34;INFO: Updating Datasets for {datasets}&#34;)
+        updatedDatasetList = []
+
+        if datasets:
+            for dataset in datasets:
+                updatedDatasetList.append(dataset.dataset_id)
+            # Updating serviceAccount.json
+            self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_ID&#34;] = updatedDatasetList
+            self.dataset_id = updatedDatasetList
+
+            with open(self.credUrl, &#39;w&#39;) as jsonFile:
+                json.dump(self.cred, jsonFile)
+            print(&#34;SUCCESS: Dataset Succesfully Updated&#34;)
+            return updatedDatasetList
+
+        else:
+            print(&#34;WARNING: {} does not contain any datasets.&#34;.format(self.project))
+            return None
+
+    # Returns all datasetName.tableName as a list
+    def getTables(self):
+        &#34;&#34;&#34;This function returns all tables as a list
+
+        Returns:
+            list: List of all Tables in BigQuery
+        &#34;&#34;&#34;
+        return self.syncTables()
+
+    # Helper Function to Sync Local Tables with Cloud
+    def syncTables(self):
+        &#34;&#34;&#34;This helper funcction Sync Local Table with Cloud
+
+        Returns:
+            list: List of all Tables
+        &#34;&#34;&#34;
+        updatedTableList = []
+        self.syncDataset()
+        print(f&#34;INFO: Updating Tables for {self.dataset_id}&#34;)
+        for dataset in self.dataset_id:
+            try:
+                tables = self.client.list_tables(
+                    dataset)  # Make an API request
+                for table in tables:
+                    updatedTableList.append(
+                        table.dataset_id + &#34;.&#34; + table.table_id)
+
+            except Exception as err:
+                print(f&#34;ERROR: {dataset} Update Failure&#34;)
+                print(f&#34;Error Log: {err}&#34;)
+
+        # Updating serviceAccount.json
+        self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_TABLE&#34;] = updatedTableList
+
+        with open(self.credUrl, &#39;w&#39;) as jsonFile:
+            json.dump(self.cred, jsonFile)
+
+        print(&#34;SUCCESS: Tables Succesfully Updated&#34;)
+        return updatedTableList
+
+    # Returns a list of schemaField
+    def getTableSchema(self, datasetTable):
+        &#34;&#34;&#34;This helper function queries BigQuery and returns Table Schema
+
+        Args:
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+
+        Returns:
+            list: list of dictionary where each dictionary is schema for a field
+        &#34;&#34;&#34;
+        print(f&#34;INFO: Query Table Schema for {datasetTable}&#34;)
+        queryString = &#34;SELECT * FROM &#34; + datasetTable
+        query = &#34;&#34; + queryString + &#34;&#34;
+        query_job = self.client.query(query)
+        result = query_job.result()
+        schemas = result.schema
+
+        # --- Schema Field Attributes
+        # field_type: data type of column
+        # name: name of column
+
+        formatted_schema = []
+        for schema in schemas:
+            schema_details = {
+                &#39;name&#39;: schema.name,
+                &#39;type&#39;: schema.field_type
+            }
+            formatted_schema.append(schema_details)
+
+        print(f&#34;SUCCESS: Retrived Table Schema for {datasetTable}&#34;)
+        return formatted_schema
+
+    def updateTableSchema(self, datasetTablelist):
+        &#34;&#34;&#34;This function queries BigQuery and updates local copy of Table Schema
+
+        Args:
+            datasetTablelist (list): List of datasetTable Names. Format dataset.Table
+
+        Returns:
+            boolean: Success/Failure of updating
+        &#34;&#34;&#34;
+        print(f&#34;INFO: Updating Table Schema for {datasetTablelist}&#34;)
+        for datasetTable in datasetTablelist:
+            updatedSchema = self.getTableSchema(datasetTable)
+            self.tableSchema[datasetTable] = updatedSchema
+
+        with open(self.tableSchemaUrl, &#39;w&#39;) as schemaFile:
+            json.dump(self.tableSchema, schemaFile)
+
+        print(f&#34;SUCCESS: Updated Table Schema for {datasetTablelist} &#34;)
+
+        return True
+
+
+#------- Unit Test Codes -----------#
+
+# df = pd.DataFrame(
+#     {
+#         &#39;my_string&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;],
+#         &#39;my_int64&#39;: [1, 2, 3],
+#         &#39;my_float64&#39;: [4.0, 5.0, 6.0],
+#         &#39;my_timestamp&#39;: [
+#             pd.Timestamp(&#34;1998-09-04T16:03:14&#34;),
+#             pd.Timestamp(&#34;2010-09-13T12:03:45&#34;),
+#             pd.Timestamp(&#34;2015-10-02T16:00:00&#34;)
+#         ],
+#     }
+# )
+
+
+# Test Query Using SQL
+# print(self.getDataQuery(&#34;SELECT my_string FROM test.test02&#34;))
+# Test Query Using FieldName
+# print(self.getDataFields(&#34;test.test02&#34;,&#34;my_string&#34;,&#34;my_float64&#34;))</code></pre>
+          </details>
+        </section>
+        <section></section>
+        <section></section>
+        <section></section>
+        <section>
+          <h2 class="section-title" id="header-classes">Classes</h2>
+          <dl>
+            <dt id="data_load.bigQueryAPI.bigQueryDB">
+              <code class="flex name class">
+                <span>class <span class="ident">bigQueryDB</span></span>
+              </code>
+            </dt>
+            <dd>
+              <div class="desc"></div>
+              <details class="source">
+                <summary>
+                  <span>Expand source code</span>
+                </summary>
+                <pre><code class="python">class bigQueryDB:
+    def __init__(self):
+        print(&#34;INFO: Initialising GBQ Pipeline...&#34;)
+        # Set-up Credentials and Project
+        self.credentials = service_account.Credentials.from_service_account_file(
+            &#39;utils/is3107-group-7-008534a376ad.json&#39;,)
+        self.client = bigquery.Client(credentials=self.credentials)
+        self.project = self.client.project
+
+        # Set-up Local Config
+        self.credUrl = &#34;utils/serviceAccount.json&#34;
+        with open(self.credUrl, &#39;r&#39;) as jsonFile:
+            self.cred = json.load(jsonFile)
+        self.project_id = self.cred[&#34;bigQueryConfig&#34;][&#34;PROJECT_ID&#34;]
+        self.dataset_id = self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_ID&#34;]
+        self.datasetTable = self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_TABLE&#34;]
+
+        # Set-up Table Schema
+        self.tableSchemaUrl = &#34;utils/bigQuerySchema.json&#34;
+        with open(self.tableSchemaUrl, &#39;r&#39;) as schemaFile:
+            self.tableSchema = json.load(schemaFile)
+
+        print(&#34;INFO: GBQ Pipeline Initialised&#34;)
+
+    def gbqCreateNewTable(self, data, datasetName, tableName):
+        &#34;&#34;&#34;This function creates a new table in BigQuery
+
+        Args:
+            data (dataframe): Data to be stored in the table
+            datasetName (string): Name of dataset. Can be new or existing
+            tableName (string): Name of dataset. Must be new
+
+        Returns:
+            boolean: Success/Failure of table creation
+        &#34;&#34;&#34;
+        datasetTable = datasetName + &#34;.&#34; + tableName
+        if (datasetTable not in self.datasetTable):
+            if isinstance(data, pd.DataFrame):
+                if not data.empty:
+                    try:
+                        pandas_gbq.to_gbq(
+                            data, datasetTable, project_id=self.project_id, credentials=self.credentials)
+                        print(f&#34;SUCCESS: {datasetTable} Created&#34;)
+                        print(f&#34;SUCCESS: Data Added to {datasetTable}&#34;)
+                        # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
+                        self.syncTables()
+                        return True
+                    except Exception as err:
+                        print(
+                            f&#34;ERROR: Data Addition to {datasetTable} Aborted&#34;)
+                        print(f&#34;Error Log: {err}&#34;)
+                        print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+                        self.syncTables()
+                        if datasetTable in self.datasetTable:
+                            print(f&#34;ALERT: {datasetTable} has been created&#34;)
+                        return False
+
+                else:
+                    print(&#34;ERROR: Empty DataFrame - Table Creation Aborted&#34;)
+                    return False
+            else:
+                print(&#34;ERROR: Data Object Not Dataframe&#34;)
+                return False
+        else:
+            print(
+                f&#34;INFO: {datasetTable} exist - Data Will Be Appended unless Operation Cancelled&#34;)
+            time.sleep(7)
+            self.updateTableSchema([datasetTable])
+            self.gbqAppend(data, datasetTable, self.tableSchema[datasetTable])
+
+    # datasetTableName is to be in the form of datasetName.TableName
+    def gbqAppend(self, data, datasetTable, schema=None):
+        &#34;&#34;&#34;This function appends data to an existing table in BigQuery
+
+        Args:
+            data (dataframe): Data to be stored in the table
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+            schema (array, optional): _description_. Defaults to None.
+
+        Returns:
+            boolean: Success/Failure of data append
+        &#34;&#34;&#34;
+        # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
+        if (datasetTable in self.datasetTable):
+            if isinstance(data, pd.DataFrame):
+                if not data.empty:
+                    try:
+                        if schema == None:
+                            print(f&#34;INFO: Schema Not Provided&#34;)
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists=&#34;append&#34;, credentials=self.credentials)
+                        else:
+                            print(f&#34;INFO: Schema Provided {schema}&#34;)
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists=&#34;append&#34;, table_schema=schema, credentials=self.credentials)
+                        print(
+                            f&#34;SUCCESS: Data Appended to {datasetTable}&#34;)
+                        return True
+                    except Exception as err:
+                        print(f&#34;ERROR: Data Append to {datasetTable} Aborted&#34;)
+                        print(f&#34;Error Log: {err}&#34;)
+                        print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+                else:
+                    print(&#34;ERROR: Empty DataFrame - Table Creation Aborted&#34;)
+            else:
+                print(&#34;ERROR: Data Object Not Dataframe&#34;)
+                return False
+        else:
+            print(
+                f&#34;INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled&#34;)
+            time.sleep(7)
+            datasetTableSplit = datasetTable.split(&#34;.&#34;)
+            self.gbqCreateNewTable(
+                data, datasetTableSplit[0], datasetTableSplit[1])
+
+    # datasetTable is to be in the form of datasetName.TableName
+    def gbqReplace(self, data, datasetTable, schema=None):
+        &#34;&#34;&#34;This function replaces data in an existing table in BigQuery
+
+        Args:
+            data (dataframe): Data to be stored in the table
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+            schema (array, optional): _description_. Defaults to None.
+
+        Returns:
+            boolean: Success/Failure of data append
+        &#34;&#34;&#34;
+        if (datasetTable in self.datasetTable):
+            if isinstance(data, pd.DataFrame):
+                if not data.empty:
+                    try:
+                        if schema == None:
+                            print(f&#34;INFO: Schema Not Provided&#34;)
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists=&#34;replace&#34;, credentials=self.credentials)
+                        else:
+                            print(f&#34;INFO: Schema Provided {schema}&#34;)
+                            pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                              if_exists=&#34;replace&#34;, table_schema=schema, credentials=self.credentials)
+                        print(f&#34;SUCCESS: {datasetTable} Data Replaced&#34;)
+                        return True
+                    except Exception as err:
+                        print(f&#34;ERROR: Data Append to {datasetTable} Aborted&#34;)
+                        print(f&#34;Error Log: {err}&#34;)
+                        print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+                        return False
+                else:
+                    print(&#34;Empty Dataset - Replace Aborted&#34;)
+            else:
+                print(&#34;ERROR: Data Object not Dataframe&#34;)
+                return False
+        else:
+            print(
+                f&#34;INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled&#34;)
+            time.sleep(7)
+            datasetTableSplit = datasetTable.split(&#34;.&#34;)
+            self.gbqCreateNewTable(
+                data, datasetTableSplit[0], datasetTableSplit[1])
+
+    def gbqDeleteDataset(self, dataset):
+        &#34;&#34;&#34;This function deletes dataset in BigQuery
+
+        Args:
+            dataset (string): Name of dataset.
+
+        Returns:
+            boolean: Success/Failure of action
+        &#34;&#34;&#34;
+        try:
+            self.client.delete_table(dataset, delete_contents=True)
+            self.syncDataset()
+            return True
+        except Exception as err:
+            self.syncDataset()
+            print(f&#34;ERROR: Delete {dataset} Aborted&#34;)
+            print(f&#34;Error Log: {err}&#34;)
+            print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+            return False
+
+    def gbqDeleteTable(self, datasetTable):
+        &#34;&#34;&#34;This function deletes Table in BigQuery
+
+        Args:
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+
+        Returns:
+            boolean: Success/Failure of action
+        &#34;&#34;&#34;
+        try:
+            self.client.delete_table(datasetTable)
+            self.syncTables()
+            return True
+        except Exception as err:
+            self.syncTables()
+            print(f&#34;ERROR: Delete {datasetTable} Aborted&#34;)
+            print(f&#34;Error Log: {err}&#34;)
+            print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+            return False
+
+    def gbqCheckDatasetExist(self, datasetName):
+        &#34;&#34;&#34;This function checks if a dataset exists in BigQuery
+
+        Args:
+            datasetName (string): Name of dataset.
+
+        Returns:
+            boolean: Dataset exist or not exist
+        &#34;&#34;&#34;
+        gbqDatasets = self.getDataset()
+        return datasetName in gbqDatasets
+
+    def gbqCheckTableExist(self, datasetTable):
+        &#34;&#34;&#34;This function checks if a table exists in BigQuery
+
+        Args:
+            datasetTable (_type_): Name of datasetTable. Format dataset.Table
+
+        Returns:
+            boolean: Table exist or not exist
+        &#34;&#34;&#34;
+        gbqTables = self.getTables()
+        return datasetTable in gbqTables
+
+    def gbqQueryAPI(self, query):
+        &#34;&#34;&#34;This helper function makes a query to BigQuery to obtain data 
+
+        Args:
+            query (string): String of Query to be conducted in BigQuery
+
+        Returns:
+            dataframe: Query Response
+        &#34;&#34;&#34;
+        print(f&#34;INFO: Querying {query}&#34;)
+        try:
+            df = pandas_gbq.read_gbq(
+                query, project_id=self.project_id, credentials=self.credentials)
+            print(&#34;SUCCESS: Query Success&#34;)
+            return df
+
+        except Exception as err:
+            print(f&#34;ERROR: Query Aborted - Check Query Format {query} &#34;)
+            print(f&#34;Error Log: {err}&#34;)
+            print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+            return False
+
+    # queryString takes in SQL Queries
+    def getDataQuery(self, queryString):
+        &#34;&#34;&#34;This helper function takes in a SQL
+
+        Args:
+            queryString (string): String of Query to be conducted in BigQuery
+
+        Returns:
+            dataframe: Query Response
+        &#34;&#34;&#34;
+        sql = &#34;&#34;+queryString+&#34;&#34;
+        return self.gbqQueryAPI(sql)
+
+    def getDataFields(self, datasetTable, *fields):
+        &#34;&#34;&#34;This function takes in a table and fields to be queried,  generates a SQL Query and queries BigQuery 
+
+        Args:
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+            fields (string): Name of fields to be extracted.
+
+        Returns:
+            dataframe: Query Response
+        &#34;&#34;&#34;
+        fieldString = &#34;&#34;
+        if fields:
+            for field in fields:
+                fieldString = fieldString + field + &#34;, &#34;
+            fieldString = fieldString[:len(fieldString)-2]
+        else:
+            fieldString = &#34;*&#34;
+        queryString = &#34;SELECT &#34; + fieldString + &#34; FROM &#34; + datasetTable
+        sql = &#34;&#34; + queryString + &#34;&#34;
+        return self.gbqQueryAPI(sql)
+
+    # Returns all datasetName as a list
+    def getDataset(self):
+        &#34;&#34;&#34;This function returns all dataset as a list
+
+        Returns:
+            list: List of all datasets in BigQuery
+        &#34;&#34;&#34;
+        return self.syncDataset()
+
+    # Helper Function to Sync Local Dataset with Cloud
+    def syncDataset(self):
+        &#34;&#34;&#34;This helper funcction Sync Local Dataset with Cloud
+
+        Returns:
+            list: List of all datasets
+        &#34;&#34;&#34;
+        datasets = list(self.client.list_datasets())  # Make an API request.
+        print(f&#34;INFO: Updating Datasets for {datasets}&#34;)
+        updatedDatasetList = []
+
+        if datasets:
+            for dataset in datasets:
+                updatedDatasetList.append(dataset.dataset_id)
+            # Updating serviceAccount.json
+            self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_ID&#34;] = updatedDatasetList
+            self.dataset_id = updatedDatasetList
+
+            with open(self.credUrl, &#39;w&#39;) as jsonFile:
+                json.dump(self.cred, jsonFile)
+            print(&#34;SUCCESS: Dataset Succesfully Updated&#34;)
+            return updatedDatasetList
+
+        else:
+            print(&#34;WARNING: {} does not contain any datasets.&#34;.format(self.project))
+            return None
+
+    # Returns all datasetName.tableName as a list
+    def getTables(self):
+        &#34;&#34;&#34;This function returns all tables as a list
+
+        Returns:
+            list: List of all Tables in BigQuery
+        &#34;&#34;&#34;
+        return self.syncTables()
+
+    # Helper Function to Sync Local Tables with Cloud
+    def syncTables(self):
+        &#34;&#34;&#34;This helper funcction Sync Local Table with Cloud
+
+        Returns:
+            list: List of all Tables
+        &#34;&#34;&#34;
+        updatedTableList = []
+        self.syncDataset()
+        print(f&#34;INFO: Updating Tables for {self.dataset_id}&#34;)
+        for dataset in self.dataset_id:
+            try:
+                tables = self.client.list_tables(
+                    dataset)  # Make an API request
+                for table in tables:
+                    updatedTableList.append(
+                        table.dataset_id + &#34;.&#34; + table.table_id)
+
+            except Exception as err:
+                print(f&#34;ERROR: {dataset} Update Failure&#34;)
+                print(f&#34;Error Log: {err}&#34;)
+
+        # Updating serviceAccount.json
+        self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_TABLE&#34;] = updatedTableList
+
+        with open(self.credUrl, &#39;w&#39;) as jsonFile:
+            json.dump(self.cred, jsonFile)
+
+        print(&#34;SUCCESS: Tables Succesfully Updated&#34;)
+        return updatedTableList
+
+    # Returns a list of schemaField
+    def getTableSchema(self, datasetTable):
+        &#34;&#34;&#34;This helper function queries BigQuery and returns Table Schema
+
+        Args:
+            datasetTable (string): Name of datasetTable. Format dataset.Table
+
+        Returns:
+            list: list of dictionary where each dictionary is schema for a field
+        &#34;&#34;&#34;
+        print(f&#34;INFO: Query Table Schema for {datasetTable}&#34;)
+        queryString = &#34;SELECT * FROM &#34; + datasetTable
+        query = &#34;&#34; + queryString + &#34;&#34;
+        query_job = self.client.query(query)
+        result = query_job.result()
+        schemas = result.schema
+
+        # --- Schema Field Attributes
+        # field_type: data type of column
+        # name: name of column
+
+        formatted_schema = []
+        for schema in schemas:
+            schema_details = {
+                &#39;name&#39;: schema.name,
+                &#39;type&#39;: schema.field_type
+            }
+            formatted_schema.append(schema_details)
+
+        print(f&#34;SUCCESS: Retrived Table Schema for {datasetTable}&#34;)
+        return formatted_schema
+
+    def updateTableSchema(self, datasetTablelist):
+        &#34;&#34;&#34;This function queries BigQuery and updates local copy of Table Schema
+
+        Args:
+            datasetTablelist (list): List of datasetTable Names. Format dataset.Table
+
+        Returns:
+            boolean: Success/Failure of updating
+        &#34;&#34;&#34;
+        print(f&#34;INFO: Updating Table Schema for {datasetTablelist}&#34;)
+        for datasetTable in datasetTablelist:
+            updatedSchema = self.getTableSchema(datasetTable)
+            self.tableSchema[datasetTable] = updatedSchema
+
+        with open(self.tableSchemaUrl, &#39;w&#39;) as schemaFile:
+            json.dump(self.tableSchema, schemaFile)
+
+        print(f&#34;SUCCESS: Updated Table Schema for {datasetTablelist} &#34;)
+
+        return True</code></pre>
+              </details>
+              <h3>Methods</h3>
+              <dl>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.gbqAppend">
+                  <code class="name flex">
+                    <span>def <span class="ident">gbqAppend</span></span
+                    >(<span>self, data, datasetTable, schema=None)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function appends data to an existing table in
+                      BigQuery
+                    </p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>data</code></strong> :&ensp;<code
+                          >dataframe</code
+                        >
+                      </dt>
+                      <dd>Data to be stored in the table</dd>
+                      <dt>
+                        <strong><code>datasetTable</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of datasetTable. Format dataset.Table</dd>
+                      <dt>
+                        <strong><code>schema</code></strong>
+                        :&ensp;<code>array</code>, optional
+                      </dt>
+                      <dd><em>description</em>. Defaults to None.</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>boolean</code></dt>
+                      <dd>Success/Failure of data append</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def gbqAppend(self, data, datasetTable, schema=None):
+    &#34;&#34;&#34;This function appends data to an existing table in BigQuery
+
+    Args:
+        data (dataframe): Data to be stored in the table
+        datasetTable (string): Name of datasetTable. Format dataset.Table
+        schema (array, optional): _description_. Defaults to None.
+
+    Returns:
+        boolean: Success/Failure of data append
+    &#34;&#34;&#34;
+    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
+    if (datasetTable in self.datasetTable):
+        if isinstance(data, pd.DataFrame):
+            if not data.empty:
+                try:
+                    if schema == None:
+                        print(f&#34;INFO: Schema Not Provided&#34;)
+                        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                          if_exists=&#34;append&#34;, credentials=self.credentials)
+                    else:
+                        print(f&#34;INFO: Schema Provided {schema}&#34;)
+                        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                          if_exists=&#34;append&#34;, table_schema=schema, credentials=self.credentials)
+                    print(
+                        f&#34;SUCCESS: Data Appended to {datasetTable}&#34;)
+                    return True
+                except Exception as err:
+                    print(f&#34;ERROR: Data Append to {datasetTable} Aborted&#34;)
+                    print(f&#34;Error Log: {err}&#34;)
+                    print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+            else:
+                print(&#34;ERROR: Empty DataFrame - Table Creation Aborted&#34;)
+        else:
+            print(&#34;ERROR: Data Object Not Dataframe&#34;)
+            return False
+    else:
+        print(
+            f&#34;INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled&#34;)
+        time.sleep(7)
+        datasetTableSplit = datasetTable.split(&#34;.&#34;)
+        self.gbqCreateNewTable(
+            data, datasetTableSplit[0], datasetTableSplit[1])</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.gbqCheckDatasetExist">
+                  <code class="name flex">
+                    <span
+                      >def <span class="ident">gbqCheckDatasetExist</span></span
+                    >(<span>self, datasetName)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function checks if a dataset exists in BigQuery</p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>datasetName</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of dataset.</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>boolean</code></dt>
+                      <dd>Dataset exist or not exist</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def gbqCheckDatasetExist(self, datasetName):
+    &#34;&#34;&#34;This function checks if a dataset exists in BigQuery
+
+    Args:
+        datasetName (string): Name of dataset.
+
+    Returns:
+        boolean: Dataset exist or not exist
+    &#34;&#34;&#34;
+    gbqDatasets = self.getDataset()
+    return datasetName in gbqDatasets</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.gbqCheckTableExist">
+                  <code class="name flex">
+                    <span
+                      >def <span class="ident">gbqCheckTableExist</span></span
+                    >(<span>self, datasetTable)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function checks if a table exists in BigQuery</p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>datasetTable</code></strong> :&ensp;<code
+                          >_type_</code
+                        >
+                      </dt>
+                      <dd>Name of datasetTable. Format dataset.Table</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>boolean</code></dt>
+                      <dd>Table exist or not exist</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def gbqCheckTableExist(self, datasetTable):
+    &#34;&#34;&#34;This function checks if a table exists in BigQuery
+
+    Args:
+        datasetTable (_type_): Name of datasetTable. Format dataset.Table
+
+    Returns:
+        boolean: Table exist or not exist
+    &#34;&#34;&#34;
+    gbqTables = self.getTables()
+    return datasetTable in gbqTables</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.gbqCreateNewTable">
+                  <code class="name flex">
+                    <span>def <span class="ident">gbqCreateNewTable</span></span
+                    >(<span>self, data, datasetName, tableName)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function creates a new table in BigQuery</p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>data</code></strong> :&ensp;<code
+                          >dataframe</code
+                        >
+                      </dt>
+                      <dd>Data to be stored in the table</dd>
+                      <dt>
+                        <strong><code>datasetName</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of dataset. Can be new or existing</dd>
+                      <dt>
+                        <strong><code>tableName</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of dataset. Must be new</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>boolean</code></dt>
+                      <dd>Success/Failure of table creation</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def gbqCreateNewTable(self, data, datasetName, tableName):
+    &#34;&#34;&#34;This function creates a new table in BigQuery
+
+    Args:
+        data (dataframe): Data to be stored in the table
+        datasetName (string): Name of dataset. Can be new or existing
+        tableName (string): Name of dataset. Must be new
+
+    Returns:
+        boolean: Success/Failure of table creation
+    &#34;&#34;&#34;
+    datasetTable = datasetName + &#34;.&#34; + tableName
+    if (datasetTable not in self.datasetTable):
+        if isinstance(data, pd.DataFrame):
+            if not data.empty:
+                try:
+                    pandas_gbq.to_gbq(
+                        data, datasetTable, project_id=self.project_id, credentials=self.credentials)
+                    print(f&#34;SUCCESS: {datasetTable} Created&#34;)
+                    print(f&#34;SUCCESS: Data Added to {datasetTable}&#34;)
+                    # Sync Local Dataset and Dataset_Table List - SyncTables Calls SyncDataSet
+                    self.syncTables()
+                    return True
+                except Exception as err:
+                    print(
+                        f&#34;ERROR: Data Addition to {datasetTable} Aborted&#34;)
+                    print(f&#34;Error Log: {err}&#34;)
+                    print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+                    self.syncTables()
+                    if datasetTable in self.datasetTable:
+                        print(f&#34;ALERT: {datasetTable} has been created&#34;)
+                    return False
+
+            else:
+                print(&#34;ERROR: Empty DataFrame - Table Creation Aborted&#34;)
+                return False
+        else:
+            print(&#34;ERROR: Data Object Not Dataframe&#34;)
+            return False
+    else:
+        print(
+            f&#34;INFO: {datasetTable} exist - Data Will Be Appended unless Operation Cancelled&#34;)
+        time.sleep(7)
+        self.updateTableSchema([datasetTable])
+        self.gbqAppend(data, datasetTable, self.tableSchema[datasetTable])</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.gbqDeleteDataset">
+                  <code class="name flex">
+                    <span>def <span class="ident">gbqDeleteDataset</span></span
+                    >(<span>self, dataset)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function deletes dataset in BigQuery</p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>dataset</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of dataset.</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>boolean</code></dt>
+                      <dd>Success/Failure of action</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def gbqDeleteDataset(self, dataset):
+    &#34;&#34;&#34;This function deletes dataset in BigQuery
+
+    Args:
+        dataset (string): Name of dataset.
+
+    Returns:
+        boolean: Success/Failure of action
+    &#34;&#34;&#34;
+    try:
+        self.client.delete_table(dataset, delete_contents=True)
+        self.syncDataset()
+        return True
+    except Exception as err:
+        self.syncDataset()
+        print(f&#34;ERROR: Delete {dataset} Aborted&#34;)
+        print(f&#34;Error Log: {err}&#34;)
+        print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+        return False</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.gbqDeleteTable">
+                  <code class="name flex">
+                    <span>def <span class="ident">gbqDeleteTable</span></span
+                    >(<span>self, datasetTable)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function deletes Table in BigQuery</p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>datasetTable</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of datasetTable. Format dataset.Table</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>boolean</code></dt>
+                      <dd>Success/Failure of action</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def gbqDeleteTable(self, datasetTable):
+    &#34;&#34;&#34;This function deletes Table in BigQuery
+
+    Args:
+        datasetTable (string): Name of datasetTable. Format dataset.Table
+
+    Returns:
+        boolean: Success/Failure of action
+    &#34;&#34;&#34;
+    try:
+        self.client.delete_table(datasetTable)
+        self.syncTables()
+        return True
+    except Exception as err:
+        self.syncTables()
+        print(f&#34;ERROR: Delete {datasetTable} Aborted&#34;)
+        print(f&#34;Error Log: {err}&#34;)
+        print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+        return False</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.gbqQueryAPI">
+                  <code class="name flex">
+                    <span>def <span class="ident">gbqQueryAPI</span></span
+                    >(<span>self, query)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This helper function makes a query to BigQuery to obtain
+                      data
+                    </p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>query</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>String of Query to be conducted in BigQuery</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>dataframe</code></dt>
+                      <dd>Query Response</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def gbqQueryAPI(self, query):
+    &#34;&#34;&#34;This helper function makes a query to BigQuery to obtain data 
+
+    Args:
+        query (string): String of Query to be conducted in BigQuery
+
+    Returns:
+        dataframe: Query Response
+    &#34;&#34;&#34;
+    print(f&#34;INFO: Querying {query}&#34;)
+    try:
+        df = pandas_gbq.read_gbq(
+            query, project_id=self.project_id, credentials=self.credentials)
+        print(&#34;SUCCESS: Query Success&#34;)
+        return df
+
+    except Exception as err:
+        print(f&#34;ERROR: Query Aborted - Check Query Format {query} &#34;)
+        print(f&#34;Error Log: {err}&#34;)
+        print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+        return False</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.gbqReplace">
+                  <code class="name flex">
+                    <span>def <span class="ident">gbqReplace</span></span
+                    >(<span>self, data, datasetTable, schema=None)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function replaces data in an existing table in
+                      BigQuery
+                    </p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>data</code></strong> :&ensp;<code
+                          >dataframe</code
+                        >
+                      </dt>
+                      <dd>Data to be stored in the table</dd>
+                      <dt>
+                        <strong><code>datasetTable</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of datasetTable. Format dataset.Table</dd>
+                      <dt>
+                        <strong><code>schema</code></strong>
+                        :&ensp;<code>array</code>, optional
+                      </dt>
+                      <dd><em>description</em>. Defaults to None.</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>boolean</code></dt>
+                      <dd>Success/Failure of data append</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def gbqReplace(self, data, datasetTable, schema=None):
+    &#34;&#34;&#34;This function replaces data in an existing table in BigQuery
+
+    Args:
+        data (dataframe): Data to be stored in the table
+        datasetTable (string): Name of datasetTable. Format dataset.Table
+        schema (array, optional): _description_. Defaults to None.
+
+    Returns:
+        boolean: Success/Failure of data append
+    &#34;&#34;&#34;
+    if (datasetTable in self.datasetTable):
+        if isinstance(data, pd.DataFrame):
+            if not data.empty:
+                try:
+                    if schema == None:
+                        print(f&#34;INFO: Schema Not Provided&#34;)
+                        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                          if_exists=&#34;replace&#34;, credentials=self.credentials)
+                    else:
+                        print(f&#34;INFO: Schema Provided {schema}&#34;)
+                        pandas_gbq.to_gbq(data, datasetTable, project_id=self.project_id,
+                                          if_exists=&#34;replace&#34;, table_schema=schema, credentials=self.credentials)
+                    print(f&#34;SUCCESS: {datasetTable} Data Replaced&#34;)
+                    return True
+                except Exception as err:
+                    print(f&#34;ERROR: Data Append to {datasetTable} Aborted&#34;)
+                    print(f&#34;Error Log: {err}&#34;)
+                    print(f&#34;Traceback: {traceback.format_exc()}&#34;)
+                    return False
+            else:
+                print(&#34;Empty Dataset - Replace Aborted&#34;)
+        else:
+            print(&#34;ERROR: Data Object not Dataframe&#34;)
+            return False
+    else:
+        print(
+            f&#34;INFO: {datasetTable} does not exist - Table will be created unless Operation Cancelled&#34;)
+        time.sleep(7)
+        datasetTableSplit = datasetTable.split(&#34;.&#34;)
+        self.gbqCreateNewTable(
+            data, datasetTableSplit[0], datasetTableSplit[1])</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.getDataFields">
+                  <code class="name flex">
+                    <span>def <span class="ident">getDataFields</span></span
+                    >(<span>self, datasetTable, *fields)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function takes in a table and fields to be queried,
+                      generates a SQL Query and queries BigQuery
+                    </p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>datasetTable</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of datasetTable. Format dataset.Table</dd>
+                      <dt>
+                        <strong><code>fields</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of fields to be extracted.</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>dataframe</code></dt>
+                      <dd>Query Response</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getDataFields(self, datasetTable, *fields):
+    &#34;&#34;&#34;This function takes in a table and fields to be queried,  generates a SQL Query and queries BigQuery 
+
+    Args:
+        datasetTable (string): Name of datasetTable. Format dataset.Table
+        fields (string): Name of fields to be extracted.
+
+    Returns:
+        dataframe: Query Response
+    &#34;&#34;&#34;
+    fieldString = &#34;&#34;
+    if fields:
+        for field in fields:
+            fieldString = fieldString + field + &#34;, &#34;
+        fieldString = fieldString[:len(fieldString)-2]
+    else:
+        fieldString = &#34;*&#34;
+    queryString = &#34;SELECT &#34; + fieldString + &#34; FROM &#34; + datasetTable
+    sql = &#34;&#34; + queryString + &#34;&#34;
+    return self.gbqQueryAPI(sql)</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.getDataQuery">
+                  <code class="name flex">
+                    <span>def <span class="ident">getDataQuery</span></span
+                    >(<span>self, queryString)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This helper function takes in a SQL</p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>queryString</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>String of Query to be conducted in BigQuery</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>dataframe</code></dt>
+                      <dd>Query Response</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getDataQuery(self, queryString):
+    &#34;&#34;&#34;This helper function takes in a SQL
+
+    Args:
+        queryString (string): String of Query to be conducted in BigQuery
+
+    Returns:
+        dataframe: Query Response
+    &#34;&#34;&#34;
+    sql = &#34;&#34;+queryString+&#34;&#34;
+    return self.gbqQueryAPI(sql)</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.getDataset">
+                  <code class="name flex">
+                    <span>def <span class="ident">getDataset</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function returns all dataset as a list</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>list</code></dt>
+                      <dd>List of all datasets in BigQuery</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getDataset(self):
+    &#34;&#34;&#34;This function returns all dataset as a list
+
+    Returns:
+        list: List of all datasets in BigQuery
+    &#34;&#34;&#34;
+    return self.syncDataset()</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.getTableSchema">
+                  <code class="name flex">
+                    <span>def <span class="ident">getTableSchema</span></span
+                    >(<span>self, datasetTable)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This helper function queries BigQuery and returns Table
+                      Schema
+                    </p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>datasetTable</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Name of datasetTable. Format dataset.Table</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>list</code></dt>
+                      <dd>
+                        list of dictionary where each dictionary is schema for a
+                        field
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getTableSchema(self, datasetTable):
+    &#34;&#34;&#34;This helper function queries BigQuery and returns Table Schema
+
+    Args:
+        datasetTable (string): Name of datasetTable. Format dataset.Table
+
+    Returns:
+        list: list of dictionary where each dictionary is schema for a field
+    &#34;&#34;&#34;
+    print(f&#34;INFO: Query Table Schema for {datasetTable}&#34;)
+    queryString = &#34;SELECT * FROM &#34; + datasetTable
+    query = &#34;&#34; + queryString + &#34;&#34;
+    query_job = self.client.query(query)
+    result = query_job.result()
+    schemas = result.schema
+
+    # --- Schema Field Attributes
+    # field_type: data type of column
+    # name: name of column
+
+    formatted_schema = []
+    for schema in schemas:
+        schema_details = {
+            &#39;name&#39;: schema.name,
+            &#39;type&#39;: schema.field_type
+        }
+        formatted_schema.append(schema_details)
+
+    print(f&#34;SUCCESS: Retrived Table Schema for {datasetTable}&#34;)
+    return formatted_schema</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.getTables">
+                  <code class="name flex">
+                    <span>def <span class="ident">getTables</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function returns all tables as a list</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>list</code></dt>
+                      <dd>List of all Tables in BigQuery</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getTables(self):
+    &#34;&#34;&#34;This function returns all tables as a list
+
+    Returns:
+        list: List of all Tables in BigQuery
+    &#34;&#34;&#34;
+    return self.syncTables()</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.syncDataset">
+                  <code class="name flex">
+                    <span>def <span class="ident">syncDataset</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This helper funcction Sync Local Dataset with Cloud</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>list</code></dt>
+                      <dd>List of all datasets</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def syncDataset(self):
+    &#34;&#34;&#34;This helper funcction Sync Local Dataset with Cloud
+
+    Returns:
+        list: List of all datasets
+    &#34;&#34;&#34;
+    datasets = list(self.client.list_datasets())  # Make an API request.
+    print(f&#34;INFO: Updating Datasets for {datasets}&#34;)
+    updatedDatasetList = []
+
+    if datasets:
+        for dataset in datasets:
+            updatedDatasetList.append(dataset.dataset_id)
+        # Updating serviceAccount.json
+        self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_ID&#34;] = updatedDatasetList
+        self.dataset_id = updatedDatasetList
+
+        with open(self.credUrl, &#39;w&#39;) as jsonFile:
+            json.dump(self.cred, jsonFile)
+        print(&#34;SUCCESS: Dataset Succesfully Updated&#34;)
+        return updatedDatasetList
+
+    else:
+        print(&#34;WARNING: {} does not contain any datasets.&#34;.format(self.project))
+        return None</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.syncTables">
+                  <code class="name flex">
+                    <span>def <span class="ident">syncTables</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This helper funcction Sync Local Table with Cloud</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>list</code></dt>
+                      <dd>List of all Tables</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def syncTables(self):
+    &#34;&#34;&#34;This helper funcction Sync Local Table with Cloud
+
+    Returns:
+        list: List of all Tables
+    &#34;&#34;&#34;
+    updatedTableList = []
+    self.syncDataset()
+    print(f&#34;INFO: Updating Tables for {self.dataset_id}&#34;)
+    for dataset in self.dataset_id:
+        try:
+            tables = self.client.list_tables(
+                dataset)  # Make an API request
+            for table in tables:
+                updatedTableList.append(
+                    table.dataset_id + &#34;.&#34; + table.table_id)
+
+        except Exception as err:
+            print(f&#34;ERROR: {dataset} Update Failure&#34;)
+            print(f&#34;Error Log: {err}&#34;)
+
+    # Updating serviceAccount.json
+    self.cred[&#34;bigQueryConfig&#34;][&#34;DATASET_TABLE&#34;] = updatedTableList
+
+    with open(self.credUrl, &#39;w&#39;) as jsonFile:
+        json.dump(self.cred, jsonFile)
+
+    print(&#34;SUCCESS: Tables Succesfully Updated&#34;)
+    return updatedTableList</code></pre>
+                  </details>
+                </dd>
+                <dt id="data_load.bigQueryAPI.bigQueryDB.updateTableSchema">
+                  <code class="name flex">
+                    <span>def <span class="ident">updateTableSchema</span></span
+                    >(<span>self, datasetTablelist)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function queries BigQuery and updates local copy of
+                      Table Schema
+                    </p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>datasetTablelist</code></strong>
+                        :&ensp;<code>list</code>
+                      </dt>
+                      <dd>List of datasetTable Names. Format dataset.Table</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>boolean</code></dt>
+                      <dd>Success/Failure of updating</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def updateTableSchema(self, datasetTablelist):
+    &#34;&#34;&#34;This function queries BigQuery and updates local copy of Table Schema
+
+    Args:
+        datasetTablelist (list): List of datasetTable Names. Format dataset.Table
+
+    Returns:
+        boolean: Success/Failure of updating
+    &#34;&#34;&#34;
+    print(f&#34;INFO: Updating Table Schema for {datasetTablelist}&#34;)
+    for datasetTable in datasetTablelist:
+        updatedSchema = self.getTableSchema(datasetTable)
+        self.tableSchema[datasetTable] = updatedSchema
+
+    with open(self.tableSchemaUrl, &#39;w&#39;) as schemaFile:
+        json.dump(self.tableSchema, schemaFile)
+
+    print(f&#34;SUCCESS: Updated Table Schema for {datasetTablelist} &#34;)
+
+    return True</code></pre>
+                  </details>
+                </dd>
+              </dl>
+            </dd>
+          </dl>
+        </section>
+      </article>
+      <nav id="sidebar">
+        <a href="../index.html"
+          ><img src="../sfyr_logo.png" , style="width: 100px; height: 100px"
+        /></a>
+        <div class="toc">
+          <ul></ul>
+        </div>
+        <ul id="index">
+          <li>
+            <h3>Super-module</h3>
+            <ul>
+              <li>
+                <code
+                  ><a title="Syfr_API" href="../index.html"
+                    >Syfr API Documentation</a
+                  ></code
+                >
+              </li>
+              <li>
+                <code
+                  ><a title="data_load" href="index.html">data_load</a></code
+                >
+              </li>
+            </ul>
+          </li>
+          <li>
+            <h3><a href="#header-classes">Classes</a></h3>
+            <ul>
+              <li>
+                <h4>
+                  <code
+                    ><a
+                      title="data_load.bigQueryAPI.bigQueryDB"
+                      href="#data_load.bigQueryAPI.bigQueryDB"
+                      >bigQueryDB</a
+                    ></code
+                  >
+                </h4>
+                <ul class="">
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.gbqAppend"
+                        href="#data_load.bigQueryAPI.bigQueryDB.gbqAppend"
+                        >gbqAppend</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.gbqCheckDatasetExist"
+                        href="#data_load.bigQueryAPI.bigQueryDB.gbqCheckDatasetExist"
+                        >gbqCheckDatasetExist</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.gbqCheckTableExist"
+                        href="#data_load.bigQueryAPI.bigQueryDB.gbqCheckTableExist"
+                        >gbqCheckTableExist</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.gbqCreateNewTable"
+                        href="#data_load.bigQueryAPI.bigQueryDB.gbqCreateNewTable"
+                        >gbqCreateNewTable</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.gbqDeleteDataset"
+                        href="#data_load.bigQueryAPI.bigQueryDB.gbqDeleteDataset"
+                        >gbqDeleteDataset</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.gbqDeleteTable"
+                        href="#data_load.bigQueryAPI.bigQueryDB.gbqDeleteTable"
+                        >gbqDeleteTable</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.gbqQueryAPI"
+                        href="#data_load.bigQueryAPI.bigQueryDB.gbqQueryAPI"
+                        >gbqQueryAPI</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.gbqReplace"
+                        href="#data_load.bigQueryAPI.bigQueryDB.gbqReplace"
+                        >gbqReplace</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.getDataFields"
+                        href="#data_load.bigQueryAPI.bigQueryDB.getDataFields"
+                        >getDataFields</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.getDataQuery"
+                        href="#data_load.bigQueryAPI.bigQueryDB.getDataQuery"
+                        >getDataQuery</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.getDataset"
+                        href="#data_load.bigQueryAPI.bigQueryDB.getDataset"
+                        >getDataset</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.getTableSchema"
+                        href="#data_load.bigQueryAPI.bigQueryDB.getTableSchema"
+                        >getTableSchema</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.getTables"
+                        href="#data_load.bigQueryAPI.bigQueryDB.getTables"
+                        >getTables</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.syncDataset"
+                        href="#data_load.bigQueryAPI.bigQueryDB.syncDataset"
+                        >syncDataset</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.syncTables"
+                        href="#data_load.bigQueryAPI.bigQueryDB.syncTables"
+                        >syncTables</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_load.bigQueryAPI.bigQueryDB.updateTableSchema"
+                        href="#data_load.bigQueryAPI.bigQueryDB.updateTableSchema"
+                        >updateTableSchema</a
+                      ></code
+                    >
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </main>
+    <footer id="footer">
+      <p>
+        Generated by
+        <a
+          href="https://pdoc3.github.io/pdoc"
+          title="pdoc: Python API documentation generator"
+          ><cite>pdoc</cite> 0.10.0</a
+        >.
+      </p>
+    </footer>
+  </body>
+</html>

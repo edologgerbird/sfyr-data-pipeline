@@ -131,10 +131,13 @@ dmypy.json
 # Project Env
 projEnv/
 is3107_proj/
+is3107_g7/
 
 # folders
 archive/
 misc/ 
+csv_store/
+*.csv
 
 # ipynb
 *.ipynb
@@ -146,6 +149,7 @@ misc/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.vscode/
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
@@ -155,4 +159,19 @@ misc/
 
 # Misc
 test/
+csv_store/
+*.csv
+*.session
+*.session-journal
+None.session
+.DS_Store
+
+### Creds ###
+# Firestore ServiceAccount
+is3107-group-7-firebase-adminsdk-x2qta-d9cfd2898b.json
+
+# BigQuery ServiceAccount
+is3107-group-7-008534a376ad.json
+
+
 
