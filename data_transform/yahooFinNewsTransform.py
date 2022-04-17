@@ -26,9 +26,12 @@ class yahooFinNewsTransformer:
 
         # Start Date <= End Date Validation
         if (start_date is not None and end_date is not None and start_date > end_date):
-            raise Exception(f"ERROR: {start_date} is not before {end_date}")
+            raise Exception(
+                f'ERROR: Start date {start_date} input must be before end date {end_date} input')
 
-        for i in tqdm(range(0, len(news))):
+        for i in range(0, len(news)):
+            print(
+                f">> ========== Formatting Yahoo-Fin News Overall Progress: {i}/{len(news)}")
             ticker = news.at[i, "Ticker"]
             tickerNews = news.at[i, "News"]
             for article in tickerNews:
@@ -65,11 +68,14 @@ class yahooFinNewsTransformer:
         Returns:
             dataframe: Dataframe of all news articles associated with sentiments
         """
+        print(f"INFO: FinBERT Article Association Triggered")
         for i in range(0, len(self.data_pending_upload)):
+            print(
+                f">> ========== Sentiments Association Overall Progress: {i}/{len(sentiments)}")
             self.data_pending_upload[i]["sentiments"] = {
                 "negative": sentiments.iloc[i]["Negative"],
                 "neutral": sentiments.iloc[i]["Neutral"],
                 "positive": sentiments.iloc[i]["Positive"],
             }
-        print(f"SUCCESS: FinBERT Linking Completed")
+        print(f"SUCCESS: FinBERT Association Completed")
         return self.data_pending_upload

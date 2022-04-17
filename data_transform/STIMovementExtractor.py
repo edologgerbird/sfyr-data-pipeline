@@ -11,11 +11,27 @@ class STIMovementExtractor:
         print("INFO: Initialised STI Movement Extractor")
 
     def sti_related(self, title):
+        """Helper Function extracts titles with STI Movements
+
+        Args:
+            title (string): Title to be checked
+
+        Returns:
+            boolean: True/False the item exist
+        """
         title = title.lower()
         sti_lst = ['sti', 'straits times index']
         return any(title.find(word) > -1 for word in sti_lst)
 
     def direction_of_STI_movement(self, title):
+        """This function extracts the direction of STI Movement
+
+        Args:
+            title (string): Title to be checked
+
+        Returns:
+            string: Negative or Postiive Movements
+        """
         title = title.lower()
         positive_lst = ['up', 'gains', 'gain', 'higher']
         negative_lst = ['down', 'dips', 'dip', 'lose',
@@ -29,6 +45,14 @@ class STIMovementExtractor:
             return None
 
     def percentage_of_STI_movement(self, title):
+        """This function extracts the percentage of STI Movement
+
+        Args:
+            title (string): Title to be checked
+
+        Returns:
+            string: STI movement percentage
+        """
         if self.sti_related(title):
             try:
                 result = re.search(r'((?:\d+%)|(?:\d+\.\d+%))', title).group()
@@ -37,6 +61,14 @@ class STIMovementExtractor:
             return result
 
     def populate_sti_movement(self, text_series):
+        """This function populates the STI Movements into a dataframe
+
+        Args:
+            text_series (dataframe): Dataframe of text to be checked
+
+        Returns:
+            dataframe: Dataframe of Title, STI movement Direction and percentage
+        """
         print("INFO: Extracting and populating STI movement direction and percentage")
         self.text_series = text_series
         self.direction_series = text_series.apply(

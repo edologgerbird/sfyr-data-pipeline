@@ -9,6 +9,15 @@ class yfinanceTransform:
         self.errors_all = dict()
 
     def replaceColumnName(self, dataset):
+        """This function applies BigQuery Column Name Limitations to the dataset. 
+        BigQuery Columns can only possess alphanumeric, underscores and can only start with alphanumeric 
+
+        Args:
+            dataset (String): Name of dataset to be formatted
+
+        Returns:
+            dataframe: Formatted yFinance Data
+        """
         # Removing Spaces in Column Names - GBQ Limitation
         print(f"INFO: {dataset} Column Name Replacement Triggered")
 
@@ -37,14 +46,35 @@ class yfinanceTransform:
             columns=yfinance_formatted_columns, inplace=True)
 
         print(f"SUCCESS: {dataset} Column Name Replacement")
+        return self.yfinance_data
 
     def removeDuplicateColumns(self, dataset):
+        """This function removes duplicate coulums from the dataset
+
+        Args:
+            dataset (String): Name of dataset to be formatted
+
+        Returns:
+            dataframe: Formatted yFinance Data
+        """
         print(f"INFO: Removing Column Duplicates for {dataset}")
         self.yfinance_data[dataset] = self.yfinance_data[dataset].loc[:,
                                                                       ~self.yfinance_data[dataset].columns.duplicated()]
         print(f"SUCCESS: Duplicate Column Removed In {dataset} ")
 
+        return self.yfinance_data
+
     def schemaCompliance(self, dataset):
+        """This function ensures compliance to pre-defined schema stored in bigQuerySchema.json
+         - Columns not in the dataset will be dropped
+         - Columns with incorrect dtype will be type-casted to the correct dtype
+
+        Args:
+            dataset (String): Name of dataset to be formatted
+
+        Returns:
+            dataframe: Formatted yFinance Data
+        """
         errors = []
         datatype_mapping = {
             "STRING": "string",
@@ -68,7 +98,6 @@ class yfinanceTransform:
         yfinance_dataset = yfinance_dataset.convert_dtypes()
 
         for col in yfinance_dataset.columns:
-
             try:
                 if col not in pd_dataset_schema.keys():
                     print(f"INFO: Extra {col} Dropped")
@@ -97,6 +126,11 @@ class yfinanceTransform:
         return yfinance_dataset
 
     def transformData(self):
+        """This function triggers the 3 step transformation process for yfinance data
+
+        Returns:
+            dataframe: Formatted yFinance Data
+        """
         for datafield in self.yfinance_data.keys():
             if not self.yfinance_data[datafield].empty:
                 print(f"INFO: Transformation of {datafield} Triggered")
