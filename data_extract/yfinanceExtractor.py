@@ -506,7 +506,6 @@ class yfinanceExtractor:
         Returns:
             dictionary: dictionary of dataframes with yfinance query output
         """
-        failed = []
         query_calls = {
             "Historical Data": self.getHistoricalData,
             "Financial Statement": self.getFinancialStatement,
@@ -529,7 +528,6 @@ class yfinanceExtractor:
                 query_fn()
             except:
                 print(f"ERROR {query} failed to extract")
-                failed.append(query)
 
         return self.yfinanceData
 
