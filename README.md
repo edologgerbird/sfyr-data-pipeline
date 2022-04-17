@@ -373,7 +373,7 @@ After logging in, you will be brought to the main Airflow dashboard. To enable t
 
 <img src="read_me_files/screenshot1.png" alt="Logo">
 
-By default, the DAG is scheduled to execute twice a day, at 0930HRS and 2130HRS (GMT+8). TO run instantly for demonstration/testing purposes, please set toggle in main_DAG.py.
+By default, the DAG is scheduled to execute twice a day, at 0930HRS and 2130HRS (GMT+8). To run instantly for demonstration/testing purposes, please set toggle in main_DAG.py.
 
 ```python
 TOGGLE_TEST = True
