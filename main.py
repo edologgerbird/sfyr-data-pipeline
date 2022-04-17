@@ -109,8 +109,8 @@ if __name__ == '__main__':
     # update.to_csv("update.csv", index=False)
 
     # ---- Test FinBert---- #
-    df = pd.read_csv("csv_store/industry_new.csv")
-    fb_layer = FinBERT()
-    fb_layer.FinBert_pipeline(df["industry"])
+    # df = pd.read_csv("csv_store/industry_new.csv")
+    # fb_layer = FinBERT()
+    # fb_layer.FinBert_pipeline(df["industry"])
 
     print("--- %s seconds ---" % (time.time() - start_time))
