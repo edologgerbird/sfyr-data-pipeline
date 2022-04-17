@@ -1,15 +1,13 @@
 from datetime import datetime as dt
 from time import mktime
 import pandas as pd
+import tqdm
 
 
 class yahooFinNewsTransformer:
     def __init__(self):
-        # print("Initialising Firestore Pipeline...")
-        # self.firestoreDB_layer = firestoreDB()
         self.data_pending_upload = None
         self.articles = []
-        # print("Firestore Pipeline Initialised")
 
     def tickerNewsFormat(self, news, start_date=None, end_date=dt.now()):
         newsFormatted = []
@@ -17,9 +15,9 @@ class yahooFinNewsTransformer:
 
         # Start Date <= End Date Validation
         if (start_date is not None and end_date is not None and start_date > end_date):
-            raise Exception('Start date input must be before end date input')
+            raise Exception(f"ERROR: {start_date} is not before {end_date}")
 
-        for i in range(0, len(news)):
+        for i in tqdm(range(0, len(news))):
             ticker = news.at[i, "Ticker"]
             tickerNews = news.at[i, "News"]
             for article in tickerNews:
@@ -41,16 +39,20 @@ class yahooFinNewsTransformer:
                         newsFormatted.append(articleFormatted)
                         articles.append(article["summary"])
 
+        print(f"SUCCESS: Yahoo-Fin News Transformed")
         self.data_pending_upload = newsFormatted
+
         pdArticles = pd.DataFrame(articles, columns=["message"])
-        #pdArticles.columns = ["message"]
+        print(f"SUCCESS: Generated Dataframe for FinBERT")
         return pdArticles
 
     def finBERTFormat(self, sentiments):
-        for i in range(0, len(self.data_pending_upload)):
+        print("INFO: Linking FinBERT to Articles")
+        for i in tqdm(range(0, len(self.data_pending_upload))):
             self.data_pending_upload[i]["sentiments"] = {
                 "negative": sentiments.iloc[i]["Negative"],
                 "neutral": sentiments.iloc[i]["Neutral"],
                 "positive": sentiments.iloc[i]["Positive"],
             }
+        print(f"SUCCESS: FinBERT Linking Completed")
         return self.data_pending_upload
