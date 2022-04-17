@@ -369,3 +369,21 @@ If you would like to reqeuest a feature or report a bug, please contact us at is
 We would like to thank Assistant Professor Frank Xing, Dr Gao Yu Ting and Mr Quek Jian Hong Joel of the National University of Singapore for the opportunity to embark on this project.
 
 We would also like to thank Nescafe and Redbull for providing us with the caffeine required to complete this project. We would also like to provide great thanks to the sitcom The Office for the inspirational words _"Why say lot word, when few word do trick"_.
+
+<br><br>
+<sub>
+Copyright (C) 2022
+</sub>
+    
+<sub>
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
+</sub>
+    
+<sub>
+This program is distributed in the hope that it will be useful,but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+</sub>
+    
+   
+<sub>
+You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+</sub>
