@@ -259,7 +259,7 @@ default_args = {
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-### _6. Setting Up Google Cloud Telegram Alerts_
+### _6. Setting Up Google Cloud Telegram Alerts (Optional)_ 
 
 Before setting up the alerts on Google Cloud Monitoring, users will have to set-up a Telegram bot and enable the sending of messages from the bot to the relevant channels.
 
