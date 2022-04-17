@@ -1,0 +1,2841 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1"
+    />
+    <meta name="generator" content="pdoc 0.10.0" />
+    <title>data_extract.yfinanceExtractor API documentation</title>
+    <link rel="icon" type="image/x-icon" href="../../sfyr_logo.png" />
+    <meta name="description" content="" />
+    <link
+      rel="preload stylesheet"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css"
+      integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs="
+      crossorigin
+    />
+    <link
+      rel="preload stylesheet"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css"
+      integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg="
+      crossorigin
+    />
+    <link
+      rel="stylesheet preload"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css"
+      crossorigin
+    />
+    <style>
+      :root {
+        --highlight-color: #fe9;
+      }
+      .flex {
+        display: flex !important;
+      }
+      body {
+        line-height: 1.5em;
+      }
+      #content {
+        padding: 20px;
+      }
+      #sidebar {
+        padding: 30px;
+        overflow: hidden;
+      }
+      #sidebar > *:last-child {
+        margin-bottom: 2cm;
+      }
+      .http-server-breadcrumbs {
+        font-size: 130%;
+        margin: 0 0 15px 0;
+      }
+      #footer {
+        font-size: 0.75em;
+        padding: 5px 30px;
+        border-top: 1px solid #ddd;
+        text-align: right;
+      }
+      #footer p {
+        margin: 0 0 0 1em;
+        display: inline-block;
+      }
+      #footer p:last-child {
+        margin-right: 30px;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5 {
+        font-weight: 300;
+      }
+      h1 {
+        font-size: 2.5em;
+        line-height: 1.1em;
+      }
+      h2 {
+        font-size: 1.75em;
+        margin: 1em 0 0.5em 0;
+      }
+      h3 {
+        font-size: 1.4em;
+        margin: 25px 0 10px 0;
+      }
+      h4 {
+        margin: 0;
+        font-size: 105%;
+      }
+      h1:target,
+      h2:target,
+      h3:target,
+      h4:target,
+      h5:target,
+      h6:target {
+        background: var(--highlight-color);
+        padding: 0.2em 0;
+      }
+      a {
+        color: #058;
+        text-decoration: none;
+        transition: color 0.3s ease-in-out;
+      }
+      a:hover {
+        color: #e82;
+      }
+      .title code {
+        font-weight: bold;
+      }
+      h2[id^="header-"] {
+        margin-top: 2em;
+      }
+      .ident {
+        color: #900;
+      }
+      pre code {
+        background: #f8f8f8;
+        font-size: 0.8em;
+        line-height: 1.4em;
+      }
+      code {
+        background: #f2f2f1;
+        padding: 1px 4px;
+        overflow-wrap: break-word;
+      }
+      h1 code {
+        background: transparent;
+      }
+      pre {
+        background: #f8f8f8;
+        border: 0;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        margin: 1em 0;
+        padding: 1ex;
+      }
+      #http-server-module-list {
+        display: flex;
+        flex-flow: column;
+      }
+      #http-server-module-list div {
+        display: flex;
+      }
+      #http-server-module-list dt {
+        min-width: 10%;
+      }
+      #http-server-module-list p {
+        margin-top: 0;
+      }
+      .toc ul,
+      #index {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      #index code {
+        background: transparent;
+      }
+      #index h3 {
+        border-bottom: 1px solid #ddd;
+      }
+      #index ul {
+        padding: 0;
+      }
+      #index h4 {
+        margin-top: 0.6em;
+        font-weight: bold;
+      }
+      @media (min-width: 200ex) {
+        #index .two-column {
+          column-count: 2;
+        }
+      }
+      @media (min-width: 300ex) {
+        #index .two-column {
+          column-count: 3;
+        }
+      }
+      dl {
+        margin-bottom: 2em;
+      }
+      dl dl:last-child {
+        margin-bottom: 4em;
+      }
+      dd {
+        margin: 0 0 1em 3em;
+      }
+      #header-classes + dl > dd {
+        margin-bottom: 3em;
+      }
+      dd dd {
+        margin-left: 2em;
+      }
+      dd p {
+        margin: 10px 0;
+      }
+      .name {
+        background: #eee;
+        font-weight: bold;
+        font-size: 0.85em;
+        padding: 5px 10px;
+        display: inline-block;
+        min-width: 40%;
+      }
+      .name:hover {
+        background: #e0e0e0;
+      }
+      dt:target .name {
+        background: var(--highlight-color);
+      }
+      .name > span:first-child {
+        white-space: nowrap;
+      }
+      .name.class > span:nth-child(2) {
+        margin-left: 0.4em;
+      }
+      .inherited {
+        color: #999;
+        border-left: 5px solid #eee;
+        padding-left: 1em;
+      }
+      .inheritance em {
+        font-style: normal;
+        font-weight: bold;
+      }
+      .desc h2 {
+        font-weight: 400;
+        font-size: 1.25em;
+      }
+      .desc h3 {
+        font-size: 1em;
+      }
+      .desc dt code {
+        background: inherit;
+      }
+      .source summary,
+      .git-link-div {
+        color: #666;
+        text-align: right;
+        font-weight: 400;
+        font-size: 0.8em;
+        text-transform: uppercase;
+      }
+      .source summary > * {
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .git-link {
+        color: inherit;
+        margin-left: 1em;
+      }
+      .source pre {
+        max-height: 500px;
+        overflow: auto;
+        margin: 0;
+      }
+      .source pre code {
+        font-size: 12px;
+        overflow: visible;
+      }
+      .hlist {
+        list-style: none;
+      }
+      .hlist li {
+        display: inline;
+      }
+      .hlist li:after {
+        content: ",\2002";
+      }
+      .hlist li:last-child:after {
+        content: none;
+      }
+      .hlist .hlist {
+        display: inline;
+        padding-left: 1em;
+      }
+      img {
+        max-width: 100%;
+      }
+      td {
+        padding: 0 0.5em;
+      }
+      .admonition {
+        padding: 0.1em 0.5em;
+        margin-bottom: 1em;
+      }
+      .admonition-title {
+        font-weight: bold;
+      }
+      .admonition.note,
+      .admonition.info,
+      .admonition.important {
+        background: #aef;
+      }
+      .admonition.todo,
+      .admonition.versionadded,
+      .admonition.tip,
+      .admonition.hint {
+        background: #dfd;
+      }
+      .admonition.warning,
+      .admonition.versionchanged,
+      .admonition.deprecated {
+        background: #fd4;
+      }
+      .admonition.error,
+      .admonition.danger,
+      .admonition.caution {
+        background: lightpink;
+      }
+    </style>
+    <style media="screen and (min-width: 700px)">
+      @media screen and (min-width: 700px) {
+        #sidebar {
+          width: 30%;
+          height: 100vh;
+          overflow: auto;
+          position: sticky;
+          top: 0;
+        }
+        #content {
+          width: 70%;
+          max-width: 100ch;
+          padding: 3em 4em;
+          border-left: 1px solid #ddd;
+        }
+        pre code {
+          font-size: 1em;
+        }
+        .item .name {
+          font-size: 1em;
+        }
+        main {
+          display: flex;
+          flex-direction: row-reverse;
+          justify-content: flex-end;
+        }
+        .toc ul ul,
+        #index ul {
+          padding-left: 1.5em;
+        }
+        .toc > ul > li {
+          margin-top: 0.5em;
+        }
+      }
+    </style>
+    <style media="print">
+      @media print {
+        #sidebar h1 {
+          page-break-before: always;
+        }
+        .source {
+          display: none;
+        }
+      }
+      @media print {
+        * {
+          background: transparent !important;
+          color: #000 !important;
+          box-shadow: none !important;
+          text-shadow: none !important;
+        }
+        a[href]:after {
+          content: " (" attr(href) ")";
+          font-size: 90%;
+        }
+        a[href][title]:after {
+          content: none;
+        }
+        abbr[title]:after {
+          content: " (" attr(title) ")";
+        }
+        .ir a:after,
+        a[href^="javascript:"]:after,
+        a[href^="#"]:after {
+          content: "";
+        }
+        pre,
+        blockquote {
+          border: 1px solid #999;
+          page-break-inside: avoid;
+        }
+        thead {
+          display: table-header-group;
+        }
+        tr,
+        img {
+          page-break-inside: avoid;
+        }
+        img {
+          max-width: 100% !important;
+        }
+        @page {
+          margin: 0.5cm;
+        }
+        p,
+        h2,
+        h3 {
+          orphans: 3;
+          widows: 3;
+        }
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+          page-break-after: avoid;
+        }
+      }
+    </style>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js"
+      integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8="
+      crossorigin
+    ></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () =>
+        hljs.initHighlighting()
+      );
+    </script>
+  </head>
+  <body>
+    <main>
+      <article id="content">
+        <header>
+          <h1 class="title">
+            Module <code>data_extract.yfinanceExtractor</code>
+          </h1>
+        </header>
+        <section id="section-intro">
+          <details class="source">
+            <summary>
+              <span>Expand source code</span>
+            </summary>
+            <pre><code class="python">from datetime import datetime as dt
+import pandas as pd
+import numpy as np
+import yfinance as yf
+import time
+import json
+from functools import reduce
+
+
+class yfinanceExtractor:
+    def __init__(self, sgxTickers):
+        self.sgxTickers = sgxTickers
+        self.sgxTickers.ticker = self.sgxTickers.ticker.str[:] + &#34;.SI&#34;
+
+        # Initalisation of yFinance Schema Datafile
+        self.yfinanceColumnNameUrl = &#34;data_extract/yfinanceColumnName.json&#34;
+        with open(self.yfinanceColumnNameUrl, &#39;r&#39;) as jsonFile:
+            self.ColumnName = json.load(jsonFile)
+
+        # Initalisation of Shared Data
+        self.ticker_active = []  # List of Active Ticker Objects
+        self.ticker_delisted = []  # List of Inactive Ticker Name String
+
+        # Initalise yFinance Output
+        self.yfinanceData = {}
+        for dataField in self.ColumnName[&#34;columnNames&#34;]:
+            self.yfinanceData[dataField] = pd.DataFrame(
+                columns=self.ColumnName[&#34;columnNames&#34;][dataField])
+
+        # Check on Ticker Active/Inactive
+
+        self.checkTickers()
+        print(&#34;INFO: yFinanceExtractor Initialised&#34;)
+
+    def checkTickers(self):
+        &#34;&#34;&#34;This function checks if tickers exist in yFinance
+
+        Returns:
+            list: An array of tickers which exist and do not exist in yfinance
+        &#34;&#34;&#34;
+        print(&#34;INFO: Obtaining active tickers&#34;)
+        activeTickers = []
+        delisted = []
+
+        # Check if ticker exist
+        no_of_tickers = len(self.sgxTickers[&#34;ticker&#34;])
+        counter = 1
+        for ticker in self.sgxTickers[&#34;ticker&#34;]:
+            print(
+                f&#34;&gt;&gt; ========== Extracting {ticker} Overall Progress: {counter}/{no_of_tickers}&#34;)
+            time.sleep(0.23)
+            length = yf.download(
+                ticker, period=&#39;max&#39;, interval=&#39;1d&#39;, timeout=None).shape[0]
+            if length &gt; 0:
+                activeTickers.append(ticker)
+            else:
+                delisted.append(ticker)
+            counter += 1
+
+        # Generate dataframe of existing and missing tickers
+        dfTickers = pd.DataFrame({&#39;Listed&#39;: activeTickers})
+        dfTickers[&#34;Delisted&#34;] = pd.Series(delisted)
+
+        # Update Class Copy
+        self.yfinanceData[&#34;ticker_status&#34;] = dfTickers
+        self.ticker_active = [yf.Ticker(ticker) for ticker in activeTickers]
+        self.ticker_delisted = delisted
+        print(&#34;SUCCESS: Active tickers obtained&#34;)
+        return dfTickers
+
+    # ---- Main Functions  ----- #
+    def getHistoricalData(self, start_date=dt.now()):
+        &#34;&#34;&#34;This function queries historical data from yfinance
+
+        Args:
+            start_date (datetime, optional): Earliest date to be extracted. Defaults to dt.now().
+
+        Returns:
+            Dataframe: Dataframe of historical data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;historical_data&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        # Listed Tickers&#39; historical market data
+        historical_data_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}&#34;)
+            if start_date is None:
+                tickerHistoricalData = yf.download(
+                    ticker.ticker, period=&#39;max&#39;, interval=&#39;1d&#39;, timeout=None)
+                tickerHistoricalData[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+                tickerHistoricalData[&#34;Market Status&#34;] = &#34;Market_Closed&#34;
+
+            else:
+                start_date_string = start_date.strftime(&#39;%Y-%m-%d&#39;)
+                tickerHistoricalData = yf.download(
+                    ticker.ticker, start=start_date_string, interval=&#39;1d&#39;, timeout=None)
+                tickerHistoricalData[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+
+                if int(start_date.hour) &lt; 12:
+                    tickerHistoricalData[&#34;Market Status&#34;] = &#34;Market_Open&#34;
+                else:
+                    tickerHistoricalData[&#34;Market Status&#34;] = &#34;Market_Closed&#34;
+
+            counter += 1
+
+            historical_data_df = pd.concat(
+                [historical_data_df, tickerHistoricalData])
+
+        historical_data_df = historical_data_df.reset_index()
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = historical_data_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return historical_data_df
+
+    def getFinancialStatement(self):
+        &#34;&#34;&#34;This function queries Financial Statement data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Financial Statement data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;financial_statements&#34;
+        print(&#34;INFO: Extracting {target_data}&#34;)
+        financial_statements_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}&#34;)
+            profit_and_loss = ticker.financials.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            balance_sheet = ticker.balance_sheet.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            cashflow = ticker.cashflow.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            financial_statements = reduce(lambda left_table, right_table: pd.merge(
+                left_table, right_table, on=&#39;Date&#39;), [profit_and_loss, balance_sheet, cashflow])
+            financial_statements = financial_statements.fillna(np.NaN)
+            if type(financial_statements[&#34;Date&#34;].values[0]) != str:
+                financial_statements_df = pd.concat(
+                    [financial_statements_df, financial_statements])
+
+            counter += 1
+        self.yfinanceData[target_data] = financial_statements_df
+        print(&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return financial_statements_df
+
+    def getQuarterlyFinancialStatement(self):
+        &#34;&#34;&#34;This function queries Quarterly Financial Statement data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Quarterly Financial Statement data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;quarterly_financial_statements&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        quarterly_financial_statements_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            profit_and_loss = ticker.quarterly_financials.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            balance_sheet = ticker.quarterly_balancesheet.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            cashflow = ticker.quarterly_cashflow.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            financial_statements = reduce(lambda left_table, right_table: pd.merge(
+                left_table, right_table, on=&#39;Date&#39;), [profit_and_loss, balance_sheet, cashflow])
+            financial_statements = financial_statements.fillna(np.NaN)
+            if type(financial_statements[&#34;Date&#34;].values[0]) != str:
+                quarterly_financial_statements_df = pd.concat(
+                    [quarterly_financial_statements_df, financial_statements])
+
+            counter += 1
+        self.yfinanceData[target_data] = quarterly_financial_statements_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return quarterly_financial_statements_df
+
+    def getEarningsandRevenue(self):
+        &#34;&#34;&#34;This function queries Earnings and Revenue data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Earnings and Revenue data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;earnings_and_revenue&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        # Get Earnings and Revenue
+        earnings_and_revenues_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if (ticker.earnings.shape[0] &gt;= 1):
+                ticker_earning_and_revenue = ticker.earnings
+                ticker_earning_and_revenue[&#39;Tickers&#39;] = self.removeSI(
+                    ticker.ticker)
+                earnings_and_revenues_df = pd.concat(
+                    [earnings_and_revenues_df, ticker_earning_and_revenue])
+            counter += 1
+        earnings_and_revenues_df = earnings_and_revenues_df.reset_index().rename(columns={
+            &#39;index&#39;: &#39;Year&#39;})
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = earnings_and_revenues_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return earnings_and_revenues_df
+
+    def getQuarterlyEarningsandRevenue(self):
+        &#34;&#34;&#34;This function queries Quarterly Earnings and Revenue data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Quarterly Earnings and Revenue data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;quarterly_earnings_and_revenue&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        # Get Quarterly Earnings and Revenue
+        quarterly_earnings_and_revenues_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if (ticker.quarterly_earnings.shape[0] &gt;= 1):
+                ticker_quarterly_earning_and_revenue = ticker.quarterly_earnings
+                ticker_quarterly_earning_and_revenue[&#39;Tickers&#39;] = self.removeSI(
+                    ticker.ticker)
+                quarterly_earnings_and_revenues_df = pd.concat(
+                    [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
+            counter += 1
+        quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index(
+        )
+
+        first_col_name = list(quarterly_earnings_and_revenues_df.columns)[0]
+
+        quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.rename(
+            columns={first_col_name: &#39;Quarters&#39;})
+
+        quarterly_earnings_and_revenues_df[&#39;Quarters&#39;] = quarterly_earnings_and_revenues_df[&#39;Quarters&#39;].astype(
+            str)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = quarterly_earnings_and_revenues_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return quarterly_earnings_and_revenues_df
+
+    def getMajorHolders(self):
+        &#34;&#34;&#34;This function queries Major Holder data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Major Holder data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Major Holders
+        target_data = &#34;majorHolders&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        majorHolders_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+
+            if ticker.major_holders is not None and ticker.major_holders.shape[0] == 4:
+                ticker_majorHolders = ticker.major_holders.set_index(1)
+                ticker_majorHolders = ticker_majorHolders.T
+                ticker_majorHolders[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+                ticker_majorHolders[:] = ticker_majorHolders[:].astype(
+                    &#39;string&#39;)
+
+                majorHolders_df = majorHolders_df.merge(
+                    ticker_majorHolders, how=&#34;outer&#34;, on=list(ticker_majorHolders.columns))
+            counter += 1
+        self.yfinanceData[target_data] = majorHolders_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return majorHolders_df
+
+    def getBasicShares(self):
+        &#34;&#34;&#34;This function queries Basic Shares data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Basic Shares data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Basic Shares
+        target_data = &#34;basic_shares&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        basic_shares_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.shares is not None:
+                ticker_share = ticker.shares
+                ticker_share[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                basic_shares_df = pd.concat(
+                    [basic_shares_df, ticker_share])
+            counter += 1
+        basic_shares_df = basic_shares_df.reset_index()
+
+        basic_shares_df = basic_shares_df.rename(
+            columns={basic_shares_df.columns[0]: &#34;Year&#34;})
+        self.yfinanceData[target_data] = basic_shares_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return basic_shares_df
+
+    def getStockInfo(self):
+        &#34;&#34;&#34;This function queries Stock Info data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Stock Info data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get stock information
+        target_data = &#34;stock_info&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        all_tickers_info = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.info is not None:
+                ticker_info = pd.DataFrame(ticker.info.items()).set_index(0).T
+                ticker_info[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+                ticker_info[&#34;Tickers&#34;] = ticker_info[&#34;Tickers&#34;].astype(
+                    &#34;string&#34;)
+                all_tickers_info = pd.concat([all_tickers_info, ticker_info])
+            counter += 1
+        all_tickers_info = all_tickers_info.reset_index(drop=True)
+
+        for column in all_tickers_info.columns:
+            all_tickers_info[column] = all_tickers_info[column].apply(
+                self.cast_dict_to_string)
+
+        self.yfinanceData[target_data] = all_tickers_info
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return all_tickers_info
+
+    def getStockIndustry(self):
+        &#34;&#34;&#34;This function extracts stock industry from stock info dataframe
+
+        Returns:
+            Dataframe: Dataframe of stock industry for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;stock_industry&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        if self.yfinanceData[&#34;stock_info&#34;].empty:
+            self.getStockInfo()
+        stock_info = self.yfinanceData[&#34;stock_info&#34;]
+        stock_industry = stock_info[[&#34;Tickers&#34;, &#34;industry&#34;]]
+        stock_industry = stock_industry.rename(columns={&#34;Tickers&#34;: &#34;ticker&#34;})
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = stock_industry
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return stock_industry
+
+    def getCalendar(self):
+        &#34;&#34;&#34;This function queries calendar event data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of calendr event data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get next event (earnings, etc)
+        target_data = &#34;stock_calendar&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        stock_calendar_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.calendar is not None:
+                ticker_calendar = ticker.calendar.transpose()
+                ticker_calendar = ticker_calendar.rename(
+                    columns={&#34;Ticker&#34;: &#34;Tickers&#34;})
+                ticker_calendar[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                stock_calendar_df = pd.concat(
+                    [stock_calendar_df, ticker_calendar])
+            counter += 1
+        stock_calendar_df = stock_calendar_df.reset_index(drop=True)
+        stock_calendar_df.replace({np.nan: np.nan}, inplace=True)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = stock_calendar_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return stock_calendar_df
+
+    def getRecommendations(self):
+        &#34;&#34;&#34;This function queries stock recommendation data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of stock recommendation data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Recommendations
+        target_data = &#34;stock_recommendation&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        recommendations_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.recommendations is not None:
+                ticker_recommendations = ticker.recommendations
+                ticker_recommendations[&#39;Tickers&#39;] = self.removeSI(
+                    ticker.ticker)
+                ticker_recommendations[&#34;Date&#34;] = ticker_recommendations.index
+                recommendations_df = pd.concat(
+                    [recommendations_df, ticker_recommendations])
+            counter += 1
+        recommendations_df = recommendations_df.reset_index(drop=True)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = recommendations_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return recommendations_df
+
+    def getAnalysis(self):
+        &#34;&#34;&#34;This function queries Analysis data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Analysis data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Analysis
+        target_data = &#34;stock_analysis&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        analysis_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.analysis is not None:
+                ticker_analysis = ticker.analysis
+                ticker_analysis[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                ticker_analysis[&#39;Tickers&#39;] = ticker_analysis[&#39;Tickers&#39;].astype(
+                    &#34;string&#34;)
+                analysis_df = pd.concat(
+                    [analysis_df, ticker_analysis])
+            counter += 1
+
+        analysis_df = analysis_df.reset_index().rename(columns={
+            &#39;index&#39;: &#39;Period&#39;})
+        analysis_df[&#39;Period&#39;] = analysis_df[&#39;Period&#39;].astype(str)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = analysis_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return analysis_df
+
+    def getMutualFundHolders(self):
+        &#34;&#34;&#34;This function queries Mutual Fund Holder data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Mutual Fund Holder data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Mutual Fund Holders
+        target_data = &#34;stock_mfh&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        mfh_pd = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.mutualfund_holders is not None:
+                ticker_mfh = ticker.mutualfund_holders
+                ticker_mfh[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                mfh_pd = pd.concat([mfh_pd, ticker_mfh])
+            counter += 1
+
+        mfh_pd = mfh_pd.reset_index(drop=True)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = mfh_pd
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return mfh_pd
+
+    def getInstitutionalHolders(self):
+        &#34;&#34;&#34;This function queries Institutional Holder data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Institutional Holder data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;stock_ih&#34;
+        # Get Institutional holders
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        ih_pd = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.institutional_holders is not None and ticker.institutional_holders.shape[1] == 5:
+                ticker_ih = ticker.institutional_holders
+                ticker_ih[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                ih_pd = pd.concat([ih_pd, ticker_ih])
+            counter += 1
+        ih_pd = ih_pd.reset_index(drop=True)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = ih_pd
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return ih_pd
+
+    def yfinanceQuery(self):
+        &#34;&#34;&#34;This function queries all yfinance data queries 
+
+        Returns:
+            dictionary: dictionary of dataframes with yfinance query output
+        &#34;&#34;&#34;
+        failed = []
+        query_calls = {
+            &#34;Historical Data&#34;: self.getHistoricalData,
+            &#34;Financial Statement&#34;: self.getFinancialStatement,
+            &#34;Quarterly Financial Statement&#34;: self.getQuarterlyFinancialStatement,
+            &#34;Earnings and Revenue&#34;: self.getEarningsandRevenue,
+            &#34;Quarterly Earnings and Revenue&#34;: self.getQuarterlyEarningsandRevenue,
+            &#34;Major Holders&#34;: self.getMajorHolders,
+            &#34;Basic Shares&#34;: self.getBasicShares,
+            &#34;Stock Info&#34;: self.getStockInfo,
+            &#34;Stock Industry&#34;: self.getStockIndustry,
+            &#34;Calendar&#34;: self.getCalendar,
+            &#34;Analyst Recommendations&#34;: self.getRecommendations,
+            &#34;Stock Analysis&#34;: self.getAnalysis,
+            &#34;Mutual Fund Holders&#34;: self.getMajorHolders,
+            &#34;Institutional Holders&#34;: self.getInstitutionalHolders,
+        }
+
+        for query, query_fn in query_calls.items():
+            try:
+                query_fn()
+            except:
+                print(f&#34;ERROR {query} failed to extract&#34;)
+                failed.append(query)
+
+        return self.yfinanceData
+
+    # ---- Helper Functions  ----- #
+
+    def removeSI(self, ticker):
+        &#34;&#34;&#34;This helper function removes -SI suffix to ensure primary foreign key integrity
+
+        Args:
+            ticker (string): Ticker with -SI suffix
+
+        Returns:
+            string: Ticker without -SI suffix
+        &#34;&#34;&#34;
+        return ticker[:-3]
+
+    def cast_dict_to_string(self, entry):
+        &#34;&#34;&#34;This helper function converts dictionary into string to ensure compliance with BigQuery Schema
+
+        Args:
+            entry (any_type): Data input to be converted
+
+        Returns:
+            string: converted data input
+        &#34;&#34;&#34;
+        if len(str(entry)) &gt; 0 and str(entry)[0] in [&#34;{&#34;, &#34;[&#34;]:
+            return str(entry)
+        else:
+            return entry</code></pre>
+          </details>
+        </section>
+        <section></section>
+        <section></section>
+        <section></section>
+        <section>
+          <h2 class="section-title" id="header-classes">Classes</h2>
+          <dl>
+            <dt id="data_extract.yfinanceExtractor.yfinanceExtractor">
+              <code class="flex name class">
+                <span>class <span class="ident">yfinanceExtractor</span></span>
+                <span>(</span><span>sgxTickers)</span>
+              </code>
+            </dt>
+            <dd>
+              <div class="desc"></div>
+              <details class="source">
+                <summary>
+                  <span>Expand source code</span>
+                </summary>
+                <pre><code class="python">class yfinanceExtractor:
+    def __init__(self, sgxTickers):
+        self.sgxTickers = sgxTickers
+        self.sgxTickers.ticker = self.sgxTickers.ticker.str[:] + &#34;.SI&#34;
+
+        # Initalisation of yFinance Schema Datafile
+        self.yfinanceColumnNameUrl = &#34;data_extract/yfinanceColumnName.json&#34;
+        with open(self.yfinanceColumnNameUrl, &#39;r&#39;) as jsonFile:
+            self.ColumnName = json.load(jsonFile)
+
+        # Initalisation of Shared Data
+        self.ticker_active = []  # List of Active Ticker Objects
+        self.ticker_delisted = []  # List of Inactive Ticker Name String
+
+        # Initalise yFinance Output
+        self.yfinanceData = {}
+        for dataField in self.ColumnName[&#34;columnNames&#34;]:
+            self.yfinanceData[dataField] = pd.DataFrame(
+                columns=self.ColumnName[&#34;columnNames&#34;][dataField])
+
+        # Check on Ticker Active/Inactive
+
+        self.checkTickers()
+        print(&#34;INFO: yFinanceExtractor Initialised&#34;)
+
+    def checkTickers(self):
+        &#34;&#34;&#34;This function checks if tickers exist in yFinance
+
+        Returns:
+            list: An array of tickers which exist and do not exist in yfinance
+        &#34;&#34;&#34;
+        print(&#34;INFO: Obtaining active tickers&#34;)
+        activeTickers = []
+        delisted = []
+
+        # Check if ticker exist
+        no_of_tickers = len(self.sgxTickers[&#34;ticker&#34;])
+        counter = 1
+        for ticker in self.sgxTickers[&#34;ticker&#34;]:
+            print(
+                f&#34;&gt;&gt; ========== Extracting {ticker} Overall Progress: {counter}/{no_of_tickers}&#34;)
+            time.sleep(0.23)
+            length = yf.download(
+                ticker, period=&#39;max&#39;, interval=&#39;1d&#39;, timeout=None).shape[0]
+            if length &gt; 0:
+                activeTickers.append(ticker)
+            else:
+                delisted.append(ticker)
+            counter += 1
+
+        # Generate dataframe of existing and missing tickers
+        dfTickers = pd.DataFrame({&#39;Listed&#39;: activeTickers})
+        dfTickers[&#34;Delisted&#34;] = pd.Series(delisted)
+
+        # Update Class Copy
+        self.yfinanceData[&#34;ticker_status&#34;] = dfTickers
+        self.ticker_active = [yf.Ticker(ticker) for ticker in activeTickers]
+        self.ticker_delisted = delisted
+        print(&#34;SUCCESS: Active tickers obtained&#34;)
+        return dfTickers
+
+    # ---- Main Functions  ----- #
+    def getHistoricalData(self, start_date=dt.now()):
+        &#34;&#34;&#34;This function queries historical data from yfinance
+
+        Args:
+            start_date (datetime, optional): Earliest date to be extracted. Defaults to dt.now().
+
+        Returns:
+            Dataframe: Dataframe of historical data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;historical_data&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        # Listed Tickers&#39; historical market data
+        historical_data_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}&#34;)
+            if start_date is None:
+                tickerHistoricalData = yf.download(
+                    ticker.ticker, period=&#39;max&#39;, interval=&#39;1d&#39;, timeout=None)
+                tickerHistoricalData[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+                tickerHistoricalData[&#34;Market Status&#34;] = &#34;Market_Closed&#34;
+
+            else:
+                start_date_string = start_date.strftime(&#39;%Y-%m-%d&#39;)
+                tickerHistoricalData = yf.download(
+                    ticker.ticker, start=start_date_string, interval=&#39;1d&#39;, timeout=None)
+                tickerHistoricalData[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+
+                if int(start_date.hour) &lt; 12:
+                    tickerHistoricalData[&#34;Market Status&#34;] = &#34;Market_Open&#34;
+                else:
+                    tickerHistoricalData[&#34;Market Status&#34;] = &#34;Market_Closed&#34;
+
+            counter += 1
+
+            historical_data_df = pd.concat(
+                [historical_data_df, tickerHistoricalData])
+
+        historical_data_df = historical_data_df.reset_index()
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = historical_data_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return historical_data_df
+
+    def getFinancialStatement(self):
+        &#34;&#34;&#34;This function queries Financial Statement data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Financial Statement data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;financial_statements&#34;
+        print(&#34;INFO: Extracting {target_data}&#34;)
+        financial_statements_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}&#34;)
+            profit_and_loss = ticker.financials.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            balance_sheet = ticker.balance_sheet.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            cashflow = ticker.cashflow.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            financial_statements = reduce(lambda left_table, right_table: pd.merge(
+                left_table, right_table, on=&#39;Date&#39;), [profit_and_loss, balance_sheet, cashflow])
+            financial_statements = financial_statements.fillna(np.NaN)
+            if type(financial_statements[&#34;Date&#34;].values[0]) != str:
+                financial_statements_df = pd.concat(
+                    [financial_statements_df, financial_statements])
+
+            counter += 1
+        self.yfinanceData[target_data] = financial_statements_df
+        print(&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return financial_statements_df
+
+    def getQuarterlyFinancialStatement(self):
+        &#34;&#34;&#34;This function queries Quarterly Financial Statement data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Quarterly Financial Statement data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;quarterly_financial_statements&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        quarterly_financial_statements_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            profit_and_loss = ticker.quarterly_financials.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            balance_sheet = ticker.quarterly_balancesheet.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            cashflow = ticker.quarterly_cashflow.T.rename_axis(
+                &#39;Date&#39;).reset_index()
+
+            financial_statements = reduce(lambda left_table, right_table: pd.merge(
+                left_table, right_table, on=&#39;Date&#39;), [profit_and_loss, balance_sheet, cashflow])
+            financial_statements = financial_statements.fillna(np.NaN)
+            if type(financial_statements[&#34;Date&#34;].values[0]) != str:
+                quarterly_financial_statements_df = pd.concat(
+                    [quarterly_financial_statements_df, financial_statements])
+
+            counter += 1
+        self.yfinanceData[target_data] = quarterly_financial_statements_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return quarterly_financial_statements_df
+
+    def getEarningsandRevenue(self):
+        &#34;&#34;&#34;This function queries Earnings and Revenue data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Earnings and Revenue data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;earnings_and_revenue&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        # Get Earnings and Revenue
+        earnings_and_revenues_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if (ticker.earnings.shape[0] &gt;= 1):
+                ticker_earning_and_revenue = ticker.earnings
+                ticker_earning_and_revenue[&#39;Tickers&#39;] = self.removeSI(
+                    ticker.ticker)
+                earnings_and_revenues_df = pd.concat(
+                    [earnings_and_revenues_df, ticker_earning_and_revenue])
+            counter += 1
+        earnings_and_revenues_df = earnings_and_revenues_df.reset_index().rename(columns={
+            &#39;index&#39;: &#39;Year&#39;})
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = earnings_and_revenues_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return earnings_and_revenues_df
+
+    def getQuarterlyEarningsandRevenue(self):
+        &#34;&#34;&#34;This function queries Quarterly Earnings and Revenue data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Quarterly Earnings and Revenue data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;quarterly_earnings_and_revenue&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        # Get Quarterly Earnings and Revenue
+        quarterly_earnings_and_revenues_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if (ticker.quarterly_earnings.shape[0] &gt;= 1):
+                ticker_quarterly_earning_and_revenue = ticker.quarterly_earnings
+                ticker_quarterly_earning_and_revenue[&#39;Tickers&#39;] = self.removeSI(
+                    ticker.ticker)
+                quarterly_earnings_and_revenues_df = pd.concat(
+                    [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
+            counter += 1
+        quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index(
+        )
+
+        first_col_name = list(quarterly_earnings_and_revenues_df.columns)[0]
+
+        quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.rename(
+            columns={first_col_name: &#39;Quarters&#39;})
+
+        quarterly_earnings_and_revenues_df[&#39;Quarters&#39;] = quarterly_earnings_and_revenues_df[&#39;Quarters&#39;].astype(
+            str)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = quarterly_earnings_and_revenues_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return quarterly_earnings_and_revenues_df
+
+    def getMajorHolders(self):
+        &#34;&#34;&#34;This function queries Major Holder data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Major Holder data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Major Holders
+        target_data = &#34;majorHolders&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        majorHolders_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+
+            if ticker.major_holders is not None and ticker.major_holders.shape[0] == 4:
+                ticker_majorHolders = ticker.major_holders.set_index(1)
+                ticker_majorHolders = ticker_majorHolders.T
+                ticker_majorHolders[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+                ticker_majorHolders[:] = ticker_majorHolders[:].astype(
+                    &#39;string&#39;)
+
+                majorHolders_df = majorHolders_df.merge(
+                    ticker_majorHolders, how=&#34;outer&#34;, on=list(ticker_majorHolders.columns))
+            counter += 1
+        self.yfinanceData[target_data] = majorHolders_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return majorHolders_df
+
+    def getBasicShares(self):
+        &#34;&#34;&#34;This function queries Basic Shares data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Basic Shares data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Basic Shares
+        target_data = &#34;basic_shares&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        basic_shares_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.shares is not None:
+                ticker_share = ticker.shares
+                ticker_share[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                basic_shares_df = pd.concat(
+                    [basic_shares_df, ticker_share])
+            counter += 1
+        basic_shares_df = basic_shares_df.reset_index()
+
+        basic_shares_df = basic_shares_df.rename(
+            columns={basic_shares_df.columns[0]: &#34;Year&#34;})
+        self.yfinanceData[target_data] = basic_shares_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return basic_shares_df
+
+    def getStockInfo(self):
+        &#34;&#34;&#34;This function queries Stock Info data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Stock Info data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get stock information
+        target_data = &#34;stock_info&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        all_tickers_info = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.info is not None:
+                ticker_info = pd.DataFrame(ticker.info.items()).set_index(0).T
+                ticker_info[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+                ticker_info[&#34;Tickers&#34;] = ticker_info[&#34;Tickers&#34;].astype(
+                    &#34;string&#34;)
+                all_tickers_info = pd.concat([all_tickers_info, ticker_info])
+            counter += 1
+        all_tickers_info = all_tickers_info.reset_index(drop=True)
+
+        for column in all_tickers_info.columns:
+            all_tickers_info[column] = all_tickers_info[column].apply(
+                self.cast_dict_to_string)
+
+        self.yfinanceData[target_data] = all_tickers_info
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return all_tickers_info
+
+    def getStockIndustry(self):
+        &#34;&#34;&#34;This function extracts stock industry from stock info dataframe
+
+        Returns:
+            Dataframe: Dataframe of stock industry for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;stock_industry&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        if self.yfinanceData[&#34;stock_info&#34;].empty:
+            self.getStockInfo()
+        stock_info = self.yfinanceData[&#34;stock_info&#34;]
+        stock_industry = stock_info[[&#34;Tickers&#34;, &#34;industry&#34;]]
+        stock_industry = stock_industry.rename(columns={&#34;Tickers&#34;: &#34;ticker&#34;})
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = stock_industry
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return stock_industry
+
+    def getCalendar(self):
+        &#34;&#34;&#34;This function queries calendar event data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of calendr event data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get next event (earnings, etc)
+        target_data = &#34;stock_calendar&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        stock_calendar_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.calendar is not None:
+                ticker_calendar = ticker.calendar.transpose()
+                ticker_calendar = ticker_calendar.rename(
+                    columns={&#34;Ticker&#34;: &#34;Tickers&#34;})
+                ticker_calendar[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                stock_calendar_df = pd.concat(
+                    [stock_calendar_df, ticker_calendar])
+            counter += 1
+        stock_calendar_df = stock_calendar_df.reset_index(drop=True)
+        stock_calendar_df.replace({np.nan: np.nan}, inplace=True)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = stock_calendar_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return stock_calendar_df
+
+    def getRecommendations(self):
+        &#34;&#34;&#34;This function queries stock recommendation data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of stock recommendation data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Recommendations
+        target_data = &#34;stock_recommendation&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        recommendations_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.recommendations is not None:
+                ticker_recommendations = ticker.recommendations
+                ticker_recommendations[&#39;Tickers&#39;] = self.removeSI(
+                    ticker.ticker)
+                ticker_recommendations[&#34;Date&#34;] = ticker_recommendations.index
+                recommendations_df = pd.concat(
+                    [recommendations_df, ticker_recommendations])
+            counter += 1
+        recommendations_df = recommendations_df.reset_index(drop=True)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = recommendations_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return recommendations_df
+
+    def getAnalysis(self):
+        &#34;&#34;&#34;This function queries Analysis data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Analysis data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Analysis
+        target_data = &#34;stock_analysis&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        analysis_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.analysis is not None:
+                ticker_analysis = ticker.analysis
+                ticker_analysis[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                ticker_analysis[&#39;Tickers&#39;] = ticker_analysis[&#39;Tickers&#39;].astype(
+                    &#34;string&#34;)
+                analysis_df = pd.concat(
+                    [analysis_df, ticker_analysis])
+            counter += 1
+
+        analysis_df = analysis_df.reset_index().rename(columns={
+            &#39;index&#39;: &#39;Period&#39;})
+        analysis_df[&#39;Period&#39;] = analysis_df[&#39;Period&#39;].astype(str)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = analysis_df
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return analysis_df
+
+    def getMutualFundHolders(self):
+        &#34;&#34;&#34;This function queries Mutual Fund Holder data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Mutual Fund Holder data for Active SGX tickers
+        &#34;&#34;&#34;
+        # Get Mutual Fund Holders
+        target_data = &#34;stock_mfh&#34;
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        mfh_pd = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.mutualfund_holders is not None:
+                ticker_mfh = ticker.mutualfund_holders
+                ticker_mfh[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                mfh_pd = pd.concat([mfh_pd, ticker_mfh])
+            counter += 1
+
+        mfh_pd = mfh_pd.reset_index(drop=True)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = mfh_pd
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return mfh_pd
+
+    def getInstitutionalHolders(self):
+        &#34;&#34;&#34;This function queries Institutional Holder data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Institutional Holder data for Active SGX tickers
+        &#34;&#34;&#34;
+        target_data = &#34;stock_ih&#34;
+        # Get Institutional holders
+        print(f&#34;INFO: Extracting {target_data}&#34;)
+        ih_pd = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+            if ticker.institutional_holders is not None and ticker.institutional_holders.shape[1] == 5:
+                ticker_ih = ticker.institutional_holders
+                ticker_ih[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+                ih_pd = pd.concat([ih_pd, ticker_ih])
+            counter += 1
+        ih_pd = ih_pd.reset_index(drop=True)
+
+        # Store to Shared Data
+        self.yfinanceData[target_data] = ih_pd
+        print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+        return ih_pd
+
+    def yfinanceQuery(self):
+        &#34;&#34;&#34;This function queries all yfinance data queries 
+
+        Returns:
+            dictionary: dictionary of dataframes with yfinance query output
+        &#34;&#34;&#34;
+        failed = []
+        query_calls = {
+            &#34;Historical Data&#34;: self.getHistoricalData,
+            &#34;Financial Statement&#34;: self.getFinancialStatement,
+            &#34;Quarterly Financial Statement&#34;: self.getQuarterlyFinancialStatement,
+            &#34;Earnings and Revenue&#34;: self.getEarningsandRevenue,
+            &#34;Quarterly Earnings and Revenue&#34;: self.getQuarterlyEarningsandRevenue,
+            &#34;Major Holders&#34;: self.getMajorHolders,
+            &#34;Basic Shares&#34;: self.getBasicShares,
+            &#34;Stock Info&#34;: self.getStockInfo,
+            &#34;Stock Industry&#34;: self.getStockIndustry,
+            &#34;Calendar&#34;: self.getCalendar,
+            &#34;Analyst Recommendations&#34;: self.getRecommendations,
+            &#34;Stock Analysis&#34;: self.getAnalysis,
+            &#34;Mutual Fund Holders&#34;: self.getMajorHolders,
+            &#34;Institutional Holders&#34;: self.getInstitutionalHolders,
+        }
+
+        for query, query_fn in query_calls.items():
+            try:
+                query_fn()
+            except:
+                print(f&#34;ERROR {query} failed to extract&#34;)
+                failed.append(query)
+
+        return self.yfinanceData
+
+    # ---- Helper Functions  ----- #
+
+    def removeSI(self, ticker):
+        &#34;&#34;&#34;This helper function removes -SI suffix to ensure primary foreign key integrity
+
+        Args:
+            ticker (string): Ticker with -SI suffix
+
+        Returns:
+            string: Ticker without -SI suffix
+        &#34;&#34;&#34;
+        return ticker[:-3]
+
+    def cast_dict_to_string(self, entry):
+        &#34;&#34;&#34;This helper function converts dictionary into string to ensure compliance with BigQuery Schema
+
+        Args:
+            entry (any_type): Data input to be converted
+
+        Returns:
+            string: converted data input
+        &#34;&#34;&#34;
+        if len(str(entry)) &gt; 0 and str(entry)[0] in [&#34;{&#34;, &#34;[&#34;]:
+            return str(entry)
+        else:
+            return entry</code></pre>
+              </details>
+              <h3>Methods</h3>
+              <dl>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.cast_dict_to_string"
+                >
+                  <code class="name flex">
+                    <span
+                      >def <span class="ident">cast_dict_to_string</span></span
+                    >(<span>self, entry)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This helper function converts dictionary into string to
+                      ensure compliance with BigQuery Schema
+                    </p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>entry</code></strong> :&ensp;<code
+                          >any_type</code
+                        >
+                      </dt>
+                      <dd>Data input to be converted</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>string</code></dt>
+                      <dd>converted data input</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def cast_dict_to_string(self, entry):
+    &#34;&#34;&#34;This helper function converts dictionary into string to ensure compliance with BigQuery Schema
+
+    Args:
+        entry (any_type): Data input to be converted
+
+    Returns:
+        string: converted data input
+    &#34;&#34;&#34;
+    if len(str(entry)) &gt; 0 and str(entry)[0] in [&#34;{&#34;, &#34;[&#34;]:
+        return str(entry)
+    else:
+        return entry</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.checkTickers"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">checkTickers</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function checks if tickers exist in yFinance</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>list</code></dt>
+                      <dd>
+                        An array of tickers which exist and do not exist in
+                        yfinance
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def checkTickers(self):
+    &#34;&#34;&#34;This function checks if tickers exist in yFinance
+
+    Returns:
+        list: An array of tickers which exist and do not exist in yfinance
+    &#34;&#34;&#34;
+    print(&#34;INFO: Obtaining active tickers&#34;)
+    activeTickers = []
+    delisted = []
+
+    # Check if ticker exist
+    no_of_tickers = len(self.sgxTickers[&#34;ticker&#34;])
+    counter = 1
+    for ticker in self.sgxTickers[&#34;ticker&#34;]:
+        print(
+            f&#34;&gt;&gt; ========== Extracting {ticker} Overall Progress: {counter}/{no_of_tickers}&#34;)
+        time.sleep(0.23)
+        length = yf.download(
+            ticker, period=&#39;max&#39;, interval=&#39;1d&#39;, timeout=None).shape[0]
+        if length &gt; 0:
+            activeTickers.append(ticker)
+        else:
+            delisted.append(ticker)
+        counter += 1
+
+    # Generate dataframe of existing and missing tickers
+    dfTickers = pd.DataFrame({&#39;Listed&#39;: activeTickers})
+    dfTickers[&#34;Delisted&#34;] = pd.Series(delisted)
+
+    # Update Class Copy
+    self.yfinanceData[&#34;ticker_status&#34;] = dfTickers
+    self.ticker_active = [yf.Ticker(ticker) for ticker in activeTickers]
+    self.ticker_delisted = delisted
+    print(&#34;SUCCESS: Active tickers obtained&#34;)
+    return dfTickers</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getAnalysis"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">getAnalysis</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function queries Analysis data from yfinance</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>Dataframe of Analysis data for Active SGX tickers</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getAnalysis(self):
+    &#34;&#34;&#34;This function queries Analysis data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Analysis data for Active SGX tickers
+    &#34;&#34;&#34;
+    # Get Analysis
+    target_data = &#34;stock_analysis&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    analysis_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        if ticker.analysis is not None:
+            ticker_analysis = ticker.analysis
+            ticker_analysis[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+            ticker_analysis[&#39;Tickers&#39;] = ticker_analysis[&#39;Tickers&#39;].astype(
+                &#34;string&#34;)
+            analysis_df = pd.concat(
+                [analysis_df, ticker_analysis])
+        counter += 1
+
+    analysis_df = analysis_df.reset_index().rename(columns={
+        &#39;index&#39;: &#39;Period&#39;})
+    analysis_df[&#39;Period&#39;] = analysis_df[&#39;Period&#39;].astype(str)
+
+    # Store to Shared Data
+    self.yfinanceData[target_data] = analysis_df
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return analysis_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getBasicShares"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">getBasicShares</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function queries Basic Shares data from yfinance</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of Basic Shares data for Active SGX tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getBasicShares(self):
+    &#34;&#34;&#34;This function queries Basic Shares data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Basic Shares data for Active SGX tickers
+    &#34;&#34;&#34;
+    # Get Basic Shares
+    target_data = &#34;basic_shares&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    basic_shares_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        if ticker.shares is not None:
+            ticker_share = ticker.shares
+            ticker_share[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+            basic_shares_df = pd.concat(
+                [basic_shares_df, ticker_share])
+        counter += 1
+    basic_shares_df = basic_shares_df.reset_index()
+
+    basic_shares_df = basic_shares_df.rename(
+        columns={basic_shares_df.columns[0]: &#34;Year&#34;})
+    self.yfinanceData[target_data] = basic_shares_df
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return basic_shares_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getCalendar"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">getCalendar</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function queries calendar event data from yfinance
+                    </p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of calendr event data for Active SGX tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getCalendar(self):
+    &#34;&#34;&#34;This function queries calendar event data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of calendr event data for Active SGX tickers
+    &#34;&#34;&#34;
+    # Get next event (earnings, etc)
+    target_data = &#34;stock_calendar&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    stock_calendar_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        if ticker.calendar is not None:
+            ticker_calendar = ticker.calendar.transpose()
+            ticker_calendar = ticker_calendar.rename(
+                columns={&#34;Ticker&#34;: &#34;Tickers&#34;})
+            ticker_calendar[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+            stock_calendar_df = pd.concat(
+                [stock_calendar_df, ticker_calendar])
+        counter += 1
+    stock_calendar_df = stock_calendar_df.reset_index(drop=True)
+    stock_calendar_df.replace({np.nan: np.nan}, inplace=True)
+
+    # Store to Shared Data
+    self.yfinanceData[target_data] = stock_calendar_df
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return stock_calendar_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getEarningsandRevenue"
+                >
+                  <code class="name flex">
+                    <span
+                      >def
+                      <span class="ident">getEarningsandRevenue</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function queries Earnings and Revenue data from
+                      yfinance
+                    </p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of Earnings and Revenue data for Active SGX
+                        tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getEarningsandRevenue(self):
+    &#34;&#34;&#34;This function queries Earnings and Revenue data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Earnings and Revenue data for Active SGX tickers
+    &#34;&#34;&#34;
+    target_data = &#34;earnings_and_revenue&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    # Get Earnings and Revenue
+    earnings_and_revenues_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        if (ticker.earnings.shape[0] &gt;= 1):
+            ticker_earning_and_revenue = ticker.earnings
+            ticker_earning_and_revenue[&#39;Tickers&#39;] = self.removeSI(
+                ticker.ticker)
+            earnings_and_revenues_df = pd.concat(
+                [earnings_and_revenues_df, ticker_earning_and_revenue])
+        counter += 1
+    earnings_and_revenues_df = earnings_and_revenues_df.reset_index().rename(columns={
+        &#39;index&#39;: &#39;Year&#39;})
+
+    # Store to Shared Data
+    self.yfinanceData[target_data] = earnings_and_revenues_df
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return earnings_and_revenues_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getFinancialStatement"
+                >
+                  <code class="name flex">
+                    <span
+                      >def
+                      <span class="ident">getFinancialStatement</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function queries Financial Statement data from
+                      yfinance
+                    </p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of Financial Statement data for Active SGX
+                        tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getFinancialStatement(self):
+    &#34;&#34;&#34;This function queries Financial Statement data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Financial Statement data for Active SGX tickers
+    &#34;&#34;&#34;
+    target_data = &#34;financial_statements&#34;
+    print(&#34;INFO: Extracting {target_data}&#34;)
+    financial_statements_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}&#34;)
+        profit_and_loss = ticker.financials.T.rename_axis(
+            &#39;Date&#39;).reset_index()
+
+        balance_sheet = ticker.balance_sheet.T.rename_axis(
+            &#39;Date&#39;).reset_index()
+
+        cashflow = ticker.cashflow.T.rename_axis(
+            &#39;Date&#39;).reset_index()
+
+        financial_statements = reduce(lambda left_table, right_table: pd.merge(
+            left_table, right_table, on=&#39;Date&#39;), [profit_and_loss, balance_sheet, cashflow])
+        financial_statements = financial_statements.fillna(np.NaN)
+        if type(financial_statements[&#34;Date&#34;].values[0]) != str:
+            financial_statements_df = pd.concat(
+                [financial_statements_df, financial_statements])
+
+        counter += 1
+    self.yfinanceData[target_data] = financial_statements_df
+    print(&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return financial_statements_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getHistoricalData"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">getHistoricalData</span></span
+                    >(<span
+                      >self, start_date=datetime.datetime(2022, 4, 17, 15, 8,
+                      43, 609935))</span
+                    >
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function queries historical data from yfinance</p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>start_date</code></strong>
+                        :&ensp;<code>datetime</code>, optional
+                      </dt>
+                      <dd>
+                        Earliest date to be extracted. Defaults to dt.now().
+                      </dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of historical data for Active SGX tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getHistoricalData(self, start_date=dt.now()):
+    &#34;&#34;&#34;This function queries historical data from yfinance
+
+    Args:
+        start_date (datetime, optional): Earliest date to be extracted. Defaults to dt.now().
+
+    Returns:
+        Dataframe: Dataframe of historical data for Active SGX tickers
+    &#34;&#34;&#34;
+    target_data = &#34;historical_data&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    # Listed Tickers&#39; historical market data
+    historical_data_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}&#34;)
+        if start_date is None:
+            tickerHistoricalData = yf.download(
+                ticker.ticker, period=&#39;max&#39;, interval=&#39;1d&#39;, timeout=None)
+            tickerHistoricalData[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+            tickerHistoricalData[&#34;Market Status&#34;] = &#34;Market_Closed&#34;
+
+        else:
+            start_date_string = start_date.strftime(&#39;%Y-%m-%d&#39;)
+            tickerHistoricalData = yf.download(
+                ticker.ticker, start=start_date_string, interval=&#39;1d&#39;, timeout=None)
+            tickerHistoricalData[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+
+            if int(start_date.hour) &lt; 12:
+                tickerHistoricalData[&#34;Market Status&#34;] = &#34;Market_Open&#34;
+            else:
+                tickerHistoricalData[&#34;Market Status&#34;] = &#34;Market_Closed&#34;
+
+        counter += 1
+
+        historical_data_df = pd.concat(
+            [historical_data_df, tickerHistoricalData])
+
+    historical_data_df = historical_data_df.reset_index()
+
+    # Store to Shared Data
+    self.yfinanceData[target_data] = historical_data_df
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return historical_data_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getInstitutionalHolders"
+                >
+                  <code class="name flex">
+                    <span
+                      >def
+                      <span class="ident">getInstitutionalHolders</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function queries Institutional Holder data from
+                      yfinance
+                    </p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of Institutional Holder data for Active SGX
+                        tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getInstitutionalHolders(self):
+    &#34;&#34;&#34;This function queries Institutional Holder data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Institutional Holder data for Active SGX tickers
+    &#34;&#34;&#34;
+    target_data = &#34;stock_ih&#34;
+    # Get Institutional holders
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    ih_pd = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        if ticker.institutional_holders is not None and ticker.institutional_holders.shape[1] == 5:
+            ticker_ih = ticker.institutional_holders
+            ticker_ih[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+            ih_pd = pd.concat([ih_pd, ticker_ih])
+        counter += 1
+    ih_pd = ih_pd.reset_index(drop=True)
+
+    # Store to Shared Data
+    self.yfinanceData[target_data] = ih_pd
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return ih_pd</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getMajorHolders"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">getMajorHolders</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function queries Major Holder data from yfinance</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of Major Holder data for Active SGX tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getMajorHolders(self):
+    &#34;&#34;&#34;This function queries Major Holder data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Major Holder data for Active SGX tickers
+    &#34;&#34;&#34;
+    # Get Major Holders
+    target_data = &#34;majorHolders&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    majorHolders_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+
+        if ticker.major_holders is not None and ticker.major_holders.shape[0] == 4:
+            ticker_majorHolders = ticker.major_holders.set_index(1)
+            ticker_majorHolders = ticker_majorHolders.T
+            ticker_majorHolders[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+            ticker_majorHolders[:] = ticker_majorHolders[:].astype(
+                &#39;string&#39;)
+
+            majorHolders_df = majorHolders_df.merge(
+                ticker_majorHolders, how=&#34;outer&#34;, on=list(ticker_majorHolders.columns))
+        counter += 1
+    self.yfinanceData[target_data] = majorHolders_df
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return majorHolders_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getMutualFundHolders"
+                >
+                  <code class="name flex">
+                    <span
+                      >def <span class="ident">getMutualFundHolders</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function queries Mutual Fund Holder data from
+                      yfinance
+                    </p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of Mutual Fund Holder data for Active SGX
+                        tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getMutualFundHolders(self):
+    &#34;&#34;&#34;This function queries Mutual Fund Holder data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Mutual Fund Holder data for Active SGX tickers
+    &#34;&#34;&#34;
+    # Get Mutual Fund Holders
+    target_data = &#34;stock_mfh&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    mfh_pd = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        if ticker.mutualfund_holders is not None:
+            ticker_mfh = ticker.mutualfund_holders
+            ticker_mfh[&#39;Tickers&#39;] = self.removeSI(ticker.ticker)
+            mfh_pd = pd.concat([mfh_pd, ticker_mfh])
+        counter += 1
+
+    mfh_pd = mfh_pd.reset_index(drop=True)
+
+    # Store to Shared Data
+    self.yfinanceData[target_data] = mfh_pd
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return mfh_pd</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getQuarterlyEarningsandRevenue"
+                >
+                  <code class="name flex">
+                    <span
+                      >def
+                      <span class="ident"
+                        >getQuarterlyEarningsandRevenue</span
+                      ></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function queries Quarterly Earnings and Revenue data
+                      from yfinance
+                    </p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of Quarterly Earnings and Revenue data for
+                        Active SGX tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getQuarterlyEarningsandRevenue(self):
+    &#34;&#34;&#34;This function queries Quarterly Earnings and Revenue data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Quarterly Earnings and Revenue data for Active SGX tickers
+    &#34;&#34;&#34;
+    target_data = &#34;quarterly_earnings_and_revenue&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    # Get Quarterly Earnings and Revenue
+    quarterly_earnings_and_revenues_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        if (ticker.quarterly_earnings.shape[0] &gt;= 1):
+            ticker_quarterly_earning_and_revenue = ticker.quarterly_earnings
+            ticker_quarterly_earning_and_revenue[&#39;Tickers&#39;] = self.removeSI(
+                ticker.ticker)
+            quarterly_earnings_and_revenues_df = pd.concat(
+                [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
+        counter += 1
+    quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index(
+    )
+
+    first_col_name = list(quarterly_earnings_and_revenues_df.columns)[0]
+
+    quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.rename(
+        columns={first_col_name: &#39;Quarters&#39;})
+
+    quarterly_earnings_and_revenues_df[&#39;Quarters&#39;] = quarterly_earnings_and_revenues_df[&#39;Quarters&#39;].astype(
+        str)
+
+    # Store to Shared Data
+    self.yfinanceData[target_data] = quarterly_earnings_and_revenues_df
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return quarterly_earnings_and_revenues_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getQuarterlyFinancialStatement"
+                >
+                  <code class="name flex">
+                    <span
+                      >def
+                      <span class="ident"
+                        >getQuarterlyFinancialStatement</span
+                      ></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function queries Quarterly Financial Statement data
+                      from yfinance
+                    </p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of Quarterly Financial Statement data for
+                        Active SGX tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getQuarterlyFinancialStatement(self):
+    &#34;&#34;&#34;This function queries Quarterly Financial Statement data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Quarterly Financial Statement data for Active SGX tickers
+    &#34;&#34;&#34;
+    target_data = &#34;quarterly_financial_statements&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    quarterly_financial_statements_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        profit_and_loss = ticker.quarterly_financials.T.rename_axis(
+            &#39;Date&#39;).reset_index()
+
+        balance_sheet = ticker.quarterly_balancesheet.T.rename_axis(
+            &#39;Date&#39;).reset_index()
+
+        cashflow = ticker.quarterly_cashflow.T.rename_axis(
+            &#39;Date&#39;).reset_index()
+
+        financial_statements = reduce(lambda left_table, right_table: pd.merge(
+            left_table, right_table, on=&#39;Date&#39;), [profit_and_loss, balance_sheet, cashflow])
+        financial_statements = financial_statements.fillna(np.NaN)
+        if type(financial_statements[&#34;Date&#34;].values[0]) != str:
+            quarterly_financial_statements_df = pd.concat(
+                [quarterly_financial_statements_df, financial_statements])
+
+        counter += 1
+    self.yfinanceData[target_data] = quarterly_financial_statements_df
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return quarterly_financial_statements_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getRecommendations"
+                >
+                  <code class="name flex">
+                    <span
+                      >def <span class="ident">getRecommendations</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function queries stock recommendation data from
+                      yfinance
+                    </p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of stock recommendation data for Active SGX
+                        tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getRecommendations(self):
+    &#34;&#34;&#34;This function queries stock recommendation data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of stock recommendation data for Active SGX tickers
+    &#34;&#34;&#34;
+    # Get Recommendations
+    target_data = &#34;stock_recommendation&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    recommendations_df = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        if ticker.recommendations is not None:
+            ticker_recommendations = ticker.recommendations
+            ticker_recommendations[&#39;Tickers&#39;] = self.removeSI(
+                ticker.ticker)
+            ticker_recommendations[&#34;Date&#34;] = ticker_recommendations.index
+            recommendations_df = pd.concat(
+                [recommendations_df, ticker_recommendations])
+        counter += 1
+    recommendations_df = recommendations_df.reset_index(drop=True)
+
+    # Store to Shared Data
+    self.yfinanceData[target_data] = recommendations_df
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return recommendations_df</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getStockIndustry"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">getStockIndustry</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This function extracts stock industry from stock info
+                      dataframe
+                    </p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of stock industry for Active SGX tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getStockIndustry(self):
+    &#34;&#34;&#34;This function extracts stock industry from stock info dataframe
+
+    Returns:
+        Dataframe: Dataframe of stock industry for Active SGX tickers
+    &#34;&#34;&#34;
+    target_data = &#34;stock_industry&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    if self.yfinanceData[&#34;stock_info&#34;].empty:
+        self.getStockInfo()
+    stock_info = self.yfinanceData[&#34;stock_info&#34;]
+    stock_industry = stock_info[[&#34;Tickers&#34;, &#34;industry&#34;]]
+    stock_industry = stock_industry.rename(columns={&#34;Tickers&#34;: &#34;ticker&#34;})
+
+    # Store to Shared Data
+    self.yfinanceData[target_data] = stock_industry
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return stock_industry</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.getStockInfo"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">getStockInfo</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function queries Stock Info data from yfinance</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>Dataframe</code></dt>
+                      <dd>
+                        Dataframe of Stock Info data for Active SGX tickers
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def getStockInfo(self):
+    &#34;&#34;&#34;This function queries Stock Info data from yfinance
+
+    Returns:
+        Dataframe: Dataframe of Stock Info data for Active SGX tickers
+    &#34;&#34;&#34;
+    # Get stock information
+    target_data = &#34;stock_info&#34;
+    print(f&#34;INFO: Extracting {target_data}&#34;)
+    all_tickers_info = self.yfinanceData[target_data]
+    counter = 1
+    for ticker in self.ticker_active:
+        print(
+            f&#34;INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}&#34;)
+        if ticker.info is not None:
+            ticker_info = pd.DataFrame(ticker.info.items()).set_index(0).T
+            ticker_info[&#34;Tickers&#34;] = self.removeSI(ticker.ticker)
+            ticker_info[&#34;Tickers&#34;] = ticker_info[&#34;Tickers&#34;].astype(
+                &#34;string&#34;)
+            all_tickers_info = pd.concat([all_tickers_info, ticker_info])
+        counter += 1
+    all_tickers_info = all_tickers_info.reset_index(drop=True)
+
+    for column in all_tickers_info.columns:
+        all_tickers_info[column] = all_tickers_info[column].apply(
+            self.cast_dict_to_string)
+
+    self.yfinanceData[target_data] = all_tickers_info
+    print(f&#34;SUCCESS: {target_data} successfully extracted&#34;)
+    return all_tickers_info</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.removeSI"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">removeSI</span></span
+                    >(<span>self, ticker)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>
+                      This helper function removes -SI suffix to ensure primary
+                      foreign key integrity
+                    </p>
+                    <h2 id="args">Args</h2>
+                    <dl>
+                      <dt>
+                        <strong><code>ticker</code></strong> :&ensp;<code
+                          >string</code
+                        >
+                      </dt>
+                      <dd>Ticker with -SI suffix</dd>
+                    </dl>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>string</code></dt>
+                      <dd>Ticker without -SI suffix</dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def removeSI(self, ticker):
+    &#34;&#34;&#34;This helper function removes -SI suffix to ensure primary foreign key integrity
+
+    Args:
+        ticker (string): Ticker with -SI suffix
+
+    Returns:
+        string: Ticker without -SI suffix
+    &#34;&#34;&#34;
+    return ticker[:-3]</code></pre>
+                  </details>
+                </dd>
+                <dt
+                  id="data_extract.yfinanceExtractor.yfinanceExtractor.yfinanceQuery"
+                >
+                  <code class="name flex">
+                    <span>def <span class="ident">yfinanceQuery</span></span
+                    >(<span>self)</span>
+                  </code>
+                </dt>
+                <dd>
+                  <div class="desc">
+                    <p>This function queries all yfinance data queries</p>
+                    <h2 id="returns">Returns</h2>
+                    <dl>
+                      <dt><code>dictionary</code></dt>
+                      <dd>
+                        dictionary of dataframes with yfinance query output
+                      </dd>
+                    </dl>
+                  </div>
+                  <details class="source">
+                    <summary>
+                      <span>Expand source code</span>
+                    </summary>
+                    <pre><code class="python">def yfinanceQuery(self):
+    &#34;&#34;&#34;This function queries all yfinance data queries 
+
+    Returns:
+        dictionary: dictionary of dataframes with yfinance query output
+    &#34;&#34;&#34;
+    failed = []
+    query_calls = {
+        &#34;Historical Data&#34;: self.getHistoricalData,
+        &#34;Financial Statement&#34;: self.getFinancialStatement,
+        &#34;Quarterly Financial Statement&#34;: self.getQuarterlyFinancialStatement,
+        &#34;Earnings and Revenue&#34;: self.getEarningsandRevenue,
+        &#34;Quarterly Earnings and Revenue&#34;: self.getQuarterlyEarningsandRevenue,
+        &#34;Major Holders&#34;: self.getMajorHolders,
+        &#34;Basic Shares&#34;: self.getBasicShares,
+        &#34;Stock Info&#34;: self.getStockInfo,
+        &#34;Stock Industry&#34;: self.getStockIndustry,
+        &#34;Calendar&#34;: self.getCalendar,
+        &#34;Analyst Recommendations&#34;: self.getRecommendations,
+        &#34;Stock Analysis&#34;: self.getAnalysis,
+        &#34;Mutual Fund Holders&#34;: self.getMajorHolders,
+        &#34;Institutional Holders&#34;: self.getInstitutionalHolders,
+    }
+
+    for query, query_fn in query_calls.items():
+        try:
+            query_fn()
+        except:
+            print(f&#34;ERROR {query} failed to extract&#34;)
+            failed.append(query)
+
+    return self.yfinanceData</code></pre>
+                  </details>
+                </dd>
+              </dl>
+            </dd>
+          </dl>
+        </section>
+      </article>
+      <nav id="sidebar">
+        <a href="../index.html"
+          ><img src="../sfyr_logo.png" , style="width: 100px; height: 100px"
+        /></a>
+        <div class="toc">
+          <ul></ul>
+        </div>
+        <ul id="index">
+          <li>
+            <h3>Super-module</h3>
+            <ul>
+              <li>
+                <code
+                  ><a title="Syfr_API" href="../index.html"
+                    >Syfr API Documentation</a
+                  ></code
+                >
+              </li>
+              <li>
+                <code
+                  ><a title="data_extract" href="index.html"
+                    >data_extract</a
+                  ></code
+                >
+              </li>
+            </ul>
+          </li>
+          <li>
+            <h3><a href="#header-classes">Classes</a></h3>
+            <ul>
+              <li>
+                <h4>
+                  <code
+                    ><a
+                      title="data_extract.yfinanceExtractor.yfinanceExtractor"
+                      href="#data_extract.yfinanceExtractor.yfinanceExtractor"
+                      >yfinanceExtractor</a
+                    ></code
+                  >
+                </h4>
+                <ul class="">
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.cast_dict_to_string"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.cast_dict_to_string"
+                        >cast_dict_to_string</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.checkTickers"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.checkTickers"
+                        >checkTickers</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getAnalysis"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getAnalysis"
+                        >getAnalysis</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getBasicShares"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getBasicShares"
+                        >getBasicShares</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getCalendar"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getCalendar"
+                        >getCalendar</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getEarningsandRevenue"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getEarningsandRevenue"
+                        >getEarningsandRevenue</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getFinancialStatement"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getFinancialStatement"
+                        >getFinancialStatement</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getHistoricalData"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getHistoricalData"
+                        >getHistoricalData</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getInstitutionalHolders"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getInstitutionalHolders"
+                        >getInstitutionalHolders</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getMajorHolders"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getMajorHolders"
+                        >getMajorHolders</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getMutualFundHolders"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getMutualFundHolders"
+                        >getMutualFundHolders</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getQuarterlyEarningsandRevenue"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getQuarterlyEarningsandRevenue"
+                        >getQuarterlyEarningsandRevenue</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getQuarterlyFinancialStatement"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getQuarterlyFinancialStatement"
+                        >getQuarterlyFinancialStatement</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getRecommendations"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getRecommendations"
+                        >getRecommendations</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getStockIndustry"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getStockIndustry"
+                        >getStockIndustry</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.getStockInfo"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.getStockInfo"
+                        >getStockInfo</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.removeSI"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.removeSI"
+                        >removeSI</a
+                      ></code
+                    >
+                  </li>
+                  <li>
+                    <code
+                      ><a
+                        title="data_extract.yfinanceExtractor.yfinanceExtractor.yfinanceQuery"
+                        href="#data_extract.yfinanceExtractor.yfinanceExtractor.yfinanceQuery"
+                        >yfinanceQuery</a
+                      ></code
+                    >
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </main>
+    <footer id="footer">
+      <p>
+        Generated by
+        <a
+          href="https://pdoc3.github.io/pdoc"
+          title="pdoc: Python API documentation generator"
+          ><cite>pdoc</cite> 0.10.0</a
+        >.
+      </p>
+    </footer>
+  </body>
+</html>
