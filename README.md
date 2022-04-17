@@ -40,7 +40,7 @@ Our Company, Sfyr (pronounced: Sapphire /sæfaɪə(r)/) aims to provide retail i
 
 ### _Keywords:_
 
-_Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, DAG, Apache Airflow, BigQuery, Firestore, FinBERT, Sentiment, Stocks Analysis, Investment Insights, Web Scraping, Google Cloud Monitoring._
+_Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, DAG, Apache Airflow, BigQuery, Firestore, Google Cloud Monitoring, Hugging Face, FinBERT, Sentiment, Natural Language Processing, Stocks Analysis, Investment Insights, Web Scraping, Data Visualisation, Time Series Data_
 
 ## Authors:
 
