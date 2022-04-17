@@ -7,6 +7,7 @@ import json
 
 class HeatListQuery:
     def __init__(self, firestoreDB):
+        print("INFO: Initialising Heat List Query")
         with open('utils/serviceAccount.json', 'r') as jsonFile:
             self.cred = json.load(jsonFile)
         self.firestoreDB_layer = firestoreDB
@@ -14,6 +15,7 @@ class HeatListQuery:
         self.start_date = None
         self.end_date = None
         self.lookback_period = self.cred["HeatListQuery"]["lookback_period"]
+        print("INFO: Heat List Query Initialised")
 
     def get_look_back_period(self, end_date, no_look_back_days):
         end_date = end_date
@@ -49,10 +51,13 @@ class HeatListQuery:
         return subset
 
     def query_pipeline(self, collection, date):
+        print("INFO: Executing Heatlist Query")
         start_date, end_date = self.get_look_back_period(
             date, self.lookback_period)
         self.set_dates(start_date=start_date, end_date=end_date)
         query_results = self.query_documents_by_date(collection)
         output = [self.get_heatlist_data_from_query(
             query_result) for query_result in query_results]
+        print(
+            f"SUCCESS: Data queried for a lookback period of {self.lookback_period} days")
         return output

@@ -8,14 +8,18 @@ class yahooFinNewsTransformer:
     def __init__(self):
         self.data_pending_upload = None
         self.articles = []
+        print("INFO: yahooFinNewsTransformer initialised")
+
 
     def tickerNewsFormat(self, news, start_date=None, end_date=dt.now()):
+        print("INFO: Transforming yahooFinNews Data")
         newsFormatted = []
         articles = []
 
         # Start Date <= End Date Validation
         if (start_date is not None and end_date is not None and start_date > end_date):
             raise Exception(f"ERROR: {start_date} is not before {end_date}")
+
 
         for i in tqdm(range(0, len(news))):
             ticker = news.at[i, "Ticker"]
@@ -39,7 +43,7 @@ class yahooFinNewsTransformer:
                         newsFormatted.append(articleFormatted)
                         articles.append(article["summary"])
 
-        print(f"SUCCESS: Yahoo-Fin News Transformed")
+        print(f"SUCCESS: yahooFinNews Transformed")
         self.data_pending_upload = newsFormatted
 
         pdArticles = pd.DataFrame(articles, columns=["message"])

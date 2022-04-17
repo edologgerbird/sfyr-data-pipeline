@@ -7,10 +7,11 @@ from data_load.bigQueryAPI import bigQueryDB
 class yahooFinNewsExtractor:
     def __init__(self):
         self.datasetTable = "SGX.Tickers"
+        print("INFO: yahooFinNewsExtractor Initialised")
 
     def getTickerNews(self, tickers, sgFlag=False):
         output = []
-        print("Yahoo_fin: Extracting Ticker News")
+        print("INFO: Extracting Ticker News from Yahoo Fin")
         for i in tqdm(range(len(tickers))):
             ticker = tickers[i]
             tickerNews = None
@@ -21,6 +22,7 @@ class yahooFinNewsExtractor:
             if tickerNews:
                 output.append([ticker, tickerNews])
         output = pd.DataFrame(output, columns=["Ticker", "News"])
+        print("SUCCESS: YahooFinNews successfully extracted")
         return output
 
     def getSGXTickerNews(self):
