@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import time
+import json
 from functools import reduce
 
 
@@ -11,33 +12,33 @@ class yfinanceExtractor:
         self.sgxTickers = sgxTickers
         self.sgxTickers.ticker = self.sgxTickers.ticker.str[:] + ".SI"
 
+        # Initalisation of yFinance Schema Datafile
+        self.yfinanceColumnNameUrl = "data_extract/yfinanceColumnName.json"
+        with open(self.yfinanceColumnNameUrl, 'r') as jsonFile:
+            self.ColumnName = json.load(jsonFile)
+
         # Initalisation of Shared Data
         self.ticker_active = []  # List of Active Ticker Objects
         self.ticker_delisted = []  # List of Inactive Ticker Name String
 
-        # yFinance Ouput
-        self.yfinanceData = {
-            "ticker_status": pd.DataFrame(),
-            "historical_data": pd.DataFrame(),
-            "financial_statements": pd.DataFrame(),
-            "quarterly_financial_statements": pd.DataFrame(),
-            "earnings_and_revenue": pd.DataFrame(),
-            "quarterly_earnings_and_revenue": pd.DataFrame(),
-            "majorHolders": pd.DataFrame(),
-            "basic_shares": pd.DataFrame(),
-            "stock_info": pd.DataFrame(),
-            "stock_industry": pd.DataFrame(),
-            "stock_calendar": pd.DataFrame(),
-            "stock_recommendation": pd.DataFrame(),
-            "stock_analysis": pd.DataFrame(),
-            "stock_mfh": pd.DataFrame(),
-            "stock_ih": pd.DataFrame()
-        }
+        # Initalise yFinance Output
+        self.yfinanceData = {}
+        for dataField in self.ColumnName["columnNames"]:
+            self.yfinanceData[dataField] = pd.DataFrame(
+                columns=self.ColumnName["columnNames"][dataField])
 
         # Check on Ticker Active/Inactive
+
         self.checkTickers()
+        print("INFO: yFinanceExtractor Initialised")
 
     def checkTickers(self):
+        """This function checks if tickers exist in yFinance
+
+        Returns:
+            list: An array of tickers which exist and do not exist in yfinance
+        """
+        print("INFO: Obtaining active tickers")
         activeTickers = []
         delisted = []
 
@@ -46,7 +47,7 @@ class yfinanceExtractor:
         counter = 1
         for ticker in self.sgxTickers["ticker"]:
             print(
-                f">> ========== Extracting {ticker} Overall Progress: ticker {counter}/{no_of_tickers}")
+                f">> ========== Extracting {ticker} Overall Progress: {counter}/{no_of_tickers}")
             time.sleep(0.23)
             length = yf.download(
                 ticker, period='max', interval='1d', timeout=None).shape[0]
@@ -64,19 +65,27 @@ class yfinanceExtractor:
         self.yfinanceData["ticker_status"] = dfTickers
         self.ticker_active = [yf.Ticker(ticker) for ticker in activeTickers]
         self.ticker_delisted = delisted
-
+        print("SUCCESS: Active tickers obtained")
         return dfTickers
 
-    def removeSI(self, ticker):
-        return ticker[:-3]
-
+    # ---- Main Functions  ----- #
     def getHistoricalData(self, start_date=dt.now()):
+        """This function queries historical data from yfinance
+
+        Args:
+            start_date (datetime, optional): Earliest date to be extracted. Defaults to dt.now().
+
+        Returns:
+            Dataframe: Dataframe of historical data for Active SGX tickers
+        """
+        target_data = "historical_data"
+        print(f"INFO: Extracting {target_data}")
         # Listed Tickers' historical market data
-        historical_data_df = pd.DataFrame()
+        historical_data_df = self.yfinanceData[target_data]
         counter = 1
         for ticker in self.ticker_active:
             print(
-                f">> ========== Extracting {ticker} Overall Progress: ticker {counter}/{len(self.ticker_active)}")
+                f"INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}")
             if start_date is None:
                 tickerHistoricalData = yf.download(
                     ticker.ticker, period='max', interval='1d', timeout=None)
@@ -102,15 +111,23 @@ class yfinanceExtractor:
         historical_data_df = historical_data_df.reset_index()
 
         # Store to Shared Data
-        self.yfinanceData["historical_data"] = historical_data_df
+        self.yfinanceData[target_data] = historical_data_df
+        print(f"SUCCESS: {target_data} successfully extracted")
         return historical_data_df
 
     def getFinancialStatement(self):
-        financial_statements_df = pd.DataFrame()
+        """This function queries Financial Statement data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Financial Statement data for Active SGX tickers
+        """
+        target_data = "financial_statements"
+        print("INFO: Extracting {target_data}")
+        financial_statements_df = self.yfinanceData[target_data]
         counter = 1
         for ticker in self.ticker_active:
             print(
-                f">> ========== Overall Progress:{counter}/{len(self.ticker_active)} -  Extracting {ticker} ")
+                f"INFO: {target_data} - Extracting {ticker} | Progress: ticker {counter}/{len(self.ticker_active)}")
             profit_and_loss = ticker.financials.T.rename_axis(
                 'Date').reset_index()
 
@@ -123,21 +140,28 @@ class yfinanceExtractor:
             financial_statements = reduce(lambda left_table, right_table: pd.merge(
                 left_table, right_table, on='Date'), [profit_and_loss, balance_sheet, cashflow])
             financial_statements = financial_statements.fillna(np.NaN)
-            # print(financial_statements)
             if type(financial_statements["Date"].values[0]) != str:
                 financial_statements_df = pd.concat(
                     [financial_statements_df, financial_statements])
+
             counter += 1
-            print(financial_statements_df)
-        self.yfinanceData["financial_statements"] = financial_statements_df
+        self.yfinanceData[target_data] = financial_statements_df
+        print("SUCCESS: {target_data} successfully extracted")
         return financial_statements_df
 
     def getQuarterlyFinancialStatement(self):
-        quarterly_financial_statements_df = pd.DataFrame()
+        """This function queries Quarterly Financial Statement data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Quarterly Financial Statement data for Active SGX tickers
+        """
+        target_data = "quarterly_financial_statements"
+        print(f"INFO: Extracting {target_data}")
+        quarterly_financial_statements_df = self.yfinanceData[target_data]
         counter = 1
         for ticker in self.ticker_active:
             print(
-                f">> ========== Overall Progress:{counter}/{len(self.ticker_active)} -  Extracting {ticker} ")
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
             profit_and_loss = ticker.quarterly_financials.T.rename_axis(
                 'Date').reset_index()
 
@@ -150,102 +174,65 @@ class yfinanceExtractor:
             financial_statements = reduce(lambda left_table, right_table: pd.merge(
                 left_table, right_table, on='Date'), [profit_and_loss, balance_sheet, cashflow])
             financial_statements = financial_statements.fillna(np.NaN)
-            # print(financial_statements)
             if type(financial_statements["Date"].values[0]) != str:
                 quarterly_financial_statements_df = pd.concat(
                     [quarterly_financial_statements_df, financial_statements])
+
             counter += 1
-            print(quarterly_financial_statements_df)
-        self.yfinanceData["quarterly_financial_statements"] = quarterly_financial_statements_df
-        return quarterly_financial_statements_df
-
-    def getQuarterlyFinancialStatement_old(self):
-        # Get quarterly financial statement (Financials, Balance Sheet, Cashflows)
-        quarterly_financial_statements_df = pd.DataFrame()
-        counter = 1
-
-        for ticker in self.ticker_active:
-            # get each quarter financial statement
-            print(
-                f">> ========== Current Progress: ticker {counter}/{len(self.ticker_active)}")
-
-            pnl = ticker.quarterly_financials
-            balance_sheet = ticker.quarterly_balancesheet
-            cf = ticker.quarterly_cashflow
-
-            # concatenate into one dataframe
-            financial_statements = pd.concat(
-                [pnl, balance_sheet, cf], axis=1).transpose()
-
-            # Add ticker to dataframe
-            financial_statements['Tickers'] = self.removeSI(ticker.ticker)
-            quarterly_financial_statements_df = pd.concat(
-                [quarterly_financial_statements_df, financial_statements])
-            counter += 1
-        quarterly_financial_statements_df = quarterly_financial_statements_df.reset_index()
-        quarterly_financial_statements_df = quarterly_financial_statements_df.rename(
-            columns={quarterly_financial_statements_df.columns[0]: 'Date'})
-
-        quarterly_financial_statements_df["Date"] = quarterly_financial_statements_df["Date"].apply(
-            lambda x: x if type(x) != str else np.NaN)
-        quarterly_financial_statements_df = quarterly_financial_statements_df.dropna(subset=[
-            "Date"])
-
-        quarterly_financial_statements_df = quarterly_financial_statements_df.fillna(
-            value=np.nan)
-
-        # Store to Shared Data
-        self.yfinanceData["quarterly_financial_statements"] = quarterly_financial_statements_df
+        self.yfinanceData[target_data] = quarterly_financial_statements_df
+        print(f"SUCCESS: {target_data} successfully extracted")
         return quarterly_financial_statements_df
 
     def getEarningsandRevenue(self):
+        """This function queries Earnings and Revenue data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Earnings and Revenue data for Active SGX tickers
+        """
+        target_data = "earnings_and_revenue"
+        print(f"INFO: Extracting {target_data}")
         # Get Earnings and Revenue
-        earnings_and_revenues_df = pd.DataFrame()
-
+        earnings_and_revenues_df = self.yfinanceData[target_data]
+        counter = 1
         for ticker in self.ticker_active:
-            if (ticker.earnings.shape[0] < 1):
-                # Ticker's revenue and earning do not exist
-                ticker_earning_and_revenue = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
-                earnings_and_revenues_df = pd.concat(
-                    [earnings_and_revenues_df, ticker_earning_and_revenue])
-
-            else:
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            if (ticker.earnings.shape[0] >= 1):
                 ticker_earning_and_revenue = ticker.earnings
                 ticker_earning_and_revenue['Tickers'] = self.removeSI(
                     ticker.ticker)
                 earnings_and_revenues_df = pd.concat(
                     [earnings_and_revenues_df, ticker_earning_and_revenue])
-
+            counter += 1
         earnings_and_revenues_df = earnings_and_revenues_df.reset_index().rename(columns={
             'index': 'Year'})
 
         # Store to Shared Data
-        self.yfinanceData["earnings_and_revenue"] = earnings_and_revenues_df
+        self.yfinanceData[target_data] = earnings_and_revenues_df
+        print(f"SUCCESS: {target_data} successfully extracted")
         return earnings_and_revenues_df
 
     def getQuarterlyEarningsandRevenue(self):
+        """This function queries Quarterly Earnings and Revenue data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Quarterly Earnings and Revenue data for Active SGX tickers
+        """
+        target_data = "quarterly_earnings_and_revenue"
+        print(f"INFO: Extracting {target_data}")
         # Get Quarterly Earnings and Revenue
-        quarterly_earnings_and_revenues_df = pd.DataFrame()
-
+        quarterly_earnings_and_revenues_df = self.yfinanceData[target_data]
+        counter = 1
         for ticker in self.ticker_active:
-            if (ticker.quarterly_earnings.shape[0] < 1):
-                # Ticker's revenue and earning do not exist
-                ticker_quarterly_earning_and_revenue = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
-                quarterly_earnings_and_revenues_df = pd.concat(
-                    [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
-
-            else:
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            if (ticker.quarterly_earnings.shape[0] >= 1):
                 ticker_quarterly_earning_and_revenue = ticker.quarterly_earnings
                 ticker_quarterly_earning_and_revenue['Tickers'] = self.removeSI(
                     ticker.ticker)
                 quarterly_earnings_and_revenues_df = pd.concat(
                     [quarterly_earnings_and_revenues_df, ticker_quarterly_earning_and_revenue])
-
-        print(quarterly_earnings_and_revenues_df.columns)
-        print(quarterly_earnings_and_revenues_df)
-
+            counter += 1
         quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.reset_index(
         )
 
@@ -254,108 +241,110 @@ class yfinanceExtractor:
         quarterly_earnings_and_revenues_df = quarterly_earnings_and_revenues_df.rename(
             columns={first_col_name: 'Quarters'})
 
-        print(quarterly_earnings_and_revenues_df.columns)
-        print(quarterly_earnings_and_revenues_df)
-
         quarterly_earnings_and_revenues_df['Quarters'] = quarterly_earnings_and_revenues_df['Quarters'].astype(
             str)
 
         # Store to Shared Data
-        self.yfinanceData["quarterly_earnings_and_revenue"] = quarterly_earnings_and_revenues_df
+        self.yfinanceData[target_data] = quarterly_earnings_and_revenues_df
+        print(f"SUCCESS: {target_data} successfully extracted")
         return quarterly_earnings_and_revenues_df
 
     def getMajorHolders(self):
-        # Get Major Holders
-        majorHolders_df = pd.DataFrame(columns=["Tickers", '% of Shares Held by All Insider', '% of Shares Held by Institutions',
-                                       '% of Float Held by Institutions', 'Number of Institutions Holding Shares'], dtype="string")
-        for ticker in self.ticker_active:
-            if ticker.major_holders is None or ticker.major_holders.shape[0] != 4:
-                ticker_majorHolders = pd.DataFrame(
-                    columns=["Tickers"], dtype="string")
-                ticker_majorHolders["Tickers"] = self.removeSI(ticker.ticker)
-                ticker_majorHolders[:] = ticker_majorHolders[:].astype(
-                    'string')
-                print(majorHolders_df.dtypes)
+        """This function queries Major Holder data from yfinance
 
-                majorHolders_df = majorHolders_df.merge(
-                    ticker_majorHolders, how="outer", on=["Tickers"])
-                print(majorHolders_df)
-            else:
-                # print(ticker.major_holders)
+        Returns:
+            Dataframe: Dataframe of Major Holder data for Active SGX tickers
+        """
+        # Get Major Holders
+        target_data = "majorHolders"
+        print(f"INFO: Extracting {target_data}")
+        majorHolders_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+
+            if ticker.major_holders is not None and ticker.major_holders.shape[0] == 4:
                 ticker_majorHolders = ticker.major_holders.set_index(1)
-                # print(ticker_majorHolders)
                 ticker_majorHolders = ticker_majorHolders.T
                 ticker_majorHolders["Tickers"] = self.removeSI(ticker.ticker)
-                # print(ticker_majorHolders)
                 ticker_majorHolders[:] = ticker_majorHolders[:].astype(
                     'string')
-                print(majorHolders_df.dtypes)
+
                 majorHolders_df = majorHolders_df.merge(
                     ticker_majorHolders, how="outer", on=list(ticker_majorHolders.columns))
-                print(majorHolders_df)
-                print(majorHolders_df.dtypes)
-        self.yfinanceData["majorHolders"] = majorHolders_df
+            counter += 1
+        self.yfinanceData[target_data] = majorHolders_df
+        print(f"SUCCESS: {target_data} successfully extracted")
         return majorHolders_df
 
     def getBasicShares(self):
+        """This function queries Basic Shares data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Basic Shares data for Active SGX tickers
+        """
         # Get Basic Shares
-        basic_shares_df = pd.DataFrame()
+        target_data = "basic_shares"
+        print(f"INFO: Extracting {target_data}")
+        basic_shares_df = self.yfinanceData[target_data]
+        counter = 1
         for ticker in self.ticker_active:
-            if ticker.shares is None:
-                # Ticker does not have shares info
-                ticker_share = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
-                basic_shares_df = pd.concat(
-                    [basic_shares_df, ticker_share])
-            else:
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            if ticker.shares is not None:
                 ticker_share = ticker.shares
                 ticker_share['Tickers'] = self.removeSI(ticker.ticker)
                 basic_shares_df = pd.concat(
                     [basic_shares_df, ticker_share])
+            counter += 1
         basic_shares_df = basic_shares_df.reset_index()
-        # Store to Shared Data
+
         basic_shares_df = basic_shares_df.rename(
             columns={basic_shares_df.columns[0]: "Year"})
-        self.yfinanceData["basic_shares"] = basic_shares_df
+        self.yfinanceData[target_data] = basic_shares_df
+        print(f"SUCCESS: {target_data} successfully extracted")
         return basic_shares_df
 
-    def cast_dict_to_string(self, entry):
-        if len(str(entry)) > 0 and str(entry)[0] in ["{", "["]:
-            return str(entry)
-        else:
-            return entry
-
     def getStockInfo(self):
+        """This function queries Stock Info data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Stock Info data for Active SGX tickers
+        """
         # Get stock information
-        all_tickers_dict = {}
+        target_data = "stock_info"
+        print(f"INFO: Extracting {target_data}")
+        all_tickers_info = self.yfinanceData[target_data]
+        counter = 1
         for ticker in self.ticker_active:
-            if ticker.info is None:
-                all_tickers_dict[self.removeSI(ticker.ticker)] = pd.Series()
-            else:
-                print(ticker.info)
-                ticker_info = pd.Series(ticker.info)
-                print(ticker_info)
-                all_tickers_dict[self.removeSI(
-                    ticker.ticker)] = pd.Series(ticker_info)
-        all_tickers_info = pd.DataFrame(all_tickers_dict).transpose(
-        )
-
-        all_tickers_info = all_tickers_info.reset_index()
-
-        all_tickers_info = all_tickers_info.rename(
-            columns={'index': 'Tickers'})
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            if ticker.info is not None:
+                ticker_info = pd.DataFrame(ticker.info.items()).set_index(0).T
+                ticker_info["Tickers"] = self.removeSI(ticker.ticker)
+                ticker_info["Tickers"] = ticker_info["Tickers"].astype(
+                    "string")
+                all_tickers_info = pd.concat([all_tickers_info, ticker_info])
+            counter += 1
+        all_tickers_info = all_tickers_info.reset_index(drop=True)
 
         for column in all_tickers_info.columns:
-            # all_tickers_info[column] = all_tickers_info[column].apply(lambda x: str(x) if ((str(x)+" ")[
-            #     0] in ["{", "["]) else x)
             all_tickers_info[column] = all_tickers_info[column].apply(
                 self.cast_dict_to_string)
 
-        self.yfinanceData["stock_info"] = all_tickers_info
-
+        self.yfinanceData[target_data] = all_tickers_info
+        print(f"SUCCESS: {target_data} successfully extracted")
         return all_tickers_info
 
     def getStockIndustry(self):
+        """This function extracts stock industry from stock info dataframe
+
+        Returns:
+            Dataframe: Dataframe of stock industry for Active SGX tickers
+        """
+        target_data = "stock_industry"
+        print(f"INFO: Extracting {target_data}")
         if self.yfinanceData["stock_info"].empty:
             self.getStockInfo()
         stock_info = self.yfinanceData["stock_info"]
@@ -363,232 +352,210 @@ class yfinanceExtractor:
         stock_industry = stock_industry.rename(columns={"Tickers": "ticker"})
 
         # Store to Shared Data
-        self.yfinanceData["stock_industry"] = stock_industry
+        self.yfinanceData[target_data] = stock_industry
+        print(f"SUCCESS: {target_data} successfully extracted")
         return stock_industry
 
     def getCalendar(self):
+        """This function queries calendar event data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of calendr event data for Active SGX tickers
+        """
         # Get next event (earnings, etc)
-        stock_calendar_df = pd.DataFrame()
+        target_data = "stock_calendar"
+        print(f"INFO: Extracting {target_data}")
+        stock_calendar_df = self.yfinanceData[target_data]
+        counter = 1
         for ticker in self.ticker_active:
-            if ticker.calendar is None:
-                ticker_calendar = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
-                stock_calendar_df = pd.concat(
-                    [stock_calendar_df, ticker_calendar])
-
-            else:
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            if ticker.calendar is not None:
                 ticker_calendar = ticker.calendar.transpose()
-                ticker_calendar['Ticker'] = self.removeSI(ticker.ticker)
+                ticker_calendar = ticker_calendar.rename(
+                    columns={"Ticker": "Tickers"})
+                ticker_calendar['Tickers'] = self.removeSI(ticker.ticker)
                 stock_calendar_df = pd.concat(
                     [stock_calendar_df, ticker_calendar])
-        print(stock_calendar_df)
+            counter += 1
         stock_calendar_df = stock_calendar_df.reset_index(drop=True)
-        # Store to Shared Data
-        print(stock_calendar_df)
-        for c in stock_calendar_df.columns:
-            print(c)
+        stock_calendar_df.replace({np.nan: np.nan}, inplace=True)
 
-        self.yfinanceData["stock_calendar"] = stock_calendar_df
+        # Store to Shared Data
+        self.yfinanceData[target_data] = stock_calendar_df
+        print(f"SUCCESS: {target_data} successfully extracted")
         return stock_calendar_df
 
     def getRecommendations(self):
+        """This function queries stock recommendation data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of stock recommendation data for Active SGX tickers
+        """
         # Get Recommendations
-        recommendations_df = pd.DataFrame()
-
+        target_data = "stock_recommendation"
+        print(f"INFO: Extracting {target_data}")
+        recommendations_df = self.yfinanceData[target_data]
+        counter = 1
         for ticker in self.ticker_active:
-            if ticker.recommendations is None:
-                ticker_recommendations = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
-                recommendations_df = pd.concat(
-                    [recommendations_df, ticker_recommendations])
-
-            else:
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            if ticker.recommendations is not None:
                 ticker_recommendations = ticker.recommendations
                 ticker_recommendations['Tickers'] = self.removeSI(
                     ticker.ticker)
+                ticker_recommendations["Date"] = ticker_recommendations.index
                 recommendations_df = pd.concat(
                     [recommendations_df, ticker_recommendations])
-        recommendations_df = recommendations_df.reset_index().rename(columns={
-            'index': 'Date'})
+            counter += 1
+        recommendations_df = recommendations_df.reset_index(drop=True)
 
         # Store to Shared Data
-        self.yfinanceData["stock_recommendation"] = recommendations_df
+        self.yfinanceData[target_data] = recommendations_df
+        print(f"SUCCESS: {target_data} successfully extracted")
         return recommendations_df
 
     def getAnalysis(self):
-        # Get Analysis
-        analysis_df = pd.DataFrame()
-        for ticker in self.ticker_active:
-            if ticker.analysis is None:
-                ticker_analysis = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
-                analysis_df = pd.concat(
-                    [analysis_df, ticker_analysis])
+        """This function queries Analysis data from yfinance
 
-            else:
+        Returns:
+            Dataframe: Dataframe of Analysis data for Active SGX tickers
+        """
+        # Get Analysis
+        target_data = "stock_analysis"
+        print(f"INFO: Extracting {target_data}")
+        analysis_df = self.yfinanceData[target_data]
+        counter = 1
+        for ticker in self.ticker_active:
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            if ticker.analysis is not None:
                 ticker_analysis = ticker.analysis
                 ticker_analysis['Tickers'] = self.removeSI(ticker.ticker)
+                ticker_analysis['Tickers'] = ticker_analysis['Tickers'].astype(
+                    "string")
                 analysis_df = pd.concat(
                     [analysis_df, ticker_analysis])
+            counter += 1
 
         analysis_df = analysis_df.reset_index().rename(columns={
             'index': 'Period'})
         analysis_df['Period'] = analysis_df['Period'].astype(str)
 
         # Store to Shared Data
-        self.yfinanceData["stock_analysis"] = analysis_df
+        self.yfinanceData[target_data] = analysis_df
+        print(f"SUCCESS: {target_data} successfully extracted")
         return analysis_df
 
     def getMutualFundHolders(self):
+        """This function queries Mutual Fund Holder data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Mutual Fund Holder data for Active SGX tickers
+        """
         # Get Mutual Fund Holders
-        mfh_pd = pd.DataFrame()
-
+        target_data = "stock_mfh"
+        print(f"INFO: Extracting {target_data}")
+        mfh_pd = self.yfinanceData[target_data]
+        counter = 1
         for ticker in self.ticker_active:
-            if ticker.mutualfund_holders is None:
-                ticker_mfh = pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose()
-                mfh_pd = pd.concat([mfh_pd, ticker_mfh])
-
-            else:
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            if ticker.mutualfund_holders is not None:
                 ticker_mfh = ticker.mutualfund_holders
                 ticker_mfh['Tickers'] = self.removeSI(ticker.ticker)
                 mfh_pd = pd.concat([mfh_pd, ticker_mfh])
+            counter += 1
 
         mfh_pd = mfh_pd.reset_index(drop=True)
 
         # Store to Shared Data
-        self.yfinanceData["stock_mfh"] = mfh_pd
+        self.yfinanceData[target_data] = mfh_pd
+        print(f"SUCCESS: {target_data} successfully extracted")
         return mfh_pd
 
     def getInstitutionalHolders(self):
+        """This function queries Institutional Holder data from yfinance
+
+        Returns:
+            Dataframe: Dataframe of Institutional Holder data for Active SGX tickers
+        """
+        target_data = "stock_ih"
         # Get Institutional holders
-        ih_pd = pd.DataFrame()
-
+        print(f"INFO: Extracting {target_data}")
+        ih_pd = self.yfinanceData[target_data]
+        counter = 1
         for ticker in self.ticker_active:
-            if ticker.institutional_holders is None or ticker.institutional_holders.shape[1] != 5:
-                ticker_ih = pd.DataFrame(pd.DataFrame(
-                    pd.Series({'Tickers': self.removeSI(ticker.ticker)})).transpose())
-                ih_pd = pd.concat([ih_pd, ticker_ih])
-
-            else:
+            print(
+                f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            if ticker.institutional_holders is not None and ticker.institutional_holders.shape[1] == 5:
                 ticker_ih = ticker.institutional_holders
                 ticker_ih['Tickers'] = self.removeSI(ticker.ticker)
                 ih_pd = pd.concat([ih_pd, ticker_ih])
-
+            counter += 1
         ih_pd = ih_pd.reset_index(drop=True)
 
         # Store to Shared Data
-        self.yfinanceData["stock_ih"] = ih_pd
-
+        self.yfinanceData[target_data] = ih_pd
+        print(f"SUCCESS: {target_data} successfully extracted")
         return ih_pd
 
     def yfinanceQuery(self):
+        """This function queries all yfinance data queries 
+
+        Returns:
+            dictionary: dictionary of dataframes with yfinance query output
+        """
         failed = []
-        try:
-            print("Query Historical Data")
-            self.getHistoricalData()
-            print("Historical Data Query Complete")
-        except:
-            failed.append("Historical Data")
+        query_calls = {
+            "Historical Data": self.getHistoricalData,
+            "Financial Statement": self.getFinancialStatement,
+            "Quarterly Financial Statement": self.getQuarterlyFinancialStatement,
+            "Earnings and Revenue": self.getEarningsandRevenue,
+            "Quarterly Earnings and Revenue": self.getQuarterlyEarningsandRevenue,
+            "Major Holders": self.getMajorHolders,
+            "Basic Shares": self.getBasicShares,
+            "Stock Info": self.getStockInfo,
+            "Stock Industry": self.getStockIndustry,
+            "Calendar": self.getCalendar,
+            "Analyst Recommendations": self.getRecommendations,
+            "Stock Analysis": self.getAnalysis,
+            "Mutual Fund Holders": self.getMajorHolders,
+            "Institutional Holders": self.getInstitutionalHolders,
+        }
 
-        try:
-            print("Query Financial Statement")
-            self.getFinancialStatement()
-            print("Financial Statement Query Complete")
-        except:
-            failed.append("Financial Statement")
-
-        try:
-            print(">> ========== START: Quarterly Financial Statement Query")
-            print(self.getQuarterlyFinancialStatement())
-            print(">> ========== COMPLETE: Quarterly Financial Statement Query")
-        except:
-            failed.append("Quaterly Financial Statement")
-
-        try:
-            print("Query Earnings and Revenue")
-            self.getEarningsandRevenue()
-            print("Earnings and Revenue Query Complete")
-        except:
-            failed.append("Earnings and Revenue")
-
-        try:
-            print("Query Quarterly Earnings and Revenue")
-            self.getQuarterlyEarningsandRevenue()
-            print("Quarterly Earnings and Revenue Query Complete")
-        except:
-            failed.append("Quarterly Earnings and Revenue")
-
-        try:
-            print(">> ========== START: Major Holders Query")
-            self.getMajorHolders()
-            print(">> ========== COMPLETE: Major Holders Query")
-        except:
-            failed.append("Major Holders")
-
-        try:
-            print(">> ========== START: Basic Shares Query")
-            self.getBasicShares()
-            print(">> ========== COMPLETE: Basic Shares Query")
-        except:
-            failed.append("Basic Shares")
-
-        try:
-            print("Query Stock Info")
-            self.getStockInfo()
-            print("Stock Info Query Complete")
-        except:
-            failed.append("Stock Info")
-
-        try:
-            print(">> ========== START: Stock Industry Extraction")
-            self.getStockIndustry()
-            print(">> ========== COMPLETE: Stock Industry Extraction")
-        except:
-            failed.append("Stock industry")
-
-        try:
-            print(">> ========== START: Stock Calendar Query")
-            self.getCalendar()
-            print(">> ========== COMPLETE: Stock Calendar Query")
-        except:
-            failed.append("Calendar Query")
-
-        try:
-            print(">> ========== START: Analyst Recommendations Query")
-            self.getRecommendations()
-            print(">> ========== COMPLETE: Analyst Recommendations Query")
-        except:
-            failed.append("Analyst Recommendations")
-
-        try:
-            print(">> ========== START: Stock Analysis Query")
-            self.getAnalysis()
-            print(">> ========== COMPLETE: Stock Analysis Query")
-        except:
-            failed.append("Stock Analysis")
-
-        try:
-            print(">> ========== START: Mutual Fund Holders Query")
-            self.getMutualFundHolders()
-            print(">> ========== COMPLETE: Mutual Fund Holders Query")
-        except:
-            failed.append("Mutual Fund Holder")
-
-        try:
-            print(">> ========== START: Institutional Holders Querys")
-            self.getInstitutionalHolders()
-            print(">> ========== COMPLETE: Institutional Holders Query")
-        except:
-            failed.append("Institutional Holders")
-
-        # for name, df in self.yfinanceData.items():
-        #     df.to_csv(f"output_store/{name}.csv", index=False)
-
-        # failed_df = pd.DataFrame(failed)
-        # failed_df.to_csv("output_store/failed.csv", index=False)
-
-        for failure in failed:
-            print(failure)
+        for query, query_fn in query_calls.items():
+            try:
+                query_fn()
+            except:
+                print(f"ERROR {query} failed to extract")
+                failed.append(query)
 
         return self.yfinanceData
+
+    # ---- Helper Functions  ----- #
+
+    def removeSI(self, ticker):
+        """This helper function removes -SI suffix to ensure primary foreign key integrity
+
+        Args:
+            ticker (string): Ticker with -SI suffix
+
+        Returns:
+            string: Ticker without -SI suffix
+        """
+        return ticker[:-3]
+
+    def cast_dict_to_string(self, entry):
+        """This helper function converts dictionary into string to ensure compliance with BigQuery Schema
+
+        Args:
+            entry (any_type): Data input to be converted
+
+        Returns:
+            string: converted data input
+        """
+        if len(str(entry)) > 0 and str(entry)[0] in ["{", "["]:
+            return str(entry)
+        else:
+            return entry

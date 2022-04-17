@@ -8,32 +8,60 @@ import gc
 
 class FinBERT:
     def __init__(self):
-        print("Initialising FinBERT model...")
+        print("INFO: Initialising FinBERT model")
         self.tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
         self.model = AutoModelForSequenceClassification.from_pretrained(
             "ProsusAI/finbert")
         self.batch_size = 1
-        print("FinBERT model initialised")
+        print("INFO: FinBERT model initialised")
 
     def load_text_data(self, text_series):
+        """This function takes in a Pandas Series of String data, and stores it as a class variable
+
+        Args:
+            text_series (pandas.Series): A Series of String
+
+        Raises:
+            Exception: Exception when input type is not Series
+
+        Returns:
+            list: Returns a list of String chunks
+        """
         if not isinstance(text_series, pd.core.series.Series):
-            raise Exception("Input text not in Series!")
+            raise Exception("ERROR: Input text not in Series!")
         else:
-            print("Loading text data...")
+            print("INFO: Loading text data")
             text_array = np.array(text_series)
             text_list = list(text_array)
-            print("Text data loaded.")
+            print("SUCCESS: Text data loaded")
             return text_list
 
     def tokenize_text(self, text_list):
-        print("Tokenizing Text...")
+        """Tokenizes a list of String to prepare for FinBERT model analysis.
+
+        Args:
+            text_list (list): a list of Strings
+
+        Returns:
+            transformers.tokenization_utils_base.BatchEncoding: tensors of tokenized text
+        """
+        print("INFO: Tokenizing Text")
         return self.tokenizer(text_list, padding=True, truncation=True, return_tensors='pt')
 
     def predict_sentiments(self, text_list, inputs):
-        print("Predicting sentiments...")
+        """Predicts the sentiments of a given input of tokens.
+
+        Args:
+            text_list (list): list of text chunks
+            inputs (transformers.tokenization_utils_base.BatchEncoding): input tensors of tokens
+
+        Returns:
+            pd.DataFrame: returns a DataFrame of text along with the corresponding sentiment scores (Positive, Negative, Neutral)
+        """
+        print("INFO: Predicting sentiments")
         outputs = self.model(**inputs)
         predictions = torch.nn.functional.softmax(outputs.logits, dim=-1)
-        print("Sentiments successfully predicted!")
+        print("SUCCESS: Sentiments successfully predicted")
         positive = predictions[:, 0].tolist()
         negative = predictions[:, 1].tolist()
         neutral = predictions[:, 2].tolist()
@@ -48,6 +76,14 @@ class FinBERT:
         return df
 
     def FinBert_pipeline(self, text_series):
+        """Executes the FinBert analysis pipeline given an input Series of text. The chunk size can be modified based on system memory capacity.
+
+        Args:
+            text_series (pd.Series): input Series of text to be passed in FinBERT sentiment analysis
+
+        Returns:
+            pd.DataFrame: returns a DataFrame of text along with the corresponding sentiment scores
+        """
         predictions_mega = pd.DataFrame(
             columns=["Text", "Positive", "Negative", "Neutral"])
         if len(text_series) == 0:
@@ -58,7 +94,8 @@ class FinBERT:
         chunk_counter = 1
         total_chunks = len(chunks)
         for chunk in chunks:
-            print(f"==== Chunk {chunk_counter} / {total_chunks}")
+            print(
+                f"INFO: Performing FinBERT Analysis on Chunk {chunk_counter} / {total_chunks}")
             text_list = self.load_text_data(chunk)
             if not text_list[0]:
                 predictions = pd.DataFrame(
@@ -71,12 +108,6 @@ class FinBERT:
             predictions_mega = pd.concat([predictions_mega, predictions])
             gc.collect()
             chunk_counter += 1
+
+        print("SUCCESS: FinBERT analysis completed")
         return predictions_mega
-
-
-# Test
-# # data = pd.read_csv("csv_store/sbr_articles_stocks.csv").dropna()
-# # data["Title_Text"] = data["Title"] + " " + data["Text"]
-# FinBERT_layer = FinBERT()
-# input_series = pd.Series([None])
-# FinBERT_layer.FinBert_pipeline(input_series)
