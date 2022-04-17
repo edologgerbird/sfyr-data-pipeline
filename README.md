@@ -39,7 +39,7 @@
 
 Our Company, Sfyr (pronounced: Sapphire /sæfaɪə(r)/) aims to provide retail investors with the tools and data required to support their high-frequency retail trading decisions and needs. Through the use of a data warehouse, Apache Airflow and public data sources, Sfyr provides its clients with accurate, consolidated and updated stock data.
 
-### _Pipeline Architecture_
+### _Pipeline Architecture:_
 
   <a>
     <img src="read_me_files/archi.png" alt="Pipeline Architecture" height="400">
