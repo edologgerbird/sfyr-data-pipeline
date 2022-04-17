@@ -181,7 +181,7 @@ This data pipeline makes use of Google Cloud Suite of products our data warehous
 
 <br>
 
-> ❗ **Keep your JSON Key Files Safe!** > <br>
+> ❗ **Keep your JSON Key Files Safe!** 
 
 <ol>
   <li> Create a project on Google Cloud Platform using an existing Google Account </li>
