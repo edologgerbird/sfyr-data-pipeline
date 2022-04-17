@@ -20,7 +20,8 @@ import json
 if __name__ == '__main__':
     start_time = time.time()
     # ---- Initalisation Telegram Session ---- #
-    # TelegramExtractor().telegram_init()
+    Telegram_layer = TelegramExtractor()
+    Telegram_layer.init_tele_session()
 
     # CODE BELOW FOR UNIT TESTING PURPOSES. CODE IS TO BE TRIGGERED FROM MAIN_DAG.PY
 
