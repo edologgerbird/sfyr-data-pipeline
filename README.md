@@ -169,7 +169,7 @@ This data pipeline makes use of Google Cloud Suite of products our data warehous
       <li> BigQuery Job User </li>
     </ul>
   </li>
-  <li> Create a FireSsore Service Account with the following permissions and download JSON Key File
+  <li> Create a FireScore Service Account with the following permissions and download JSON Key File
     <ul>
       <li> 	Firebase Service Management Service Agent </li>
     </ul>
