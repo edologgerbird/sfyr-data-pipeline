@@ -39,6 +39,12 @@
 
 Our Company, Sfyr (pronounced: Sapphire /sæfaɪə(r)/) aims to provide retail investors with the tools and data required to support their high-frequency retail trading decisions and needs. Through the use of a data warehouse, Apache Airflow and public data sources, Sfyr provides its clients with accurate, consolidated and updated stock data.
 
+### _Pipeline Architecture_
+
+  <a>
+    <img src="read_me_files/archi.png" alt="Pipeline Architecture" height="450">
+  </a>
+
 ### _Keywords:_
 
 _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, DAG, Apache Airflow, BigQuery, Firestore, Google Cloud Monitoring, Hugging Face, FinBERT, Sentiment, Natural Language Processing, Stocks Analysis, Investment Insights, Web Scraping, Data Visualisation, Time Series Data_
@@ -387,7 +393,7 @@ We would also like to thank Nescafe and Redbull for providing us with the caffei
 <sub>
 Copyright (C) 2022. This is an open-source tool that uses publicily avaialble API and is intended and should ONLY be used for use for non-commerical reasons.
 </sub>
-    
+
 <sub>
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
 </sub>
