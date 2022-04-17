@@ -115,7 +115,7 @@ class yfinanceTransform:
                     print(
                         f"SUCCESS: {col} Datatype Enforced as {yfinance_dataset[col].dtype}")
             except:
-                print(f"ERROR: Tranformation Failed for {col}")
+                print(f"ERROR: {col} Schema Enforcement Failed")
                 print(traceback.format_exc())
                 continue
 
