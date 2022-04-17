@@ -13,17 +13,18 @@ class SGXDataExtractor:
         self.json_data = None
         self.SGX_data_store = None
         self.updated_SGX_data_store = None
+        print("INFO: SGXDataExtractor Initialised")
 
     def extract_SGX_json_data(self):
-        print("Extracting SGX Data from API ...")
+        print("INFO: Extracting SGX Data from API")
         self.url_request = self.url_request = Request(
             self.url, headers={'User-Agent': 'Mozilla/5.0'})
         self.json_data = json.loads(urlopen(self.url_request).read())[
             "data"]["prices"]
-        print("SGX Data Successfully Extracted")
+        print("SUCCESS: SGX Data Successfully Extracted")
 
     def populate_SGX_data(self):
-        print("Populating SGX Data Store ...")
+        print("INFO: Populating SGX Data Store")
         SGX_data_store = {
             "company_name": [],
             "ticker": [],
@@ -40,7 +41,7 @@ class SGXDataExtractor:
 
         self.SGX_data_store = pd.DataFrame(SGX_data_store).dropna()
         self.SGX_data_store['active'] = True
-        print("SGX Data successfully populated")
+        print("SUCCESS: SGX Data successfully populated")
 
     def get_SGXData_from_GBQ(self):
         if bigQueryDB().gbqCheckTableExist("SGX.Tickers"):
@@ -50,6 +51,7 @@ class SGXDataExtractor:
 
     # Checks scrapped data with ticker data from GBQ to update their 'active' status
     def update_ticker_status(self, SGX_data_store, GBQ_SGX_ticker_df):
+        print("INFO: Updating ticker status")
         # 4 Cases to consider
         # Case 1 - Newly listed tickers
         # Case 2 - Previously delisted tickers
@@ -98,11 +100,13 @@ class SGXDataExtractor:
 
         self.updated_SGX_data_store = self.updated_SGX_data_store.drop_duplicates()
 
+        print("SUCCESS: Ticker status updated")
+
         return self.updated_SGX_data_store
 
     def SGX_data_to_csv(self):
         self.updated_SGX_data_store.to_csv("SGX_data.csv", index=False)
-        print("SGX Data successfully saved to CSV")
+        print("SUCCESS: SGX Data successfully saved to CSV")
 
     def SGX_data_to_bg(self):
         if bigQueryDB().gbqCheckTableExist("SGX.Tickers"):
@@ -113,8 +117,6 @@ class SGXDataExtractor:
     def load_SGX_data_from_source(self):
         self.extract_SGX_json_data()
         self.populate_SGX_data()
-        # self.update_ticker_status()
-        # self.SGX_data_to_bg()
 
     def get_SGX_data(self):
         self.extract_SGX_json_data()

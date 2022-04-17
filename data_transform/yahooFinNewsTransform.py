@@ -5,19 +5,19 @@ import pandas as pd
 
 class yahooFinNewsTransformer:
     def __init__(self):
-        # print("Initialising Firestore Pipeline...")
-        # self.firestoreDB_layer = firestoreDB()
         self.data_pending_upload = None
         self.articles = []
-        # print("Firestore Pipeline Initialised")
+        print("INFO: yahooFinNewsTransformer initialised")
 
     def tickerNewsFormat(self, news, start_date=None, end_date=dt.now()):
+        print("INFO: Transforming yahooFinNews Data")
         newsFormatted = []
         articles = []
 
         # Start Date <= End Date Validation
         if (start_date is not None and end_date is not None and start_date > end_date):
-            raise Exception('Start date input must be before end date input')
+            raise Exception(
+                'ERROR: Start date input must be before end date input')
 
         for i in range(0, len(news)):
             ticker = news.at[i, "Ticker"]
@@ -43,14 +43,16 @@ class yahooFinNewsTransformer:
 
         self.data_pending_upload = newsFormatted
         pdArticles = pd.DataFrame(articles, columns=["message"])
-        #pdArticles.columns = ["message"]
+        print("SUCCESS: yahooFinNews Transformed")
         return pdArticles
 
     def finBERTFormat(self, sentiments):
+        print("INFO: Transforming FinBERT Data")
         for i in range(0, len(self.data_pending_upload)):
             self.data_pending_upload[i]["sentiments"] = {
                 "negative": sentiments.iloc[i]["Negative"],
                 "neutral": sentiments.iloc[i]["Neutral"],
                 "positive": sentiments.iloc[i]["Positive"],
             }
+        print("SUCCESS: FinBERT Data transformed")
         return self.data_pending_upload

@@ -1,15 +1,13 @@
-'''
-SBR Data Transformation
-'''
-
 from utils.utils import splitter
+
 
 class SBRDataTransformer:
     def __init__(self):
         self.SBR_data_to_upload = None
-        print("SBRDataTransformer Initialised")
+        print("INFO: SBRDataTransformer Initialised")
 
     def transformSBRData(self, SBR_data_raw, SBR_data_with_tickers, SBR_data_with_sentiments):
+        print("INFO: Transforming SBR Data")
         # # Combining Dataframes
         SBR_data_with_tickers["sentiment"] = [{"sentiment": {
             "positive": x, "negative": y, "neutral": z}}for x, y, z in zip(
@@ -19,7 +17,7 @@ class SBRDataTransformer:
         # self.SBR_data_processed = SBR_data_with_tickers
         SBR_data_processed = SBR_data_with_tickers
         SBR_data_processed[["Date", "Title", "Text", "Link"]
-                                ] = SBR_data_raw[["Date", "Title", "Text", "Link"]]
+                           ] = SBR_data_raw[["Date", "Title", "Text", "Link"]]
 
         # Transforming Data to NoSQL format
 
@@ -38,5 +36,5 @@ class SBRDataTransformer:
                 ]])
             )
         ]
-
+        print("SUCCESS: SBR Data transformed")
         return self.SBR_data_to_upload
