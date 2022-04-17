@@ -46,9 +46,6 @@ class yfinanceTransform:
 
     def schemaCompliance(self, dataset):
         errors = []
-
-        print(f"INFO: {dataset} Schema Compliance Triggered")
-
         datatype_mapping = {
             "STRING": "string",
             "INTEGER": "Int64",
@@ -56,6 +53,7 @@ class yfinanceTransform:
             'TIMESTAMP': 'datetime64',
             "BOOLEAN": "boolean"
         }
+        print(f"INFO: {dataset} Schema Compliance Triggered")
         tableSchemaUrl = "utils/bigQuerySchema.json"
         with open(tableSchemaUrl, 'r') as schemaFile:
             tableSchema = json.load(schemaFile)
