@@ -38,26 +38,31 @@ import json
 # 0. DEFINE GLOBAL VARIABLES
 ####################################################
 
-# Schedule first run for D+1, 0930HRS, GMT+08
-global_start_date_excute_time = get_execute_time(datetime.now())
+# TESTING/DEMO PARAMETERS
+TOGGLE_TEST = True
+TICKER_SAMPLE_SIZE = 30
 
-# Extraction time handling
-# >> if time < 1200: extract from D-1 2130 till D-0 0390
+if not TOGGLE_TEST:
+    # Schedule first run for D+1, 0930HRS, GMT+08
+    global_start_date_excute_time = get_execute_time(datetime.now())
 
-extraction_start_date, extraction_end_date = get_extraction_schedule(
-    datetime.now())
+    # Extraction time handling
+    # >> if time < 1200: extract from D-1 2130 till D-0 0390
+    extraction_start_date, extraction_end_date = get_extraction_schedule(
+        datetime.now())
 
-# Query time
-query_time = global_start_date_excute_time - timedelta(days=1)
+    # Query time
+    query_time = global_start_date_excute_time - timedelta(days=1)
 
-# Testing Time
-# Time set for instant testing
-global_start_date_excute_time = datetime.now()
-global_end_date = global_start_date_excute_time
+else:
+    # Time set for instant testing
+    global_start_date_excute_time = datetime.now()
 
-# Test Time for data extraction
-extraction_start_date = datetime.today() - timedelta(days=8)
-extraction_end_date = datetime.today() - timedelta(days=6)
+    # Test Time for data extraction
+    extraction_start_date = datetime.today() - timedelta(days=8)
+    extraction_end_date = datetime.today() - timedelta(days=6)
+    # Query time
+    query_time = global_start_date_excute_time - timedelta(days=1)
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
@@ -83,7 +88,7 @@ def extract_SBR_data(**kwargs):
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return sbr_raw_data.head(1)
+    return sbr_raw_data
 
 
 def extract_tele_data(**kwargs):
@@ -92,7 +97,7 @@ def extract_tele_data(**kwargs):
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return tele_data_raw.head(1)
+    return tele_data_raw
 
 
 def extract_YahooFin_data(**kwargs):
@@ -108,7 +113,9 @@ def extract_yFinance_data(**kwargs):
     # >> return dictionary of DataFrames: yFinance_dataar
     ti = kwargs['ti']
     sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1]
-    yfinanceExtractor_layer = yfinanceExtractor(sgxTickers).sample(50)
+    if TOGGLE_TEST:
+        sgxTickers = sgxTickers.head(TICKER_SAMPLE_SIZE)
+    yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
     print("yfinance Data Query Complete")
@@ -139,7 +146,6 @@ def transform_SGX_data(**kwargs):
     # >> returns TickerExtractor: TickerExtractorLayer
     SGX_data_updated = SGXDataExtractor_layer.update_ticker_status(
         SGX_data_from_source, SGX_data_from_GBQ)
-
     TickerExtractor_Layer = TickerExtractor(SGX_data_updated)
 
     return (TickerExtractor_Layer, SGX_data_updated)
