@@ -8,6 +8,7 @@ from data_extract.TelegramExtractor import TelegramExtractor
 from data_extract.SGXDataExtractor import SGXDataExtractor
 from data_extract.SBRExtractor import SBRExtractor
 from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
+from data_transform.yfinanceTransform import yfinanceTransform
 from matplotlib import ticker
 from datetime import datetime as dt
 import time
@@ -46,58 +47,58 @@ if __name__ == '__main__':
     #     start_date="20-02-2022", end_date="22-02-2022")
 
     # ---- Test GBQ Pipeline ---- #
-    # schema = bigQueryDB().getTableColumns("SGX.Tickers")
+    # schema = bigQueryDB().updateTableSchema(["SGX.Tickers",
+    #                                          "yfinance.earnings_and_revenue",
+    #                                          "yfinance.financial_statements",
+    #                                          "yfinance.majorHolders",
+    #                                          "yfinance.quarterly_earnings_and_revenue",
+    #                                          "yfinance.quarterly_financial_statements",
+    #                                          "yfinance.stock_analysis",
+    #                                          "yfinance.stock_calendar",
+    #                                          "yfinance.stock_ih",
+    #                                          "yfinance.stock_industry",
+    #                                          "yfinance.stock_info",
+    #                                          "yfinance.stock_mfh",
+    #                                          "yfinance.stock_recommendation",
+    #                                          "yfinance.ticker_status",
+    #                                         "yfinance.historical_data"
+    #                                          ])
     # print(schema)
 
-    # ---- Test yFinance Pipeline ---- #
+    # df = pd.DataFrame(
+    #     {
+    #         'my_string': ['a', 'b', 'c'],
+    #         'my_int64': [1, 2, 3],
+    #         'my_float64': [4.0, 5.0, 6.0],
+    #         'my_timestamp': [
+    #             pd.Timestamp("1998-09-04T16:03:14"),
+    #             pd.Timestamp("2010-09-13T12:03:45"),
+    #             pd.Timestamp("2015-10-02T16:00:00")
+    #         ],
+    #     }
+    # )
 
-    sgx_data = bigQueryDB().getDataFields("SGX.Tickers")
-    sgx_data = sgx_data[(sgx_data["ticker"] == "42N") |
-                        (sgx_data["ticker"] == "5OI")]
-    gbq_layer = bigQueryDB()
-    yfinance_data_to_upload = yfinanceExtractor(sgx_data).yfinanceQuery()
+    # ---- Test yFinance Extract ---- #
+    # gbq_layer = bigQueryDB()
+    # sgx_data = bigQueryDB().getDataFields("SGX.Tickers").head()
+    # yfinance_data_to_upload = yfinanceExtractor(sgx_data).yfinanceQuery()
+
+    # ---- Test yFinance Transform ---- #
+    # tableSchemaUrl = "utils/bigQuerySchema.json"
+    # with open(tableSchemaUrl, 'r') as schemaFile:
+    #     tableSchema = json.load(schemaFile)
+    # yfinanceTransform_layer = yfinanceTransform(yfinance_data_to_upload)
+    # yfinanceTransform_layer.transformData()
+
+    # ---- Test yFinance Upload ---- #
+    # gbq_layer.gbqAppend(yfinance_data_to_upload, "yfinance.earnings_and_revenue",
+    #                     tableSchema["yfinance.earnings_and_revenue"])
+
+    # ---- Test Heatlist Generation ---- #
     # ind_data = yfinance_data_to_upload["stock_industry"]
     # print(ind_data)
     # gen_heat_list = GenerateHeatlistsFromQuery(sgx_data, ind_data)
-    # for datafield in yfinance_data_to_upload.keys():
-    #     print(datafield)
-    #     print(yfinance_data_to_upload[datafield])
-    #     # Removing Spaces in Column Names - GBQ Limitation
-    #     yfinance_data_to_upload[datafield].columns = yfinance_data_to_upload[datafield].columns.str.replace(
-    #         ' ', '_')
 
-    #     # Adding "_" if Column Names start with a number - GBQ Limitation
-    #     yfinanace_data_columns = yfinance_data_to_upload[datafield].columns.tolist(
-    #     )
-    #     yfinance_formatted_columns = {}
-    #     for name in yfinanace_data_columns:
-    #         if name[0].isdigit():
-    #             newName = "_" + name
-    #             yfinance_formatted_columns[name] = newName
-    #         elif "%" in name:
-    #             newName = name.replace('%', 'percentage')
-    #             yfinance_formatted_columns[name] = newName
-    #         else:
-    #             yfinance_formatted_columns[name] = name
-    #     print(yfinance_formatted_columns)
-    #     yfinance_data_to_upload[datafield].rename(
-    #         columns=yfinance_formatted_columns, inplace=True)
-
-    #     datasetTable = "yfinance." + datafield
-    #     print(yfinance_data_to_upload[datafield])
-
-    #     yfinance_data_to_upload[datafield] = yfinance_data_to_upload[datafield].convert_dtypes(
-    #     )
-    #     if gbq_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
-    #         gbq_layer.gbqAppend(
-    #             yfinance_data_to_upload[datafield], datasetTable)
-    #     elif not yfinance_data_to_upload[datafield].empty:
-    #         gbq_layer.gbqCreateNewTable(
-    #             yfinance_data_to_upload[datafield], "yfinance", datafield)
-    #     else:
-    #         print("empty dataframe")
-    #
-    #
     # ---- Test SGXDataExtractor---- #
     # sgx_layer = SGXDataExtractor()
     # sgx_data = sgx_layer.get_SGX_data()

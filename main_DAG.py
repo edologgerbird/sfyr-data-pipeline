@@ -18,6 +18,7 @@ from data_transform.telegramDataTransform import telegramDataTransformer
 from data_transform.yahooFinNewsTransform import yahooFinNewsTransformer
 from data_processing.FinBertAPI import FinBERT
 from data_processing.generateHeatListFromQuery import GenerateHeatlistsFromQuery
+from data_transform.yfinanceTransform import yfinanceTransform
 
 # Load Modules
 from data_load.firestoreAPI import firestoreDB
@@ -35,6 +36,7 @@ import pandas as pd
 from utils.utils import get_execute_time, get_extraction_schedule
 import traceback
 import sys
+import json
 
 ####################################################
 # 0. DEFINE GLOBAL VARIABLES
@@ -57,8 +59,8 @@ global_start_date_excute_time = datetime.now()
 global_end_date = global_start_date_excute_time
 
 # Test Time for data extraction
-extraction_start_date = datetime.today() - timedelta(days=2)
-extraction_end_date = datetime.today() - timedelta(days=1)
+extraction_start_date = datetime.today() - timedelta(days=8)
+extraction_end_date = datetime.today() - timedelta(days=6)
 
 ####################################################
 # 1. DEFINE PYTHON FUNCTIONS
@@ -74,7 +76,7 @@ def extract_SGX_data(**kwargs):
     # >> return DataFrame: SGX_data
     SGXDataExtractor_layer = SGXDataExtractor()
     SGXDataExtractor_layer.load_SGX_data_from_source()
-    sgx_data = SGXDataExtractor_layer.get_SGX_data().sample(5)
+    sgx_data = SGXDataExtractor_layer.get_SGX_data()
     return (sgx_data, SGXDataExtractor_layer)
 
 
@@ -84,7 +86,7 @@ def extract_SBR_data(**kwargs):
     SBRExtractor_layer = SBRExtractor()
     sbr_raw_data = SBRExtractor_layer.load_SBR_data_from_source(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return sbr_raw_data.head(10)
+    return sbr_raw_data.head(1)
 
 
 def extract_tele_data(**kwargs):
@@ -93,7 +95,7 @@ def extract_tele_data(**kwargs):
     TelegramExtractor_layer = TelegramExtractor()
     tele_data_raw = TelegramExtractor_layer.extract_telegram_messages(
         start_date=extraction_start_date, end_date=extraction_end_date)
-    return tele_data_raw.head(10)
+    return tele_data_raw.head(1)
 
 
 def extract_YahooFin_data(**kwargs):
@@ -109,7 +111,8 @@ def extract_yFinance_data(**kwargs):
     # >> extract yFinance_data
     # >> return dictionary of DataFrames: yFinance_dataar
     ti = kwargs['ti']
-    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[1].sample(50)
+    sgxTickers = ti.xcom_pull(task_ids="transform_SGX_data_task")[
+        1].sample(200)
     yfinanceExtractor_layer = yfinanceExtractor(sgxTickers)
     print("Initalise yfinance Data Query")
     yfinance_data = yfinanceExtractor_layer.yfinanceQuery()
@@ -234,49 +237,8 @@ def transform_yFinance_data(**kwargs):
 
     # >> xcom.pull(DataFrame: yFinance_data)
     yFinance_data = ti.xcom_pull(task_ids="extract_yFinance_data_task")
-    for datafield in yFinance_data.keys():
-        print(f"Transforming {datafield} for GBQ Upload")
-
-        # Removing Spaces in Column Names - GBQ Limitation
-        yFinance_data[datafield].columns = yFinance_data[datafield].columns.str.replace(
-            ' ', '_')
-
-        # Add "_" to start if Column Names start with a number - GBQ Limitation
-        # Replace "%" with Percentage - GBQ Limitation
-        yfinanace_data_columns = yFinance_data[datafield].columns.tolist()
-        yfinance_formatted_columns = {}
-        for columnName in yfinanace_data_columns:
-            if columnName[0].isdigit():
-                newName = "_" + columnName
-                yfinance_formatted_columns[columnName] = newName
-            elif "%" in columnName:
-                newName = columnName.replace('%', 'percentage')
-                yfinance_formatted_columns[columnName] = newName
-            else:
-                yfinance_formatted_columns[columnName] = columnName
-        print(yfinance_formatted_columns)
-
-        # Replacing Column Names
-        print(f"Replacing Column Names of {datafield}")
-        yFinance_data[datafield].rename(
-            columns=yfinance_formatted_columns, inplace=True)
-
-        # Convertion of dtypes
-        print(f"Conversion of Column Data Types for {datafield}")
-        yFinance_data[datafield] = yFinance_data[datafield].convert_dtypes(
-        )
-
-        # Remove Potential Duplicated Columns
-        yFinance_data[datafield] = yFinance_data[datafield].loc[:,
-                                                                ~yFinance_data[datafield].columns.duplicated()]
-
-        # cast dict and lists to string type
-
-        # for column in yFinance_data[datafield].columns:
-        #     yFinance_data[datafield][column] = yFinance_data[datafield][column].apply(
-        #         lambda x: str(x) if (type(x) == dict or type(x) == list) else x)
-
-        print(f"Transformation of {datafield} Complete")
+    yFinance_transform_layer = yfinanceTransform(yFinance_data)
+    yFinance_data = yFinance_transform_layer.transformData()
 
     #  >> return dictionary: yFinance_data_transformed
     return yFinance_data
@@ -333,33 +295,28 @@ def load_yFinance_data(**kwargs):
     yfinance_data_to_upload = ti.xcom_pull(
         task_ids='transform_yFinance_data_task')
 
+    tableSchemaUrl = "utils/bigQuerySchema.json"
+    with open(tableSchemaUrl, 'r') as schemaFile:
+        tableSchema = json.load(schemaFile)
     errors = dict()
 
     for datafield in yfinance_data_to_upload.keys():
-        try:
-            print(f"Uploading {datafield} data")
-            print(yfinance_data_to_upload[datafield])
-            datasetTable = "yfinance." + datafield
-            if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
-                if datafield in ["ticker_status"]:
-                    bigQueryDB_layer.gbqReplace(
-                        yfinance_data_to_upload[datafield], datasetTable)
-                else:
-                    bigQueryDB_layer.gbqAppend(
-                        yfinance_data_to_upload[datafield], datasetTable)
-            elif not yfinance_data_to_upload[datafield].empty:
-                bigQueryDB_layer.gbqCreateNewTable(
-                    yfinance_data_to_upload[datafield], "yfinance", datafield)
+        print(f"Uploading {datafield} data")
+        print(yfinance_data_to_upload[datafield])
+        datasetTable = "yfinance." + datafield
+        schema = tableSchema[datasetTable]
+        if bigQueryDB_layer.gbqCheckTableExist(datasetTable) and not yfinance_data_to_upload[datafield].empty:
+            if datafield in ["ticker_status"]:
+                bigQueryDB_layer.gbqReplace(
+                    yfinance_data_to_upload[datafield], datasetTable, schema)
             else:
-                print("Empty Dataframe")
-        except Exception as e:
-            traceback_info = traceback.format_exc()
-            print(
-                f">>>> ERROR WITH {datafield}")
-            print(e)
-            print(traceback_info)
-            errors[datafield] = traceback_info
-            continue
+                bigQueryDB_layer.gbqAppend(
+                    yfinance_data_to_upload[datafield], datasetTable, schema)
+        elif not yfinance_data_to_upload[datafield].empty:
+            bigQueryDB_layer.gbqCreateNewTable(
+                yfinance_data_to_upload[datafield], "yfinance", datafield)
+        else:
+            print("Empty Dataframe")
 
     errors_df = pd.DataFrame(errors.items())
     errors_df.to_csv(f"error_{datetime.now()}_.csv".replace(":", " "))
