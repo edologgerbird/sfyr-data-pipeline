@@ -27,8 +27,6 @@ from data_load.bigQueryAPI import bigQueryDB
 # Query Modules
 from data_querying.heatlistQuery import HeatListQuery
 
-# will need loading modules for each source
-
 # General utility Modules
 from datetime import datetime, timedelta
 import datetime as dt
@@ -128,7 +126,6 @@ def query_SGX_data(**kwargs):
     # >> return DataFrame: SGX_data
     bigQueryDB_layer = bigQueryDB()
     sgx_data = bigQueryDB_layer.getDataFields("SGX.Tickers")
-    # sgx_data = ti.xcom_pull(task_ids="extract_SGX_data_task")
     return sgx_data
 
 
@@ -143,8 +140,7 @@ def transform_SGX_data(**kwargs):
     # >> returns TickerExtractor: TickerExtractorLayer
     SGX_data_updated = SGXDataExtractor_layer.update_ticker_status(
         SGX_data_from_source, SGX_data_from_GBQ)
-    # Temporary patching
-    # sgx_data = ti.xcom_pull(task_ids="query_SGX_data_task")
+
     TickerExtractor_Layer = TickerExtractor(SGX_data_updated)
 
     return (TickerExtractor_Layer, SGX_data_updated)
@@ -399,10 +395,6 @@ def load_heatlists(**kwargs):
     ticker_heatlist = generated_heatlist[0]
     industry_heatlist = generated_heatlist[1]
 
-    # For sample
-    # ticker_heatlist.to_csv("ticker_heatlist_sample.csv", index=False)
-    # industry_heatlist.to_csv("industry_heatlist_sample.csv", index=False)
-
     heatlist_generated_date = datetime.now()
     heatlist_date = heatlist_generated_date.strftime("%d-%m-%Y")
     heatlist_time = "Market_Open"
@@ -442,9 +434,8 @@ default_args = {
     'email': ['is3107.g7@gmail.com'],
     'email_on_failure': True,
     'email_on_retry': True,
-    'retries': 0
-    # 'retries': 1,
-    # 'retry_delay': timedelta(minutes=1)
+    'retries': 1,
+    'retry_delay': timedelta(minutes=1)
 }
 
 dag = DAG('ETL_for_SGX_Stocks_Data',
