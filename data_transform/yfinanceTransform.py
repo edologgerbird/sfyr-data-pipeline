@@ -6,7 +6,6 @@ import traceback
 class yfinanceTransform:
     def __init__(self, yfinance_data):
         self.yfinance_data = yfinance_data
-        self.errors_all = dict()
 
     def replaceColumnName(self, dataset):
         """This function applies BigQuery Column Name Limitations to the dataset. 
@@ -116,10 +115,10 @@ class yfinanceTransform:
                     print(
                         f"SUCCESS: {col} Datatype Enforced as {yfinance_dataset[col].dtype}")
             except:
-                traceback_info = traceback.format_exc()
-                print(traceback_info)
-                errors.append([col, traceback_info])
+                print(f"ERROR: Tranformation Failed for {col}")
+                print(traceback.format_exc())
                 continue
+
         self.errors_all["dataset"] = errors
         print(f"SUCCESS: {dataset} Schema Compliance Enforced")
         self.yfinance_data[dataset] = yfinance_dataset
@@ -142,7 +141,4 @@ class yfinanceTransform:
                 print(f"WARNING: {datafield} Skipped - Empty DataFrame")
 
         print("SUCCESS: yFinance Transform Completed")
-        print("ALERT: Errors saved to yfin_tranform_errors.csv")
-        pd.DataFrame(self.errors_all).to_csv(
-            "yfin_transform_errors.csv", index=False)
         return self.yfinance_data
