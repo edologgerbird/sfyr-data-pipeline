@@ -10,7 +10,11 @@
   <p align="center">
     Investing Intelligence
     <br />
-    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Full Project Report»</strong></a>
+    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Full Project Report »</strong></a>
+    <br />
+    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Project Video Demonstration »</strong></a>
+    <br />
+    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Project API Documentation »</strong></a>
     <br />
   </p>
 </div>
@@ -25,7 +29,7 @@
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#usage">Usage</a></li>
 <li><a href="#contact">Contact</a></li>
-<li><a href="#acknowledgments">Acknowledgments</a></li>
+<li><a href="#acknowledgements">Acknowledgements</a></li>
 </ol>
 
 <br />
@@ -36,7 +40,7 @@ Our Company, Sfyr (pronounced: Sapphire /sæfaɪə(r)/) aims to provide retail i
 
 ### _Keywords:_
 
-_Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, DAG, Apache Airflow, BigQuery, Firestore, FinBERT, Sentiment, Stocks Analysis, Investment Insights, Web Scraping, Google Cloud Monitoring._
+_Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, DAG, Apache Airflow, BigQuery, Firestore, Google Cloud Monitoring, Hugging Face, FinBERT, Sentiment, Natural Language Processing, Stocks Analysis, Investment Insights, Web Scraping, Data Visualisation, Time Series Data_
 
 ## Authors:
 
@@ -68,21 +72,16 @@ Make sure you have installed all of the following on your development machine:
 - Python 3.8 onwards
 - Linux Virtual Machine (Highly recommended for running Airflow). Pipeline tested on Oracle VM Virtual Box
 
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## **Installation**
 
 We recommend setting up a virtual machine and virtual environment to run this project.
 
-<br>
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _1. Oracle Virtual Machine_
 
 To set up a VM Virtual Box, please follow the steps detailed [here](https://github.com/edologgerbird/is3107_g7/blob/test/edo-DAG/installation_guide/VM%20Installation%20Instructions.pdf).
-
-<br>
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _2. Python Virtual Environment_
 
@@ -101,8 +100,6 @@ The requirements.txt file contains Python libraries that your notebooks depend o
 ```sh
 pip install -r requirements.txt
 ```
-
-<br>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -134,8 +131,6 @@ airflow users create \
 --role Admin \
 --email <YOUR EMAIL>
 ```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### _4. Editing Airflow Configs_
 
@@ -174,7 +169,7 @@ This data pipeline makes use of Google Cloud Suite of products our data warehous
       <li> BigQuery Job User </li>
     </ul>
   </li>
-  <li> Create a FireSsore Service Account with the following permissions and download JSON Key File
+  <li> Create a FireScore Service Account with the following permissions and download JSON Key File
     <ul>
       <li> 	Firebase Service Management Service Agent </li>
     </ul>
@@ -214,10 +209,27 @@ smtp_port = 587
 smtp_mail_from = <Email Address>
 smtp_timeout = 30
 smtp_retry_limit = 5
-
 ```
 
 If you are not using Gmail as your SMTP Service, edit the information according to your SMTP Server Configurations.
+
+3. Update the default_args in your DAG file. This will set-up the DAG to trigger an email if a task retries or fails. 
+
+```python
+default_args = {
+    'email': [<Email Address>],
+    'email_on_failure': True, 
+    'email_on_retry': True,
+}
+```
+4. Optional - Set-up the number of retries for a failed task and duration between retries
+
+```python
+default_args = {
+    'retries': 1,
+    'retry_delay': timedelta(minutes=1)
+}
+```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -268,10 +280,59 @@ One notification per 10 minutes
 # Incident autoclose duration
 30 minutes
 ```
+
 <br>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+### _7. Setting Up Telegram Scraper Credentials_
+
+Before being able to run the Telegram Scraper Module, user will have to register on Telegram and sign into their account via [Telegram Login](https://my.telegram.org/auth)
+
+From there, access the API development tools, create a new project and note down your App
+
+- api_id
+- api_hash
+
+<br>
+
+> ❗ **Keep your API id and hash Safe!**
+
+After getting the api_id and api_hash, update `utils/serviceAccount.json` telegramConfig object with your teleNumber, api_id and api_hash.
+
+```json
+{
+  "telegramConfig": {
+    "teleNumber": "<Phone_Number>",
+    "api_id": ,
+    "api_hash": "<API_HASH>"
+  },
+}
+```
+
+On first start up of the telegram scraping module, you will asked to enter a code sent to your telegram number as specified in the `utils/serviceAccount.json`. If you have an additional 2FA password set, you will be require to enter your password as well.
+
+After the first setup and login, the telegram scraper module should work as intended.
+
+<br>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+### _8. Setting Up of `ServiceAccount.json`_
+
+With the Google Cloud Project Created in **Step 5**, we will have to update `ServiceAccount.json` which provides a centralised and local copy of the configurations, datasets and datatables.
+
+```json
+{
+  "bigQueryConfig": {
+    "PROJECT_ID": "<Google Cloud projectID>"
+  }
+}
+```
+
+<br>
+
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ## Usage
 
@@ -280,11 +341,12 @@ One notification per 10 minutes
 Initialise Airflow in your Virtual Machine via the following commands:
 
 ```sh
-airflow scheduler
-airflow webserver
+airflow scheduler -D
+airflow webserver -D
 ```
 
 By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080).
+Both processes are running as Daemon Processes. Alternatively, users can set-up Systemd by following [this guide](https://airflow.apache.org/docs/apache-airflow/stable/howto/run-with-systemd.html).
 
 ### _2. Activating DAG Task_
 
@@ -302,7 +364,7 @@ If you would like to reqeuest a feature or report a bug, please contact us at is
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Acknowledgement
+## Acknowledgements
 
 We would like to thank Assistant Professor Frank Xing, Dr Gao Yu Ting and Mr Quek Jian Hong Joel of the National University of Singapore for the opportunity to embark on this project.
 
