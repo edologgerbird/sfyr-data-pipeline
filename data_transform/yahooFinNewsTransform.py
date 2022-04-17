@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 from time import mktime
 import pandas as pd
-import tqdm
+from tqdm import tqdm
 
 
 class yahooFinNewsTransformer:
