@@ -14,7 +14,7 @@
     <br />
     <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Project Video Demonstration »</strong></a>
     <br />
-    <a href="https://github.com/edologgerbird/is3107_g7/blob/main/README.md"><strong>View the Project API Documentation »</strong></a>
+    <a href="https://edologgerbird.github.io/is3107_g7/"><strong>View the Project API Documentation »</strong></a>
     <br />
   </p>
 </div>
