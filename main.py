@@ -16,12 +16,13 @@ import time
 import pandas as pd
 import json
 
-# FOR UNIT TESTING PURPOSES. CODE IS TO BE TRIGGERED FROM MAIN_DAG.PY
 
 if __name__ == '__main__':
     start_time = time.time()
-    # ---- Set-up Telegram Session ---- #
-    # TelegramExtractor().connect_to_telegram_server()
+    # ---- Initalisation Telegram Session ---- #
+    # TelegramExtractor().telegram_init()
+
+    # CODE BELOW FOR UNIT TESTING PURPOSES. CODE IS TO BE TRIGGERED FROM MAIN_DAG.PY
 
     # ---- Test SGX Data Extraction ---- #
     # sgx_data_extractor_layer = SGXDataExtractor()

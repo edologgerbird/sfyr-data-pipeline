@@ -21,7 +21,7 @@
 
 <!-- LEGAL DISCLAIMERS-->
 
-This project was created using publicity available APIs and was created for educational reasons. 
+This project was created using publicity available APIs and was created for educational reasons.
 Contents of this project should ONLY be used for <strong>NON-COMMERICAL</strong> reasons.
 
 <!-- TABLE OF CONTENTS -->
@@ -181,7 +181,7 @@ This data pipeline makes use of Google Cloud Suite of products our data warehous
 
 <br>
 
-> ❗ **Keep your JSON Key Files Safe!** 
+> ❗ **Keep your JSON Key Files Safe!**
 
 <ol>
   <li> Create a project on Google Cloud Platform using an existing Google Account </li>
@@ -334,9 +334,13 @@ After getting the api_id and api_hash, update `utils/serviceAccount.json` telegr
 }
 ```
 
-On first start up of the telegram scraping module, you will asked to enter a code sent to your telegram number as specified in the `utils/serviceAccount.json`. If you have an additional 2FA password set, you will be require to enter your password as well.
+Telegram security settings require an additional 2FA password (if set-up) and code before session is created and stored after the initial login. As such, you will have to run `main.py` with the following code uncommented.
 
-After the first setup and login, the telegram scraper module should work as intended.
+```python
+TelegramExtractor().telegram_init()
+```
+
+You will asked to enter a code sent to your telegram number as specified in the `utils/serviceAccount.json`. After the first setup and login, the telegram scraper module should work as intended without requiring logins.
 
 <br>
 
