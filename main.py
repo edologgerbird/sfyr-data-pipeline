@@ -15,6 +15,7 @@ from datetime import datetime as dt
 import time
 import pandas as pd
 import json
+
 if __name__ == '__main__':
     start_time = time.time()
     # ---- Test SGX Data Extraction ---- #
