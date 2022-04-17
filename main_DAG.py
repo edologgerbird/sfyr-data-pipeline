@@ -27,8 +27,6 @@ from data_load.bigQueryAPI import bigQueryDB
 # Query Modules
 from data_querying.heatlistQuery import HeatListQuery
 
-# will need loading modules for each source
-
 # General utility Modules
 from datetime import datetime, timedelta
 import datetime as dt
