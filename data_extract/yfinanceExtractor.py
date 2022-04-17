@@ -418,7 +418,7 @@ class yfinanceExtractor:
         ih_pd = self.yfinanceData[target_data]
         counter = 1
         for ticker in self.ticker_active:
-            f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
+            print(f"INFO: {target_data} - Extracting {ticker} | Progress:{counter}/{len(self.ticker_active)}")
             if ticker.institutional_holders is not None and ticker.institutional_holders.shape[1] == 5:
                 ticker_ih=ticker.institutional_holders
                 ticker_ih['Tickers']=self.removeSI(ticker.ticker)
