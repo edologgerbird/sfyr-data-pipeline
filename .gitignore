@@ -164,6 +164,7 @@ csv_store/
 *.session
 *.session-journal
 None.session
+.DS_Store
 
 ### Creds ###
 # Firestore ServiceAccount
