@@ -19,6 +19,18 @@ class TelegramExtractor:
         print("INFO: TelegramExtractor Initialised")
 
     def extract_telegram_messages(self, start_date=None, end_date=datetime.now()):
+        """This function extracts telegram messsages by calling populate_tele_data
+
+        Args:
+            start_date (datetime, optional): Earliest Send Date of Message to be extracted. Defaults to None.
+            end_date (datetime, optional): Latest Send Date of Message to be extracted. Defaults to datetime.now().
+
+        Raises:
+            Exception: Start date input is not before end date input
+
+        Returns:
+            list: List of Dataframe where each Dataframe is a single message 
+        """
 
         print("INFO: Extracting Telegram Messages")
         # +- 1 day is to include the date itself in scraping of messages
@@ -32,15 +44,12 @@ class TelegramExtractor:
 
         if (self.start_date is not None and self.end_date is not None and self.start_date > self.end_date):
             raise Exception(
-                'ERROR: Start date input must be before end date input')
-
-        # print('Extracting from:', self.start_date + timedelta(days=1),
-        #       'to:', self.end_date + timedelta(days=-1), '(inclusive)')
+                f'ERROR: Start date {self.start_date} input must be before end date {self.end_date} input')
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.connect_to_telegram_server())
         loop.run_until_complete(self.populate_tele_data())
-        # self.tele_data_to_csv()
+
         return self.tele_data
 
     async def connect_to_telegram_server(self):
@@ -85,6 +94,14 @@ class TelegramExtractor:
               len(self.tele_data))
 
     def check_date_params(self, messageDate):
+        """Helper function to Update message date
+
+        Args:
+            messageDate (datetime): datetime object of when message is sent
+
+        Returns:
+            boolean: True if message is within extract timeframe. False if message is not within extract timeframe. 
+        """
         if (self.start_date is not None and self.end_date is not None):
             # takes messages from start_date to end_date
             return messageDate < self.end_date and messageDate > self.start_date
@@ -95,6 +112,8 @@ class TelegramExtractor:
             return False
 
     def tele_data_to_csv(self):
+        """Helper function to export telegram data as CSV
+        """
         dateString = (self.end_date + timedelta(days=-1)).strftime("%d-%m-%Y")
         # save to a CSV file
         fileName = f'tele_data_{dateString}.csv'
