@@ -26,6 +26,7 @@
 <ol>
 <li><a href="#authors">Authors</a></li>
 <li><a href="#codes-and-resources-used">Codes and Resources Used</a></li>
+<li><a href="#data-ingestion-sources">Data Ingestion Sources</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#usage">Usage</a></li>
 <li><a href="#contact">Contact</a></li>
@@ -63,6 +64,18 @@ _Data Pipeline, Data Engineering, Data Architecture, Data Warehouse, Scheduler, 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+## Data Ingestion Sources
+
+Our team extracted both structured and unstructred data from the following sources:
+
+- [Singapore Exchange (SGX)](https://www.sgx.com/securities/securities-prices) (via SGX API endpoint)
+- [Yahoo Finance Stocks Metadata](https://sg.finance.yahoo.com/) (via yfinance API)
+- [Yahoo Finance News](https://sg.finance.yahoo.com/) (via yahoo_fin API)
+- [Singapore Business Review](https://sbr.com.sg/) (via BeautifulSoup4)
+- Telegram Channels ([SGX Invest](https://t.me/sgxinvest) and [SGX Market Updates](https://t.me/sgmarketupdates), via Telethon)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
 ## Getting Started
 
 ### **Prerequisites**
@@ -77,7 +90,6 @@ Make sure you have installed all of the following on your development machine:
 ## **Installation**
 
 We recommend setting up a virtual machine and virtual environment to run this project.
-
 
 ### _1. Oracle Virtual Machine_
 
@@ -213,15 +225,16 @@ smtp_retry_limit = 5
 
 If you are not using Gmail as your SMTP Service, edit the information according to your SMTP Server Configurations.
 
-3. Update the default_args in your DAG file. This will set-up the DAG to trigger an email if a task retries or fails. 
+3. Update the default_args in your DAG file. This will set-up the DAG to trigger an email if a task retries or fails.
 
 ```python
 default_args = {
     'email': [<Email Address>],
-    'email_on_failure': True, 
+    'email_on_failure': True,
     'email_on_retry': True,
 }
 ```
+
 4. Optional - Set-up the number of retries for a failed task and duration between retries
 
 ```python
