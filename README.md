@@ -21,7 +21,7 @@
 
 <!-- LEGAL DISCLAIMERS-->
 
-This project was created using publicity available APIs and was created for educational reasons.
+This project was created using publicy available APIs and was created for educational reasons.
 Contents of this project should ONLY be used for <strong>NON-COMMERICAL</strong> reasons.
 
 <!-- TABLE OF CONTENTS -->
