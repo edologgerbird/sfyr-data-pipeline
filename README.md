@@ -426,7 +426,7 @@ We would also like to thank Nescafe and Redbull for providing us with the caffei
 <sub>**Disclaimer**</sub>
 
 <sub>
-The information contained herein is provided for general information only and should not be used as a basis for making any investment or business decisions. Past performances are not necessarily indicative of future performances. Investment involves various risks, and you should ensure that you fully understand the risks, characteristics, and restrictions by reading the Risk Disclosure Statement, and determine if the investment products are suitable for your financial situation, investment objective, and risk tolerance before making any investment decisions. You are recommended to obtain independent professional advice where appropriate. 
+The information contained herein is provided for general information only and should not be used as a basis for making any investment or business decisions. Past performances are not necessarily indicative of future performances. Investment involves various risks, and you should ensure that you fully understand the risks, characteristics, restrictions and determine if the investment products are suitable for your financial situation, investment objective, and risk tolerance before making any investment decisions. You are recommended to obtain independent professional advice where appropriate. 
 </sub>
 
 <br><br>
