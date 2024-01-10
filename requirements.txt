@@ -15,7 +15,7 @@ fake-useragent==0.1.11
 feedparser==6.0.8
 filelock==3.6.0
 firebase-admin==5.2.0
-fonttools==4.32.0
+fonttools==4.43.0
 google-api-core==2.7.2
 google-api-python-client==2.44.0
 google-auth==2.6.5
