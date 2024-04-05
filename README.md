@@ -388,8 +388,7 @@ With the Google Cloud Project Created in **Step 5**, we will have to update `Ser
 Initialise Airflow in your Virtual Machine via the following commands:
 
 ```sh
-airflow scheduler -D
-airflow webserver -D
+airflow standalone
 ```
 
 By default, Airflow should be hosted on [http://localhost:8080](http://localhost:8080).
